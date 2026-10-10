@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
-  TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,24 +12,25 @@ import {
   Card,
   ProgressBar,
   Badge,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { useLearn } from '@/features/learn/useLearn';
 import { getLessonProgress, isLessonCompleted } from '@/domain/curriculum/types';
 
 export default function LearnScreen() {
   const router = useRouter();
+  const { colors, theme } = useTheme();
   const { curriculum, recordsMap, loading, refresh } = useLearn();
 
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['5xl'] }]}
       refreshControl={
-        <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={theme.colors.primary} />
+        <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.primary} />
       }
     >
-      <View style={styles.header}>
+      <View style={{ marginBottom: theme.spacing.xl }}>
         <Typography variant="display" weight="700">
           Curriculum
         </Typography>
@@ -40,19 +40,19 @@ export default function LearnScreen() {
       </View>
 
       {curriculum?.levels.map((level) => (
-        <View key={level.id} style={styles.levelContainer}>
-          <Typography variant="title" color="primary" style={styles.levelTitle}>
+        <View key={level.id} style={{ marginBottom: theme.spacing['2xl'] }}>
+          <Typography variant="title" color="primary" style={{ marginBottom: theme.spacing.xs }}>
             Level {level.order}: {level.title}
           </Typography>
-          <Typography variant="caption" color="foregroundMuted" style={styles.levelDesc}>
+          <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
             {level.description}
           </Typography>
 
           {level.units.map((unit) => (
-            <View key={unit.id} style={styles.unitContainer}>
-              <View style={styles.unitHeader}>
-                <Ionicons name="folder-outline" size={16} color={theme.colors.foregroundMuted} />
-                <Typography variant="label" color="foregroundMuted" style={styles.unitTitle}>
+            <View key={unit.id} style={{ marginBottom: theme.spacing.lg }}>
+              <View style={[styles.unitHeader, { marginBottom: theme.spacing.sm }]}>
+                <Ionicons name="folder-outline" size={16} color={colors.foregroundMuted} />
+                <Typography variant="label" color="foregroundMuted" style={{ marginLeft: theme.spacing.xs }}>
                   Unit {unit.order}: {unit.title}
                 </Typography>
               </View>
@@ -65,20 +65,20 @@ export default function LearnScreen() {
                   <Card
                     key={lesson.id}
                     elevated
-                    style={styles.lessonCard}
+                    style={{ marginBottom: theme.spacing.md }}
                     onPress={() => router.push(`/learn/${lesson.id}`)}
                   >
                     <View style={styles.lessonTopRow}>
-                      <View style={styles.lessonInfo}>
+                      <View style={[styles.lessonInfo, { marginRight: theme.spacing.md }]}>
                         <View style={styles.titleRow}>
                           <Typography variant="title">{lesson.title}</Typography>
                           {lesson.koreanTitle ? (
-                            <Typography variant="caption" color="foregroundMuted" style={styles.koreanTitle}>
+                            <Typography variant="caption" color="foregroundMuted" style={{ marginLeft: theme.spacing.xs }}>
                               ({lesson.koreanTitle})
                             </Typography>
                           ) : null}
                         </View>
-                        <Typography variant="body" color="foregroundMuted" style={styles.lessonDesc}>
+                        <Typography variant="body" color="foregroundMuted" style={{ marginTop: theme.spacing.xs }}>
                           {lesson.description}
                         </Typography>
                       </View>
@@ -94,15 +94,15 @@ export default function LearnScreen() {
 
                     <ProgressBar
                       progress={progress}
-                      color={completed ? theme.colors.success : theme.colors.primary}
-                      style={styles.lessonProgress}
+                      color={completed ? colors.success : colors.primary}
+                      style={{ marginTop: theme.spacing.md, marginBottom: theme.spacing.sm }}
                     />
 
                     <View style={styles.lessonFooter}>
                       <Typography variant="caption" color="foregroundSubtle">
                         {lesson.itemIds.length} items
                       </Typography>
-                      <Ionicons name="chevron-forward" size={16} color={theme.colors.foregroundSubtle} />
+                      <Ionicons name="chevron-forward" size={16} color={colors.foregroundSubtle} />
                     </View>
                   </Card>
                 );
@@ -118,37 +118,11 @@ export default function LearnScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
-  content: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['5xl'],
-  },
-  header: {
-    marginBottom: theme.spacing.xl,
-  },
-  levelContainer: {
-    marginBottom: theme.spacing['2xl'],
-  },
-  levelTitle: {
-    marginBottom: theme.spacing.xs,
-  },
-  levelDesc: {
-    marginBottom: theme.spacing.lg,
-  },
-  unitContainer: {
-    marginBottom: theme.spacing.lg,
-  },
+  content: {},
   unitHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.sm,
-  },
-  unitTitle: {
-    marginLeft: theme.spacing.xs,
-  },
-  lessonCard: {
-    marginBottom: theme.spacing.md,
   },
   lessonTopRow: {
     flexDirection: 'row',
@@ -157,22 +131,11 @@ const styles = StyleSheet.create({
   },
   lessonInfo: {
     flex: 1,
-    marginRight: theme.spacing.md,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-  },
-  koreanTitle: {
-    marginLeft: theme.spacing.xs,
-  },
-  lessonDesc: {
-    marginTop: theme.spacing.xs,
-  },
-  lessonProgress: {
-    marginTop: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
   },
   lessonFooter: {
     flexDirection: 'row',

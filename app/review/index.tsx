@@ -14,13 +14,14 @@ import {
   ProgressBar,
   Badge,
   Divider,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { useReview } from '@/features/review/useReview';
 import { ReviewRating } from '@/domain/srs/types';
 
 export default function ReviewSessionScreen() {
   const router = useRouter();
+  const { colors, theme } = useTheme();
   const {
     currentCard,
     currentIndex,
@@ -43,7 +44,7 @@ export default function ReviewSessionScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: colors.background, padding: theme.spacing.xl }]}>
         <Typography variant="body" color="foregroundMuted">
           Loading review session...
         </Typography>
@@ -54,22 +55,21 @@ export default function ReviewSessionScreen() {
   // Session completed or empty queue
   if (!currentCard || queue.length === 0) {
     return (
-      <View style={styles.centerContainer}>
-        <Card elevated style={styles.completionCard}>
-          <View style={styles.checkCircle}>
-            <Ionicons name="checkmark-done" size={40} color={theme.colors.success} />
+      <View style={[styles.centerContainer, { backgroundColor: colors.background, padding: theme.spacing.xl }]}>
+        <Card elevated style={[styles.completionCard, { padding: theme.spacing['2xl'], borderRadius: theme.radii.xl }]}>
+          <View style={[styles.checkCircle, { backgroundColor: colors.successSurface }]}>
+            <Ionicons name="checkmark-done" size={40} color={colors.success} />
           </View>
-          <Typography variant="heading" align="center" style={styles.completionTitle}>
+          <Typography variant="heading" align="center" style={{ marginBottom: theme.spacing.sm }}>
             All Reviews Complete!
           </Typography>
-          <Typography variant="body" color="foregroundMuted" align="center" style={styles.completionText}>
+          <Typography variant="body" color="foregroundMuted" align="center" style={{ marginBottom: theme.spacing['2xl'] }}>
             You have reviewed all cards scheduled for today. Great job keeping your memory fresh!
           </Typography>
           <Button
             title="Return to Today"
             fullWidth
             onPress={() => router.back()}
-            style={styles.completionButton}
           />
         </Card>
       </View>
@@ -80,61 +80,61 @@ export default function ReviewSessionScreen() {
   const item = currentCard.item;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Session Progress Header */}
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
+      <View style={[styles.header, { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.sm }]}>
+        <View style={[styles.headerTop, { marginBottom: theme.spacing.sm }]}>
           <Typography variant="label" color="foregroundMuted">
             Review {currentIndex + 1} of {queue.length}
           </Typography>
           <TouchableOpacity onPress={() => router.back()} accessibilityLabel="Close review">
-            <Ionicons name="close" size={24} color={theme.colors.foregroundMuted} />
+            <Ionicons name="close" size={24} color={colors.foregroundMuted} />
           </TouchableOpacity>
         </View>
-        <ProgressBar progress={progress} color={theme.colors.primary} style={styles.progressBar} />
+        <ProgressBar progress={progress} color={colors.primary} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.cardContainer}>
-        <Card elevated style={styles.flashcard} onPress={flipCard}>
+      <ScrollView contentContainerStyle={[styles.cardContainer, { padding: theme.spacing.lg }]}>
+        <Card elevated style={[styles.flashcard, { padding: theme.spacing.xl, borderRadius: theme.radii.xl }]} onPress={flipCard}>
           <View style={styles.flashcardHeader}>
             <Badge label="Korean" variant="vocab" />
             <TouchableOpacity
               onPress={() => speak(item.korean)}
-              style={styles.audioButton}
+              style={{ padding: theme.spacing.xs }}
               accessibilityLabel="Listen"
             >
-              <Ionicons name="volume-medium" size={24} color={theme.colors.primary} />
+              <Ionicons name="volume-medium" size={24} color={colors.primary} />
             </TouchableOpacity>
           </View>
 
           {/* Front Prompt */}
-          <View style={styles.promptArea}>
+          <View style={[styles.promptArea, { marginVertical: theme.spacing['2xl'] }]}>
             <Typography variant="display" weight="700" align="center" style={styles.koreanText}>
               {item.korean}
             </Typography>
             {item.romanization && !isFlipped && (
-              <Typography variant="body" color="foregroundMuted" align="center" style={styles.romanization}>
+              <Typography variant="body" color="foregroundMuted" align="center" style={{ marginTop: theme.spacing.xs }}>
                 [{item.romanization}]
               </Typography>
             )}
           </View>
 
           {!isFlipped ? (
-            <View style={styles.revealHint}>
-              <Ionicons name="eye-outline" size={18} color={theme.colors.foregroundSubtle} />
-              <Typography variant="caption" color="foregroundSubtle" style={styles.revealText}>
+            <View style={[styles.revealHint, { paddingVertical: theme.spacing.md }]}>
+              <Ionicons name="eye-outline" size={18} color={colors.foregroundSubtle} />
+              <Typography variant="caption" color="foregroundSubtle" style={{ marginLeft: theme.spacing.xs }}>
                 Tap anywhere to reveal meaning
               </Typography>
             </View>
           ) : (
             /* Back Answer Revealed */
-            <View style={styles.answerArea}>
-              <Divider style={styles.answerDivider} />
+            <View style={[styles.answerArea, { marginTop: theme.spacing.md }]}>
+              <Divider style={{ marginBottom: theme.spacing.lg }} />
               <Typography variant="heading" color="foreground" align="center" style={styles.translation}>
                 {item.translation}
               </Typography>
               {item.explanation && (
-                <Typography variant="body" color="foregroundMuted" align="center" style={styles.explanation}>
+                <Typography variant="body" color="foregroundMuted" align="center" style={{ marginTop: theme.spacing.sm }}>
                   {item.explanation}
                 </Typography>
               )}
@@ -145,13 +145,13 @@ export default function ReviewSessionScreen() {
 
       {/* SRS Rating Bar (Visible when card is revealed) */}
       {isFlipped ? (
-        <View style={styles.ratingBar}>
-          <Typography variant="caption" color="foregroundMuted" align="center" style={styles.ratingPrompt}>
+        <View style={[styles.ratingBar, { backgroundColor: colors.surfaceSubtle, borderTopColor: colors.borderSubtle, padding: theme.spacing.lg, paddingBottom: theme.spacing['3xl'] }]}>
+          <Typography variant="caption" color="foregroundMuted" align="center" style={{ marginBottom: theme.spacing.sm }}>
             How well did you recall this?
           </Typography>
-          <View style={styles.ratingButtonsRow}>
+          <View style={[styles.ratingButtonsRow, { gap: theme.spacing.sm }]}>
             <TouchableOpacity
-              style={[styles.ratingBtn, styles.btnAgain]}
+              style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.destructive, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
               onPress={() => submitRating(ReviewRating.Again)}
             >
               <Typography variant="label" color="destructive">
@@ -163,7 +163,7 @@ export default function ReviewSessionScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.ratingBtn, styles.btnHard]}
+              style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.warning, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
               onPress={() => submitRating(ReviewRating.Hard)}
             >
               <Typography variant="label" color="warning">
@@ -175,7 +175,7 @@ export default function ReviewSessionScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.ratingBtn, styles.btnGood]}
+              style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.primary, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
               onPress={() => submitRating(ReviewRating.Good)}
             >
               <Typography variant="label" color="primary">
@@ -187,7 +187,7 @@ export default function ReviewSessionScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.ratingBtn, styles.btnEasy]}
+              style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.success, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
               onPress={() => submitRating(ReviewRating.Easy)}
             >
               <Typography variant="label" color="success">
@@ -200,7 +200,7 @@ export default function ReviewSessionScreen() {
           </View>
         </View>
       ) : (
-        <View style={styles.revealButtonContainer}>
+        <View style={[styles.revealButtonContainer, { backgroundColor: colors.surfaceSubtle, padding: theme.spacing.lg, paddingBottom: theme.spacing['3xl'] }]}>
           <Button title="Reveal Meaning" fullWidth onPress={flipCard} />
         </View>
       )}
@@ -211,36 +211,23 @@ export default function ReviewSessionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.xl,
   },
-  header: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing.sm,
-  },
+  header: {},
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing.sm,
-  },
-  progressBar: {
-    marginTop: theme.spacing.xs,
   },
   cardContainer: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: theme.spacing.lg,
   },
   flashcard: {
-    padding: theme.spacing.xl,
     minHeight: 280,
     justifyContent: 'space-between',
   },
@@ -249,78 +236,40 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  audioButton: {
-    padding: theme.spacing.xs,
-  },
   promptArea: {
     alignItems: 'center',
-    marginVertical: theme.spacing['2xl'],
   },
   koreanText: {
     fontSize: 48,
-    marginBottom: theme.spacing.xs,
-  },
-  romanization: {
-    marginTop: theme.spacing.xs,
+    marginBottom: 4,
   },
   revealHint: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: theme.spacing.md,
-  },
-  revealText: {
-    marginLeft: theme.spacing.xs,
   },
   answerArea: {
     alignItems: 'center',
-    marginTop: theme.spacing.md,
-  },
-  answerDivider: {
-    marginBottom: theme.spacing.lg,
   },
   translation: {
     fontSize: 22,
-    marginBottom: theme.spacing.xs,
-  },
-  explanation: {
-    marginTop: theme.spacing.sm,
+    marginBottom: 4,
   },
   ratingBar: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['3xl'],
-    backgroundColor: theme.colors.surfaceSubtle,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.borderSubtle,
-  },
-  ratingPrompt: {
-    marginBottom: theme.spacing.sm,
   },
   ratingButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: theme.spacing.sm,
   },
   ratingBtn: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: theme.spacing.md,
-    borderRadius: theme.radii.md,
-    backgroundColor: theme.colors.surfaceElevated,
-    borderWidth: 1,
+    borderWidth: 1.5,
   },
-  btnAgain: { borderColor: 'rgba(239, 68, 68, 0.4)' },
-  btnHard: { borderColor: 'rgba(245, 158, 11, 0.4)' },
-  btnGood: { borderColor: 'rgba(56, 189, 248, 0.4)' },
-  btnEasy: { borderColor: 'rgba(16, 185, 129, 0.4)' },
-  revealButtonContainer: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['3xl'],
-    backgroundColor: theme.colors.surfaceSubtle,
-  },
+  revealButtonContainer: {},
   completionCard: {
-    padding: theme.spacing['2xl'],
     alignItems: 'center',
     width: '100%',
   },
@@ -328,18 +277,8 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: theme.spacing.lg,
-  },
-  completionTitle: {
-    marginBottom: theme.spacing.sm,
-  },
-  completionText: {
-    marginBottom: theme.spacing['2xl'],
-  },
-  completionButton: {
-    marginTop: theme.spacing.sm,
+    marginBottom: 16,
   },
 });

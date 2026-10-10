@@ -5,3 +5,4 @@ export * from './Card';
 export * from './Badge';
 export * from './ProgressBar';
 export * from './Divider';
+export { ThemeProvider, useTheme } from '@/app/providers/ThemeProvider';

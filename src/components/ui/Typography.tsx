@@ -1,10 +1,11 @@
 import React from 'react';
-import { Text as RNText, TextProps as RNTextProps, StyleSheet } from 'react-native';
-import { theme } from './theme';
+import { Text as RNText, TextProps as RNTextProps } from 'react-native';
+import { ThemeColors } from './theme';
+import { useTheme } from '@/app/providers/ThemeProvider';
 
 export interface TypographyProps extends RNTextProps {
   variant?: 'display' | 'heading' | 'title' | 'bodyLarge' | 'body' | 'label' | 'caption';
-  color?: keyof typeof theme.colors;
+  color?: keyof ThemeColors;
   align?: 'left' | 'center' | 'right';
   weight?: '400' | '500' | '600' | '700';
   children: React.ReactNode;
@@ -19,8 +20,9 @@ export function Typography({
   children,
   ...rest
 }: TypographyProps) {
+  const { colors, theme } = useTheme();
   const tokenTypography = theme.typography[variant];
-  const textColor = theme.colors[color] ?? theme.colors.foreground;
+  const textColor = colors[color] ?? colors.foreground;
 
   return (
     <RNText

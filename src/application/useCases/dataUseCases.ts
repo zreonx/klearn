@@ -39,6 +39,7 @@ const ExportSchema = z.object({
       autoPlay: z.boolean(),
       rate: z.number(),
     }),
+    themeMode: z.enum(['system', 'light', 'dark']).optional().default('system'),
     hasCompletedOnboarding: z.boolean(),
   }),
   streakData: z.object({

@@ -14,14 +14,15 @@ import {
   Badge,
   ProgressBar,
   Divider,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { useLearn } from '@/features/learn/useLearn';
 import { LearningItem } from '@/domain/learning/types';
 
 export default function LessonDetailScreen() {
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
   const router = useRouter();
+  const { colors, theme } = useTheme();
   const { getLessonDetails, markItemLearned, speak, recordsMap } = useLearn();
 
   const [lessonData, setLessonData] = useState<Awaited<
@@ -36,7 +37,7 @@ export default function LessonDetailScreen() {
 
   if (!lessonData || !lessonData.lesson) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
         <Typography variant="body" color="foregroundMuted">
           Loading lesson...
         </Typography>
@@ -51,10 +52,13 @@ export default function LessonDetailScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['6xl'] }]}
+    >
       {/* Lesson Header */}
-      <View style={styles.header}>
-        <View style={styles.badgeRow}>
+      <View style={{ marginBottom: theme.spacing.xl }}>
+        <View style={{ marginBottom: theme.spacing.sm }}>
           <Badge
             label={isCompleted ? 'Completed' : `${Math.round(progress * 100)}%`}
             variant={isCompleted ? 'success' : 'vocab'}
@@ -64,22 +68,22 @@ export default function LessonDetailScreen() {
           {lesson.title}
         </Typography>
         {lesson.koreanTitle && (
-          <Typography variant="title" color="foregroundMuted" style={styles.koreanTitle}>
+          <Typography variant="title" color="foregroundMuted" style={{ marginTop: theme.spacing.xs }}>
             {lesson.koreanTitle}
           </Typography>
         )}
-        <Typography variant="body" color="foregroundMuted" style={styles.description}>
+        <Typography variant="body" color="foregroundMuted" style={{ marginTop: theme.spacing.sm }}>
           {lesson.description}
         </Typography>
         <ProgressBar
           progress={progress}
-          color={isCompleted ? theme.colors.success : theme.colors.primary}
-          style={styles.progressBar}
+          color={isCompleted ? colors.success : colors.primary}
+          style={{ marginTop: theme.spacing.md }}
         />
       </View>
 
       {/* Item List */}
-      <Typography variant="title" style={styles.sectionTitle}>
+      <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
         Items in this lesson ({items.length})
       </Typography>
 
@@ -88,7 +92,7 @@ export default function LessonDetailScreen() {
         const isLearned = record && record.status !== 'unseen';
 
         return (
-          <Card key={item.id} elevated style={styles.itemCard}>
+          <Card key={item.id} elevated style={{ marginBottom: theme.spacing.lg }}>
             <View style={styles.itemTopRow}>
               <View style={styles.koreanContainer}>
                 <Typography variant="display" weight="700" style={styles.koreanText}>
@@ -104,29 +108,29 @@ export default function LessonDetailScreen() {
               <TouchableOpacity
                 onPress={() => speak(item.korean)}
                 accessibilityLabel="Listen"
-                style={styles.speakerButton}
+                style={[styles.speakerButton, { backgroundColor: colors.surfaceSubtle, borderRadius: theme.radii.full, padding: theme.spacing.xs }]}
               >
-                <Ionicons name="volume-medium" size={22} color={theme.colors.primary} />
+                <Ionicons name="volume-medium" size={22} color={colors.primary} />
               </TouchableOpacity>
             </View>
 
-            <Typography variant="title" color="foreground" style={styles.translation}>
+            <Typography variant="title" color="foreground" style={{ marginTop: theme.spacing.sm }}>
               {item.translation}
             </Typography>
 
             {item.explanation && (
-              <Typography variant="body" color="foregroundMuted" style={styles.explanation}>
+              <Typography variant="body" color="foregroundMuted" style={{ marginTop: theme.spacing.xs }}>
                 {item.explanation}
               </Typography>
             )}
 
             {item.examples && item.examples.length > 0 && (
-              <View style={styles.exampleBox}>
+              <View style={[styles.exampleBox, { backgroundColor: colors.surfaceSubtle, padding: theme.spacing.md, borderRadius: theme.radii.md, marginTop: theme.spacing.md }]}>
                 <Typography variant="label" color="primary">
                   Example:
                 </Typography>
                 {item.examples.map((ex, idx) => (
-                  <View key={idx} style={styles.exampleItem}>
+                  <View key={idx} style={{ marginTop: theme.spacing.xs }}>
                     <Typography variant="body" weight="500">
                       {ex.korean}
                     </Typography>
@@ -138,13 +142,13 @@ export default function LessonDetailScreen() {
               </View>
             )}
 
-            <Divider style={styles.divider} />
+            <Divider style={{ marginVertical: theme.spacing.md }} />
 
             <View style={styles.actionRow}>
               {isLearned ? (
                 <View style={styles.learnedStatus}>
-                  <Ionicons name="checkmark-circle" size={18} color={theme.colors.success} />
-                  <Typography variant="label" color="success" style={styles.learnedText}>
+                  <Ionicons name="checkmark-circle" size={18} color={colors.success} />
+                  <Typography variant="label" color="success" style={{ marginLeft: theme.spacing.xs }}>
                     Learned (in Spaced Repetition)
                   </Typography>
                 </View>
@@ -166,38 +170,12 @@ export default function LessonDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
-  content: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['6xl'],
-  },
+  content: {},
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
-  },
-  header: {
-    marginBottom: theme.spacing.xl,
-  },
-  badgeRow: {
-    marginBottom: theme.spacing.sm,
-  },
-  koreanTitle: {
-    marginTop: theme.spacing.xs,
-  },
-  description: {
-    marginTop: theme.spacing.sm,
-  },
-  progressBar: {
-    marginTop: theme.spacing.md,
-  },
-  sectionTitle: {
-    marginBottom: theme.spacing.md,
-  },
-  itemCard: {
-    marginBottom: theme.spacing.lg,
   },
   itemTopRow: {
     flexDirection: 'row',
@@ -208,32 +186,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   koreanText: {
-    fontSize: 32,
+    fontSize: 34,
     marginBottom: 2,
   },
-  speakerButton: {
-    padding: theme.spacing.xs,
-    backgroundColor: theme.colors.surfaceSubtle,
-    borderRadius: theme.radii.full,
-  },
-  translation: {
-    marginTop: theme.spacing.sm,
-  },
-  explanation: {
-    marginTop: theme.spacing.xs,
-  },
-  exampleBox: {
-    marginTop: theme.spacing.md,
-    backgroundColor: theme.colors.surfaceSubtle,
-    padding: theme.spacing.md,
-    borderRadius: theme.radii.md,
-  },
-  exampleItem: {
-    marginTop: theme.spacing.xs,
-  },
-  divider: {
-    marginVertical: theme.spacing.md,
-  },
+  speakerButton: {},
+  exampleBox: {},
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -242,8 +199,5 @@ const styles = StyleSheet.create({
   learnedStatus: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  learnedText: {
-    marginLeft: theme.spacing.xs,
   },
 });

@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import { theme } from './theme';
 import { Typography } from './Typography';
+import { useTheme } from '@/app/providers/ThemeProvider';
+import { ThemeColors } from './theme';
 
 export type BadgeVariant =
   | 'default'
@@ -19,29 +20,50 @@ export interface BadgeProps {
 }
 
 export function Badge({ label, variant = 'default', style }: BadgeProps) {
-  const getColors = (): { bg: string; text: keyof typeof theme.colors } => {
+  const { colors, theme } = useTheme();
+
+  const getColors = (): { bg: string; text: keyof ThemeColors } => {
     switch (variant) {
       case 'hangul':
-        return { bg: 'rgba(167, 139, 250, 0.16)', text: 'hangulAccent' };
+        return {
+          bg: theme.isDark ? 'rgba(159, 217, 192, 0.15)' : 'rgba(45, 125, 104, 0.12)',
+          text: 'hangulAccent',
+        };
       case 'vocab':
-        return { bg: 'rgba(56, 189, 248, 0.16)', text: 'vocabAccent' };
+        return {
+          bg: theme.isDark ? 'rgba(120, 185, 155, 0.15)' : 'rgba(23, 107, 85, 0.12)',
+          text: 'vocabAccent',
+        };
       case 'grammar':
-        return { bg: 'rgba(244, 114, 182, 0.16)', text: 'grammarAccent' };
+        return {
+          bg: theme.isDark ? 'rgba(233, 154, 126, 0.15)' : 'rgba(197, 104, 77, 0.12)',
+          text: 'grammarAccent',
+        };
       case 'success':
-        return { bg: 'rgba(16, 185, 129, 0.16)', text: 'success' };
+        return { bg: colors.successSurface, text: 'success' };
       case 'warning':
-        return { bg: 'rgba(245, 158, 11, 0.16)', text: 'warning' };
+        return { bg: colors.warningSurface, text: 'warning' };
       case 'destructive':
-        return { bg: 'rgba(239, 68, 68, 0.16)', text: 'destructive' };
+        return { bg: colors.destructiveSurface, text: 'destructive' };
       default:
-        return { bg: theme.colors.surfaceElevated, text: 'foregroundMuted' };
+        return { bg: colors.surfaceSubtle, text: 'foregroundMuted' };
     }
   };
 
   const { bg, text } = getColors();
 
   return (
-    <View style={[styles.badge, { backgroundColor: bg }, style]}>
+    <View
+      style={[
+        styles.badge,
+        {
+          backgroundColor: bg,
+          borderRadius: theme.radii.full,
+          paddingHorizontal: theme.spacing.sm,
+        },
+        style,
+      ]}
+    >
       <Typography variant="caption" weight="600" color={text}>
         {label}
       </Typography>
@@ -51,9 +73,7 @@ export function Badge({ label, variant = 'default', style }: BadgeProps) {
 
 const styles = StyleSheet.create({
   badge: {
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: 2,
-    borderRadius: theme.radii.full,
+    paddingVertical: 3,
     alignSelf: 'flex-start',
     justifyContent: 'center',
     alignItems: 'center',

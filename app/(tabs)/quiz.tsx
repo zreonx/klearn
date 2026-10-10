@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,13 +11,13 @@ import {
   Card,
   Button,
   Badge,
-  Divider,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { QuizQuestionType } from '@/domain/quiz/types';
 
 export default function QuizTabScreen() {
   const router = useRouter();
+  const { colors, theme } = useTheme();
   const [selectedType, setSelectedType] = useState<QuizQuestionType | 'all'>('all');
 
   const modes: Array<{ id: QuizQuestionType | 'all'; title: string; desc: string }> = [
@@ -49,8 +48,11 @@ export default function QuizTabScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['5xl'] }]}
+    >
+      <View style={{ marginBottom: theme.spacing.xl }}>
         <Typography variant="display" weight="700">
           Quiz
         </Typography>
@@ -59,20 +61,20 @@ export default function QuizTabScreen() {
         </Typography>
       </View>
 
-      <Card elevated style={styles.heroCard}>
-        <View style={styles.heroTop}>
+      <Card elevated style={{ marginBottom: theme.spacing.xl }}>
+        <View style={{ marginBottom: theme.spacing.sm }}>
           <Badge label="Quiz Engine" variant="vocab" />
         </View>
-        <Typography variant="heading" style={styles.heroTitle}>
+        <Typography variant="heading" style={{ marginBottom: theme.spacing.xs }}>
           Ready to test your Korean?
         </Typography>
-        <Typography variant="body" color="foregroundMuted" style={styles.heroDesc}>
+        <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
           Questions are dynamically generated based on the items you've encountered in your lessons.
         </Typography>
         <Button title="Start Practice Quiz" fullWidth onPress={handleStart} />
       </Card>
 
-      <Typography variant="title" style={styles.sectionTitle}>
+      <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
         Quiz Modes
       </Typography>
 
@@ -83,22 +85,25 @@ export default function QuizTabScreen() {
             key={mode.id}
             subtle={!isSelected}
             elevated={isSelected}
-            style={[styles.modeCard, isSelected && styles.modeCardSelected]}
+            style={[
+              { marginBottom: theme.spacing.md },
+              isSelected && { borderColor: colors.primary, borderWidth: 1.5 },
+            ]}
             onPress={() => setSelectedType(mode.id)}
           >
             <View style={styles.modeRow}>
-              <View style={styles.modeInfo}>
+              <View style={[styles.modeInfo, { marginRight: theme.spacing.md }]}>
                 <Typography variant="title" color={isSelected ? 'primary' : 'foreground'}>
                   {mode.title}
                 </Typography>
-                <Typography variant="caption" color="foregroundMuted" style={styles.modeDesc}>
+                <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs }}>
                   {mode.desc}
                 </Typography>
               </View>
               {isSelected ? (
-                <Ionicons name="checkmark-circle" size={22} color={theme.colors.primary} />
+                <Ionicons name="checkmark-circle" size={22} color={colors.primary} />
               ) : (
-                <Ionicons name="ellipse-outline" size={22} color={theme.colors.foregroundSubtle} />
+                <Ionicons name="ellipse-outline" size={22} color={colors.foregroundSubtle} />
               )}
             </View>
           </Card>
@@ -111,36 +116,8 @@ export default function QuizTabScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
-  content: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['5xl'],
-  },
-  header: {
-    marginBottom: theme.spacing.xl,
-  },
-  heroCard: {
-    marginBottom: theme.spacing.xl,
-  },
-  heroTop: {
-    marginBottom: theme.spacing.sm,
-  },
-  heroTitle: {
-    marginBottom: theme.spacing.xs,
-  },
-  heroDesc: {
-    marginBottom: theme.spacing.lg,
-  },
-  sectionTitle: {
-    marginBottom: theme.spacing.md,
-  },
-  modeCard: {
-    marginBottom: theme.spacing.md,
-  },
-  modeCardSelected: {
-    borderColor: theme.colors.primary,
-  },
+  content: {},
   modeRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -148,9 +125,5 @@ const styles = StyleSheet.create({
   },
   modeInfo: {
     flex: 1,
-    marginRight: theme.spacing.md,
-  },
-  modeDesc: {
-    marginTop: theme.spacing.xs,
   },
 });

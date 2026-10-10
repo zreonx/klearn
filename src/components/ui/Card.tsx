@@ -3,12 +3,10 @@ import {
   View,
   ViewProps,
   Pressable,
-  PressableProps,
-  StyleSheet,
   ViewStyle,
   StyleProp,
 } from 'react-native';
-import { theme } from './theme';
+import { useTheme } from '@/app/providers/ThemeProvider';
 
 export interface CardProps extends ViewProps {
   elevated?: boolean;
@@ -28,17 +26,19 @@ export function Card({
   children,
   ...rest
 }: CardProps) {
+  const { colors, theme } = useTheme();
+
   const backgroundColor = subtle
-    ? theme.colors.surfaceSubtle
+    ? colors.surfaceSubtle
     : elevated
-    ? theme.colors.surfaceElevated
-    : theme.colors.surface;
+    ? colors.surfaceElevated
+    : colors.surface;
 
   const cardStyle: ViewStyle = {
     backgroundColor,
     borderRadius: theme.radii.lg,
     borderWidth: bordered ? 1 : 0,
-    borderColor: elevated ? theme.colors.border : theme.colors.borderSubtle,
+    borderColor: elevated ? colors.border : colors.borderSubtle,
     padding: theme.spacing.lg,
   };
 
@@ -48,7 +48,7 @@ export function Card({
         onPress={onPress}
         style={({ pressed }) => [
           cardStyle,
-          { opacity: pressed ? 0.88 : 1 },
+          { opacity: pressed ? 0.85 : 1 },
           style,
         ]}
         accessibilityRole="button"

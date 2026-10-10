@@ -12,14 +12,15 @@ import {
   Typography,
   Card,
   Button,
-  Badge,
   Divider,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { useMe } from '@/features/me/useMe';
 import { DailyGoalTarget } from '@/config';
+import { ThemeMode } from '@/domain/settings/types';
 
 export default function MeScreen() {
+  const { colors, theme, themePreference, setThemePreference } = useTheme();
   const {
     stats,
     settings,
@@ -32,6 +33,11 @@ export default function MeScreen() {
   const [exportJson, setExportJson] = useState<string | null>(null);
 
   const goalOptions: DailyGoalTarget[] = [5, 10, 15, 20];
+  const themeOptions: Array<{ mode: ThemeMode; label: string; icon: keyof typeof Ionicons.glyphMap }> = [
+    { mode: 'system', label: 'System', icon: 'phone-portrait-outline' },
+    { mode: 'light', label: 'Light', icon: 'sunny-outline' },
+    { mode: 'dark', label: 'Dark', icon: 'moon-outline' },
+  ];
 
   const handleToggleReminder = async (enabled: boolean) => {
     if (!settings) return;
@@ -67,22 +73,73 @@ export default function MeScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['6xl'] }]}
+    >
+      <View style={{ marginBottom: theme.spacing.xl }}>
         <Typography variant="display" weight="700">
           Me
         </Typography>
         <Typography variant="caption" color="foregroundMuted">
-          Progress statistics, daily goals, and settings
+          Progress statistics, daily goals, and appearance
         </Typography>
       </View>
 
+      {/* Appearance Section (Section 4 & 9: Light & Dark Theme) */}
+      <Typography variant="title" style={{ marginTop: theme.spacing.md, marginBottom: theme.spacing.md }}>
+        Appearance
+      </Typography>
+
+      <Card style={{ padding: theme.spacing.lg, marginBottom: theme.spacing.lg }}>
+        <Typography variant="body" weight="600">
+          Theme Mode
+        </Typography>
+        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, marginBottom: theme.spacing.md }}>
+          Deep Jade + Warm Ivory (Light) or Muted Jade + Ink Charcoal (Dark).
+        </Typography>
+
+        <View style={styles.themeOptionsRow}>
+          {themeOptions.map((opt) => {
+            const isSelected = themePreference === opt.mode;
+            return (
+              <TouchableOpacity
+                key={opt.mode}
+                style={[
+                  styles.themePill,
+                  {
+                    backgroundColor: isSelected ? colors.primary : colors.surfaceSubtle,
+                    borderColor: isSelected ? colors.primary : colors.borderSubtle,
+                    borderRadius: theme.radii.md,
+                    paddingVertical: theme.spacing.sm,
+                  },
+                ]}
+                onPress={() => setThemePreference(opt.mode)}
+              >
+                <Ionicons
+                  name={opt.icon}
+                  size={16}
+                  color={isSelected ? colors.primaryForeground : colors.foreground}
+                  style={{ marginBottom: 4 }}
+                />
+                <Typography
+                  variant="label"
+                  color={isSelected ? 'primaryForeground' : 'foreground'}
+                >
+                  {opt.label}
+                </Typography>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </Card>
+
       {/* Statistics Section (Section 23) */}
-      <Typography variant="title" style={styles.sectionTitle}>
+      <Typography variant="title" style={{ marginTop: theme.spacing.sm, marginBottom: theme.spacing.md }}>
         Learning Statistics
       </Typography>
 
-      <View style={styles.statsGrid}>
+      <View style={[styles.statsGrid, { gap: theme.spacing.md }]}>
         <Card style={styles.statCard}>
           <Typography variant="caption" color="foregroundMuted">
             Items Learned
@@ -121,7 +178,7 @@ export default function MeScreen() {
       </View>
 
       {/* Streak Info */}
-      <Card elevated style={styles.streakCard}>
+      <Card elevated style={{ marginTop: theme.spacing.md, marginBottom: theme.spacing.lg }}>
         <View style={styles.rowBetween}>
           <View>
             <Typography variant="title">Streak Milestone</Typography>
@@ -129,24 +186,24 @@ export default function MeScreen() {
               Current: {stats?.currentStreak ?? 0} days | Longest: {stats?.longestStreak ?? 0} days
             </Typography>
           </View>
-          <Ionicons name="flame" size={28} color="#F97316" />
+          <Ionicons name="flame" size={28} color={colors.accent} />
         </View>
       </Card>
 
       {/* Settings Section */}
-      <Typography variant="title" style={styles.sectionTitle}>
+      <Typography variant="title" style={{ marginTop: theme.spacing.sm, marginBottom: theme.spacing.md }}>
         Daily Target & Habits
       </Typography>
 
-      <Card style={styles.settingsCard}>
+      <Card style={{ padding: theme.spacing.lg, marginBottom: theme.spacing.lg }}>
         <Typography variant="body" weight="600">
           Daily Learning Goal
         </Typography>
-        <Typography variant="caption" color="foregroundMuted" style={styles.settingDesc}>
+        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, marginBottom: theme.spacing.md }}>
           How many items you aim to learn or review every day.
         </Typography>
 
-        <View style={styles.goalPillsRow}>
+        <View style={[styles.goalPillsRow, { gap: theme.spacing.sm }]}>
           {goalOptions.map((opt) => {
             const isSelected = settings?.dailyGoal === opt;
             return (
@@ -154,7 +211,12 @@ export default function MeScreen() {
                 key={opt}
                 style={[
                   styles.goalPill,
-                  isSelected && styles.goalPillSelected,
+                  {
+                    backgroundColor: isSelected ? colors.primary : colors.surfaceSubtle,
+                    borderColor: isSelected ? colors.primary : colors.borderSubtle,
+                    borderRadius: theme.radii.md,
+                    paddingVertical: theme.spacing.sm,
+                  },
                 ]}
                 onPress={() => updateSettings({ dailyGoal: opt })}
               >
@@ -169,7 +231,7 @@ export default function MeScreen() {
           })}
         </View>
 
-        <Divider style={styles.divider} />
+        <Divider style={{ marginVertical: theme.spacing.lg }} />
 
         {/* Daily Reminder */}
         <View style={styles.rowBetween}>
@@ -184,11 +246,11 @@ export default function MeScreen() {
           <Switch
             value={settings?.reminder.enabled ?? false}
             onValueChange={handleToggleReminder}
-            trackColor={{ false: theme.colors.surfaceElevated, true: theme.colors.primary }}
+            trackColor={{ false: colors.surfaceSubtle, true: colors.primary }}
           />
         </View>
 
-        <Divider style={styles.divider} />
+        <Divider style={{ marginVertical: theme.spacing.lg }} />
 
         {/* Speech Rate */}
         <View style={styles.rowBetween}>
@@ -204,7 +266,12 @@ export default function MeScreen() {
             <TouchableOpacity
               style={[
                 styles.speedPill,
-                settings?.speech.rate === 0.75 && styles.speedPillSelected,
+                {
+                  backgroundColor: settings?.speech.rate === 0.75 ? colors.primary : colors.surfaceSubtle,
+                  borderRadius: theme.radii.sm,
+                  paddingHorizontal: theme.spacing.sm,
+                  paddingVertical: theme.spacing.xs,
+                },
               ]}
               onPress={() =>
                 updateSettings({
@@ -212,12 +279,22 @@ export default function MeScreen() {
                 })
               }
             >
-              <Typography variant="caption">0.75x</Typography>
+              <Typography
+                variant="caption"
+                color={settings?.speech.rate === 0.75 ? 'primaryForeground' : 'foreground'}
+              >
+                0.75x
+              </Typography>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.speedPill,
-                settings?.speech.rate === 0.9 && styles.speedPillSelected,
+                {
+                  backgroundColor: settings?.speech.rate === 0.9 ? colors.primary : colors.surfaceSubtle,
+                  borderRadius: theme.radii.sm,
+                  paddingHorizontal: theme.spacing.sm,
+                  paddingVertical: theme.spacing.xs,
+                },
               ]}
               onPress={() =>
                 updateSettings({
@@ -225,22 +302,27 @@ export default function MeScreen() {
                 })
               }
             >
-              <Typography variant="caption">0.9x</Typography>
+              <Typography
+                variant="caption"
+                color={settings?.speech.rate === 0.9 ? 'primaryForeground' : 'foreground'}
+              >
+                0.9x
+              </Typography>
             </TouchableOpacity>
           </View>
         </View>
       </Card>
 
       {/* Data Management Section (Section 27 & 52) */}
-      <Typography variant="title" style={styles.sectionTitle}>
+      <Typography variant="title" style={{ marginTop: theme.spacing.sm, marginBottom: theme.spacing.md }}>
         Data & Storage (Local-First)
       </Typography>
 
-      <Card style={styles.dataCard}>
+      <Card style={{ padding: theme.spacing.lg }}>
         <Typography variant="body" weight="600">
           Data Export & Backup
         </Typography>
-        <Typography variant="caption" color="foregroundMuted" style={styles.settingDesc}>
+        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, marginBottom: theme.spacing.md }}>
           Export your complete learning history, spaced repetition schedules, and streak to JSON.
         </Typography>
 
@@ -251,14 +333,14 @@ export default function MeScreen() {
         />
 
         {exportJson && (
-          <View style={styles.exportBox}>
+          <View style={[styles.exportBox, { backgroundColor: colors.surfaceSubtle, padding: theme.spacing.md, borderRadius: theme.radii.md, marginTop: theme.spacing.md }]}>
             <Typography variant="caption" color="foregroundSubtle" numberOfLines={6}>
               {exportJson}
             </Typography>
           </View>
         )}
 
-        <Divider style={styles.divider} />
+        <Divider style={{ marginVertical: theme.spacing.lg }} />
 
         <Button
           title="Reset All Progress"
@@ -273,55 +355,34 @@ export default function MeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
-  content: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['6xl'],
+  content: {},
+  themeOptionsRow: {
+    flexDirection: 'row',
+    gap: 10,
   },
-  header: {
-    marginBottom: theme.spacing.xl,
-  },
-  sectionTitle: {
-    marginTop: theme.spacing.lg,
-    marginBottom: theme.spacing.md,
+  themePill: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: theme.spacing.md,
   },
   statCard: {
     flex: 1,
     minWidth: '45%',
-    padding: theme.spacing.md,
-  },
-  streakCard: {
-    marginTop: theme.spacing.md,
-  },
-  settingsCard: {
-    padding: theme.spacing.lg,
-  },
-  settingDesc: {
-    marginTop: theme.spacing.xs,
-    marginBottom: theme.spacing.md,
+    padding: 14,
   },
   goalPillsRow: {
     flexDirection: 'row',
-    gap: theme.spacing.sm,
   },
   goalPill: {
     flex: 1,
-    paddingVertical: theme.spacing.sm,
-    backgroundColor: theme.colors.surfaceElevated,
-    borderRadius: theme.radii.md,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: theme.colors.borderSubtle,
-  },
-  goalPillSelected: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
+    borderWidth: 1.5,
   },
   rowBetween: {
     flexDirection: 'row',
@@ -330,31 +391,12 @@ const styles = StyleSheet.create({
   },
   settingTextContainer: {
     flex: 1,
-    marginRight: theme.spacing.md,
+    marginRight: 16,
   },
   speedButtons: {
     flexDirection: 'row',
-    gap: theme.spacing.xs,
+    gap: 8,
   },
-  speedPill: {
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
-    borderRadius: theme.radii.sm,
-    backgroundColor: theme.colors.surfaceElevated,
-  },
-  speedPillSelected: {
-    backgroundColor: theme.colors.primaryMuted,
-  },
-  divider: {
-    marginVertical: theme.spacing.lg,
-  },
-  dataCard: {
-    padding: theme.spacing.lg,
-  },
-  exportBox: {
-    marginTop: theme.spacing.md,
-    padding: theme.spacing.md,
-    backgroundColor: theme.colors.surfaceSubtle,
-    borderRadius: theme.radii.md,
-  },
+  speedPill: {},
+  exportBox: {},
 });

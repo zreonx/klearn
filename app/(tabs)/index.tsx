@@ -15,24 +15,25 @@ import {
   ProgressBar,
   Badge,
   Divider,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { useDashboard } from '@/features/today/useDashboard';
 
 export default function TodayScreen() {
   const router = useRouter();
+  const { colors, theme } = useTheme();
   const { data, loading, refresh, speak } = useDashboard();
 
   return (
     <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['5xl'] }]}
       refreshControl={
-        <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={theme.colors.primary} />
+        <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.primary} />
       }
     >
       {/* Top Header */}
-      <View style={styles.headerRow}>
+      <View style={[styles.headerRow, { marginBottom: theme.spacing.xl }]}>
         <View>
           <Typography variant="display" weight="700">
             Today
@@ -43,9 +44,20 @@ export default function TodayScreen() {
         </View>
 
         {data ? (
-          <View style={styles.streakBadge}>
-            <Ionicons name="flame" size={18} color="#F97316" />
-            <Typography variant="label" color="foreground" style={styles.streakText}>
+          <View
+            style={[
+              styles.streakBadge,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderColor: colors.borderSubtle,
+                paddingHorizontal: theme.spacing.md,
+                paddingVertical: theme.spacing.xs,
+                borderRadius: theme.radii.full,
+              },
+            ]}
+          >
+            <Ionicons name="flame" size={18} color={colors.accent} />
+            <Typography variant="label" color="foreground" style={[styles.streakText, { marginLeft: theme.spacing.xs }]}>
               {data.streak} {data.streak === 1 ? 'day' : 'days'}
             </Typography>
           </View>
@@ -54,17 +66,17 @@ export default function TodayScreen() {
 
       {/* Recommended Action Card (Section 65) */}
       {data?.recommendation && (
-        <Card elevated style={styles.heroCard}>
-          <View style={styles.heroHeader}>
+        <Card elevated style={[styles.heroCard, { marginBottom: theme.spacing.lg }]}>
+          <View style={{ marginBottom: theme.spacing.sm }}>
             <Badge
               label={data.recommendation.badge ?? 'Recommended'}
               variant={data.recommendation.type === 'review' ? 'warning' : 'vocab'}
             />
           </View>
-          <Typography variant="heading" style={styles.heroTitle}>
+          <Typography variant="heading" style={{ marginBottom: theme.spacing.xs }}>
             {data.recommendation.title}
           </Typography>
-          <Typography variant="body" color="foregroundMuted" style={styles.heroDesc}>
+          <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
             {data.recommendation.description}
           </Typography>
           <Button
@@ -77,7 +89,7 @@ export default function TodayScreen() {
 
       {/* Daily Goal Card (Section 13 & 21) */}
       {data && (
-        <Card style={styles.card}>
+        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
           <View style={styles.rowBetween}>
             <Typography variant="title">Daily Goal</Typography>
             <Typography variant="label" color={data.isGoalReached ? 'success' : 'primary'}>
@@ -87,11 +99,11 @@ export default function TodayScreen() {
 
           <ProgressBar
             progress={data.goalProgress}
-            color={data.isGoalReached ? theme.colors.success : theme.colors.primary}
-            style={styles.progressBar}
+            color={data.isGoalReached ? colors.success : colors.primary}
+            style={{ marginVertical: theme.spacing.md }}
           />
 
-          <View style={styles.goalStatsRow}>
+          <View style={[styles.goalStatsRow, { marginTop: theme.spacing.sm }]}>
             <View style={styles.goalStat}>
               <Typography variant="caption" color="foregroundMuted">
                 New Learned
@@ -118,24 +130,24 @@ export default function TodayScreen() {
 
       {/* Daily Word Card (Section 14: Deterministic) */}
       {data?.dailyWord && (
-        <Card style={styles.card}>
+        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
           <View style={styles.rowBetween}>
             <Badge label="Daily Word" variant="hangul" />
             <TouchableOpacity
               onPress={() => speak(data.dailyWord.korean)}
               accessibilityLabel="Listen pronunciation"
-              style={styles.audioButton}
+              style={{ padding: theme.spacing.xs }}
             >
-              <Ionicons name="volume-medium" size={20} color={theme.colors.primary} />
+              <Ionicons name="volume-medium" size={22} color={colors.primary} />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.wordCenter}>
+          <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
             <Typography variant="display" weight="700" style={styles.koreanWord}>
               {data.dailyWord.korean}
             </Typography>
             {data.dailyWord.romanization ? (
-              <Typography variant="body" color="foregroundMuted" style={styles.romanization}>
+              <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
                 [{data.dailyWord.romanization}]
               </Typography>
             ) : null}
@@ -146,7 +158,7 @@ export default function TodayScreen() {
 
           {data.dailyWord.explanation ? (
             <>
-              <Divider style={styles.cardDivider} />
+              <Divider style={{ marginVertical: theme.spacing.md }} />
               <Typography variant="caption" color="foregroundMuted">
                 {data.dailyWord.explanation}
               </Typography>
@@ -157,7 +169,7 @@ export default function TodayScreen() {
 
       {/* Review Queue Summary Card */}
       {data && data.dueReviewsCount > 0 && (
-        <Card subtle style={styles.card}>
+        <Card subtle style={[styles.card, { marginBottom: theme.spacing.lg }]}>
           <View style={styles.rowBetween}>
             <View>
               <Typography variant="title">Spaced Reviews</Typography>
@@ -181,78 +193,38 @@ export default function TodayScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
-  content: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['5xl'],
-  },
+  content: {},
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing.xl,
   },
   streakBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.surfaceElevated,
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.xs,
-    borderRadius: theme.radii.full,
     borderWidth: 1,
-    borderColor: 'rgba(249, 115, 22, 0.3)',
   },
-  streakText: {
-    marginLeft: theme.spacing.xs,
-  },
-  heroCard: {
-    marginBottom: theme.spacing.lg,
-    borderColor: theme.colors.border,
-  },
-  heroHeader: {
-    marginBottom: theme.spacing.sm,
-  },
-  heroTitle: {
-    marginBottom: theme.spacing.xs,
-  },
-  heroDesc: {
-    marginBottom: theme.spacing.lg,
-  },
-  card: {
-    marginBottom: theme.spacing.lg,
-  },
+  streakText: {},
+  heroCard: {},
+  card: {},
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  progressBar: {
-    marginVertical: theme.spacing.md,
-  },
   goalStatsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: theme.spacing.sm,
   },
   goalStat: {
     alignItems: 'center',
   },
   wordCenter: {
     alignItems: 'center',
-    marginVertical: theme.spacing.md,
   },
   koreanWord: {
-    fontSize: 38,
-    marginBottom: theme.spacing.xs,
-  },
-  romanization: {
-    marginBottom: theme.spacing.xs,
-  },
-  cardDivider: {
-    marginVertical: theme.spacing.md,
-  },
-  audioButton: {
-    padding: theme.spacing.xs,
+    fontSize: 40,
+    marginBottom: 4,
   },
 });

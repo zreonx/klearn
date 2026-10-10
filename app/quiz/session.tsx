@@ -14,12 +14,13 @@ import {
   ProgressBar,
   Badge,
   Divider,
+  useTheme,
 } from '@/components/ui';
-import { theme } from '@/components/ui/theme';
 import { useQuiz } from '@/features/quiz/useQuiz';
 
 export default function QuizSessionModal() {
   const router = useRouter();
+  const { colors, theme } = useTheme();
   const {
     currentQuestion,
     currentIndex,
@@ -45,7 +46,7 @@ export default function QuizSessionModal() {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: colors.background, padding: theme.spacing.xl }]}>
         <Typography variant="body" color="foregroundMuted">
           Generating quiz questions...
         </Typography>
@@ -56,10 +57,13 @@ export default function QuizSessionModal() {
   // Quiz Results View (Section 18)
   if (result) {
     return (
-      <ScrollView style={styles.container} contentContainerStyle={styles.resultContent}>
-        <Card elevated style={styles.resultCard}>
-          <View style={styles.trophyCircle}>
-            <Ionicons name="trophy-outline" size={44} color={theme.colors.primary} />
+      <ScrollView
+        style={[styles.container, { backgroundColor: colors.background }]}
+        contentContainerStyle={[styles.resultContent, { padding: theme.spacing.lg, paddingTop: theme.spacing['3xl'], paddingBottom: theme.spacing['4xl'] }]}
+      >
+        <Card elevated style={{ padding: theme.spacing.xl, alignItems: 'center' }}>
+          <View style={[styles.trophyCircle, { backgroundColor: colors.surfaceSubtle }]}>
+            <Ionicons name="trophy-outline" size={44} color={colors.primary} />
           </View>
           <Typography variant="heading" align="center">
             Quiz Completed!
@@ -71,15 +75,21 @@ export default function QuizSessionModal() {
             {result.correctCount} of {result.totalQuestions} questions answered correctly
           </Typography>
 
-          <Divider style={styles.resultDivider} />
+          <Divider style={{ marginVertical: theme.spacing.xl }} />
 
           {result.mistakeItems.length > 0 && (
-            <View style={styles.mistakesSection}>
-              <Typography variant="title" style={styles.mistakeHeading}>
+            <View style={[styles.mistakesSection, { marginBottom: theme.spacing.xl }]}>
+              <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
                 Items to Review ({result.mistakeItems.length})
               </Typography>
               {result.mistakeItems.map((item) => (
-                <View key={item.id} style={styles.mistakeRow}>
+                <View
+                  key={item.id}
+                  style={[
+                    styles.mistakeRow,
+                    { borderBottomColor: colors.borderSubtle, paddingVertical: theme.spacing.sm },
+                  ]}
+                >
                   <View>
                     <Typography variant="bodyLarge" weight="600">
                       {item.korean}
@@ -89,7 +99,7 @@ export default function QuizSessionModal() {
                     </Typography>
                   </View>
                   <TouchableOpacity onPress={() => speak(item.korean)}>
-                    <Ionicons name="volume-medium" size={20} color={theme.colors.primary} />
+                    <Ionicons name="volume-medium" size={20} color={colors.primary} />
                   </TouchableOpacity>
                 </View>
               ))}
@@ -100,7 +110,7 @@ export default function QuizSessionModal() {
             title="Return to Dashboard"
             fullWidth
             onPress={() => router.back()}
-            style={styles.doneBtn}
+            style={{ marginTop: theme.spacing.md }}
           />
         </Card>
       </ScrollView>
@@ -109,7 +119,7 @@ export default function QuizSessionModal() {
 
   if (!currentQuestion) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: colors.background, padding: theme.spacing.xl }]}>
         <Typography variant="body" color="foregroundMuted">
           No questions available.
         </Typography>
@@ -121,32 +131,32 @@ export default function QuizSessionModal() {
   const progress = questions.length > 0 ? (currentIndex + 1) / questions.length : 1;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Top Header */}
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
+      <View style={[styles.header, { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.sm }]}>
+        <View style={[styles.headerTop, { marginBottom: theme.spacing.sm }]}>
           <Typography variant="label" color="foregroundMuted">
             Question {currentIndex + 1} of {questions.length}
           </Typography>
           <TouchableOpacity onPress={() => router.back()} accessibilityLabel="Close quiz">
-            <Ionicons name="close" size={24} color={theme.colors.foregroundMuted} />
+            <Ionicons name="close" size={24} color={colors.foregroundMuted} />
           </TouchableOpacity>
         </View>
-        <ProgressBar progress={progress} color={theme.colors.primary} />
+        <ProgressBar progress={progress} color={colors.primary} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.questionContent}>
+      <ScrollView contentContainerStyle={[styles.questionContent, { padding: theme.spacing.lg, paddingBottom: theme.spacing['4xl'] }]}>
         {/* Question Prompt */}
-        <Card elevated style={styles.promptCard}>
-          <View style={styles.promptTop}>
+        <Card elevated style={{ padding: theme.spacing.xl, marginBottom: theme.spacing.xl }}>
+          <View style={[styles.promptTop, { marginBottom: theme.spacing.md }]}>
             <Badge label="Quiz Question" variant="vocab" />
             {currentQuestion.speakText && (
               <TouchableOpacity
                 onPress={() => speak(currentQuestion.speakText!)}
                 accessibilityLabel="Listen"
-                style={styles.speakerBtn}
+                style={{ padding: theme.spacing.xs }}
               >
-                <Ionicons name="volume-medium" size={24} color={theme.colors.primary} />
+                <Ionicons name="volume-medium" size={24} color={colors.primary} />
               </TouchableOpacity>
             )}
           </View>
@@ -156,30 +166,30 @@ export default function QuizSessionModal() {
           </Typography>
 
           {currentQuestion.subPrompt && (
-            <Typography variant="body" color="foregroundMuted" align="center" style={styles.subPrompt}>
+            <Typography variant="body" color="foregroundMuted" align="center" style={{ marginTop: theme.spacing.xs }}>
               {currentQuestion.subPrompt}
             </Typography>
           )}
         </Card>
 
         {/* Options */}
-        <View style={styles.optionsList}>
+        <View style={[styles.optionsList, { gap: theme.spacing.md }]}>
           {currentQuestion.options.map((option) => {
             const isSelected = selectedOptionId === option.id;
-            let optionBg: string = theme.colors.surface;
-            let borderColor: string = theme.colors.borderSubtle;
+            let optionBg: string = colors.surface;
+            let borderColor: string = colors.borderSubtle;
 
             if (hasAnswered) {
               if (option.isCorrect) {
-                optionBg = 'rgba(16, 185, 129, 0.2)';
-                borderColor = theme.colors.success;
+                optionBg = colors.successSurface;
+                borderColor = colors.success;
               } else if (isSelected && !option.isCorrect) {
-                optionBg = 'rgba(239, 68, 68, 0.2)';
-                borderColor = theme.colors.destructive;
+                optionBg = colors.destructiveSurface;
+                borderColor = colors.destructive;
               }
             } else if (isSelected) {
-              optionBg = theme.colors.surfaceElevated;
-              borderColor = theme.colors.primary;
+              optionBg = colors.surfaceElevated;
+              borderColor = colors.primary;
             }
 
             return (
@@ -187,7 +197,12 @@ export default function QuizSessionModal() {
                 key={option.id}
                 style={[
                   styles.optionCard,
-                  { backgroundColor: optionBg, borderColor },
+                  {
+                    backgroundColor: optionBg,
+                    borderColor,
+                    borderRadius: theme.radii.lg,
+                    padding: theme.spacing.lg,
+                  },
                 ]}
                 disabled={hasAnswered}
                 onPress={() => selectOption(option.id)}
@@ -196,10 +211,10 @@ export default function QuizSessionModal() {
                   {option.label}
                 </Typography>
                 {hasAnswered && option.isCorrect && (
-                  <Ionicons name="checkmark-circle" size={22} color={theme.colors.success} />
+                  <Ionicons name="checkmark-circle" size={22} color={colors.success} />
                 )}
                 {hasAnswered && isSelected && !option.isCorrect && (
-                  <Ionicons name="close-circle" size={22} color={theme.colors.destructive} />
+                  <Ionicons name="close-circle" size={22} color={colors.destructive} />
                 )}
               </TouchableOpacity>
             );
@@ -208,7 +223,17 @@ export default function QuizSessionModal() {
       </ScrollView>
 
       {/* Footer Controls */}
-      <View style={styles.footer}>
+      <View
+        style={[
+          styles.footer,
+          {
+            backgroundColor: colors.surfaceSubtle,
+            borderTopColor: colors.borderSubtle,
+            padding: theme.spacing.lg,
+            paddingBottom: theme.spacing['3xl'],
+          },
+        ]}
+      >
         {!hasAnswered ? (
           <Button
             title="Check Answer"
@@ -231,109 +256,58 @@ export default function QuizSessionModal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.xl,
   },
-  header: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing.sm,
-  },
+  header: {},
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing.sm,
   },
-  questionContent: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['4xl'],
-  },
-  promptCard: {
-    padding: theme.spacing.xl,
-    marginBottom: theme.spacing.xl,
-  },
+  questionContent: {},
   promptTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing.md,
-  },
-  speakerBtn: {
-    padding: theme.spacing.xs,
   },
   promptTitle: {
     fontSize: 34,
-    marginVertical: theme.spacing.sm,
+    marginVertical: 8,
   },
-  subPrompt: {
-    marginTop: theme.spacing.xs,
-  },
-  optionsList: {
-    gap: theme.spacing.md,
-  },
+  optionsList: {},
   optionCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing.lg,
-    borderRadius: theme.radii.lg,
     borderWidth: 1.5,
   },
   footer: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing['3xl'],
-    backgroundColor: theme.colors.surfaceSubtle,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.borderSubtle,
   },
-  resultContent: {
-    padding: theme.spacing.lg,
-    paddingTop: theme.spacing['3xl'],
-    paddingBottom: theme.spacing['4xl'],
-  },
-  resultCard: {
-    padding: theme.spacing.xl,
-    alignItems: 'center',
-  },
+  resultContent: {},
   trophyCircle: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(56, 189, 248, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: theme.spacing.lg,
+    marginBottom: 16,
   },
   scoreText: {
     fontSize: 48,
-    marginVertical: theme.spacing.sm,
-  },
-  resultDivider: {
-    marginVertical: theme.spacing.xl,
+    marginVertical: 8,
   },
   mistakesSection: {
     width: '100%',
-    marginBottom: theme.spacing.xl,
-  },
-  mistakeHeading: {
-    marginBottom: theme.spacing.md,
   },
   mistakeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: theme.spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.borderSubtle,
-  },
-  doneBtn: {
-    marginTop: theme.spacing.md,
   },
 });

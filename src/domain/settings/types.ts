@@ -1,5 +1,7 @@
 import { APP_CONFIG, DailyGoalTarget } from '@/config';
 
+export type ThemeMode = 'system' | 'light' | 'dark';
+
 export interface ReminderSettings {
   enabled: boolean;
   hour: number;
@@ -15,6 +17,7 @@ export interface UserSettings {
   dailyGoal: DailyGoalTarget;
   reminder: ReminderSettings;
   speech: SpeechSettings;
+  themeMode: ThemeMode;
   hasCompletedOnboarding: boolean;
 }
 
@@ -30,6 +33,7 @@ export function createDefaultUserSettings(): UserSettings {
       autoPlay: false, // Explicitly false per Section 19
       rate: 0.9,
     },
+    themeMode: 'system',
     hasCompletedOnboarding: false,
   };
 }

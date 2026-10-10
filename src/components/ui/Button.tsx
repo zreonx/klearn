@@ -8,8 +8,9 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import { theme } from './theme';
+import { ThemeColors } from './theme';
 import { Typography } from './Typography';
+import { useTheme } from '@/app/providers/ThemeProvider';
 
 export interface ButtonProps extends Omit<PressableProps, 'style'> {
   title: string;
@@ -33,25 +34,27 @@ export function Button({
   style,
   ...rest
 }: ButtonProps) {
+  const { colors, theme } = useTheme();
+
   const getBackgroundColor = (pressed: boolean) => {
-    if (disabled) return theme.colors.surfaceSubtle;
+    if (disabled) return colors.surfaceSubtle;
     switch (variant) {
       case 'primary':
-        return pressed ? '#0284C7' : theme.colors.primary;
+        return pressed ? colors.primaryPressed : colors.primary;
       case 'secondary':
-        return pressed ? theme.colors.surfaceSubtle : theme.colors.surfaceElevated;
+        return pressed ? colors.surfaceSubtle : colors.surfaceElevated;
       case 'outline':
-        return pressed ? theme.colors.surface : 'transparent';
+        return pressed ? colors.surfaceSubtle : 'transparent';
       case 'ghost':
-        return pressed ? theme.colors.surface : 'transparent';
+        return pressed ? colors.surfaceSubtle : 'transparent';
       case 'destructive':
-        return pressed ? '#DC2626' : theme.colors.destructive;
+        return pressed ? colors.destructiveSurface : colors.destructive;
       default:
-        return theme.colors.primary;
+        return colors.primary;
     }
   };
 
-  const getTextColor = (): keyof typeof theme.colors => {
+  const getTextColor = (): keyof ThemeColors => {
     if (disabled) return 'foregroundSubtle';
     switch (variant) {
       case 'primary':
@@ -61,7 +64,7 @@ export function Button({
       case 'ghost':
         return 'foreground';
       case 'destructive':
-        return 'foreground';
+        return 'primaryForeground';
       default:
         return 'primaryForeground';
     }
@@ -80,15 +83,16 @@ export function Button({
         styles.base,
         sizeStyles,
         {
+          borderRadius: theme.radii.md,
           backgroundColor: getBackgroundColor(pressed),
           borderColor:
             variant === 'outline'
               ? disabled
-                ? theme.colors.borderSubtle
-                : theme.colors.border
+                ? colors.borderSubtle
+                : colors.border
               : 'transparent',
           borderWidth: variant === 'outline' ? 1 : 0,
-          opacity: disabled ? 0.6 : 1,
+          opacity: disabled ? 0.5 : 1,
           width: fullWidth ? '100%' : 'auto',
         },
         style,
@@ -99,11 +103,11 @@ export function Button({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'primary' ? theme.colors.primaryForeground : theme.colors.foreground}
+          color={variant === 'primary' ? colors.primaryForeground : colors.foreground}
         />
       ) : (
         <View style={styles.content}>
-          {icon ? <View style={styles.iconContainer}>{icon}</View> : null}
+          {icon ? <View style={[styles.iconContainer, { marginRight: theme.spacing.sm }]}>{icon}</View> : null}
           <Typography
             variant={size === 'sm' ? 'caption' : 'body'}
             weight="600"
@@ -119,7 +123,6 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: theme.radii.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -128,7 +131,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconContainer: {
-    marginRight: theme.spacing.sm,
-  },
+  iconContainer: {},
 });
