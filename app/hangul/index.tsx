@@ -85,10 +85,10 @@ export default function HangulChartScreen() {
 
           <View style={styles.headerTitleWrap}>
             <Typography variant="heading" weight="700">
-              Hangul Alphabet Chart
+              Hangul & Numbers Chart
             </Typography>
             <Typography variant="caption" color="foregroundMuted">
-              한글 자모 표 • Consonants, Vowels & Batchim
+              한글 자모 & 숫자 표 • Letters, Batchim & Counting
             </Typography>
           </View>
         </View>

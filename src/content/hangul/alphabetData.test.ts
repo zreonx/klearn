@@ -1,8 +1,8 @@
 import { HANGUL_CATEGORIES } from './alphabetData';
 
 describe('Hangul Alphabet Data', () => {
-  it('contains all 6 essential phonetic categories', () => {
-    expect(HANGUL_CATEGORIES.length).toBe(6);
+  it('contains all 8 essential phonetic and numerical categories', () => {
+    expect(HANGUL_CATEGORIES.length).toBe(8);
     const categoryIds = HANGUL_CATEGORIES.map((c) => c.id);
     expect(categoryIds).toContain('basic-consonants');
     expect(categoryIds).toContain('aspirated-consonants');
@@ -10,6 +10,8 @@ describe('Hangul Alphabet Data', () => {
     expect(categoryIds).toContain('basic-vowels');
     expect(categoryIds).toContain('compound-vowels');
     expect(categoryIds).toContain('batchim');
+    expect(categoryIds).toContain('native-numbers');
+    expect(categoryIds).toContain('sino-numbers');
   });
 
   it('ensures every character has valid korean, romanization, and audioText', () => {

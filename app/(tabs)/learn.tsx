@@ -48,7 +48,7 @@ export default function LearnScreen() {
         </Typography>
       </View>
 
-      {/* Hangul Alphabet Chart Quick Access Card */}
+      {/* Hangul & Numbers Chart Quick Access Card */}
       <Card
         elevated
         style={[styles.hangulHeroCard, { marginBottom: theme.spacing.xl }]}
@@ -60,10 +60,10 @@ export default function LearnScreen() {
               <Badge label="Interactive Chart" variant="hangul" />
             </View>
             <Typography variant="heading" weight="700">
-              Hangul Alphabet Chart
+              Hangul & Numbers Chart
             </Typography>
             <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-              Master consonants, vowels, and 7 batchim sounds with audio
+              Letters, Batchim, Native counting & Sino-Korean numbers with audio
             </Typography>
           </View>
           <View style={[styles.hangulBadgeIcon, { backgroundColor: colors.surfaceSubtle }]}>
