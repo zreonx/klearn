@@ -162,43 +162,81 @@ export default function HangulChartScreen() {
 
         {/* Simplified Number Construction Cheat-Sheet */}
         {activeCategoryData.id === 'native-numbers' && (
-          <Card elevated style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Ionicons name="sparkles" size={16} color={colors.accent} />
-              <Typography variant="label" color="accent" weight="700" style={{ marginLeft: 4 }}>
-                Simplified Rule: 1 to 99
+          <>
+            <Card elevated style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Ionicons name="sparkles" size={16} color={colors.accent} />
+                <Typography variant="label" color="accent" weight="700" style={{ marginLeft: 4 }}>
+                  Simplified Rule: 1 to 99
+                </Typography>
+              </View>
+              <Typography variant="caption" color="foreground" weight="600">
+                Combine Tens + Ones:
               </Typography>
-            </View>
-            <Typography variant="caption" color="foreground" weight="600">
-              Combine Tens + Ones:
-            </Typography>
-            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-              • 11 = 열(10) + 하나(1) = 열하나{'\n'}
-              • 25 = 스물(20) + 다섯(5) = 스물다섯{'\n'}
-              • 33 = 서른(30) + 셋(3) = 서른셋{'\n'}
-              • Counter Rule: 1, 2, 3, 4, 20 shorten before counters (한 개, 두 명, 세 권, 네 마리, 스무 살). Above 100, use Sino-Korean 백!
-            </Typography>
-          </Card>
+              <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                • 11 = 열(10) + 하나(1) = 열하나{'\n'}
+                • 25 = 스물(20) + 다섯(5) = 스물다섯{'\n'}
+                • 33 = 서른(30) + 셋(3) = 서른셋{'\n'}
+                • Counter Rule: 1, 2, 3, 4, 20 shorten before counters (한 개, 두 명, 세 권, 네 마리, 스무 살). Above 100, use Sino-Korean 백!
+              </Typography>
+            </Card>
+
+            <Card subtle style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Ionicons name="mic-outline" size={16} color={colors.primary} />
+                <Typography variant="label" color="primary" weight="700" style={{ marginLeft: 4 }}>
+                  Coda Neutralization (끝소리 규칙) in Numbers
+                </Typography>
+              </View>
+              <Typography variant="caption" color="foreground" weight="600">
+                Final consonants neutralize to unreleased stops [t̚] or [p̚]:
+              </Typography>
+              <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                • <Typography variant="caption" weight="700" color="foreground">ㅅ → [ㄷ / t̚]</Typography>: 셋(3) is pronounced [섿 / set̚], 넷(4) is [넫 / net̚], 다섯(5) is [다섣], 여섯(6) is [여섣].{'\n'}
+                • <Typography variant="caption" weight="700" color="foreground">ㅂ → [ㅂ / p̚]</Typography>: 일곱(7) and 아홉(9) lips seal shut without releasing an air puff.{'\n'}
+                • <Typography variant="caption" weight="700" color="foreground">ㄼ → [ㄹ / l]</Typography>: 여덟(8) cluster reduces to pure [여덜] before consonants or in isolation.
+              </Typography>
+            </Card>
+          </>
         )}
 
         {activeCategoryData.id === 'sino-numbers' && (
-          <Card elevated style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Ionicons name="sparkles" size={16} color={colors.accent} />
-              <Typography variant="label" color="accent" weight="700" style={{ marginLeft: 4 }}>
-                Simplified Math: Any Number in Seconds
+          <>
+            <Card elevated style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Ionicons name="sparkles" size={16} color={colors.accent} />
+                <Typography variant="label" color="accent" weight="700" style={{ marginLeft: 4 }}>
+                  Simplified Math: Any Number in Seconds
+                </Typography>
+              </View>
+              <Typography variant="caption" color="foreground" weight="600">
+                Zero exceptions, pure multiplication + addition:
               </Typography>
-            </View>
-            <Typography variant="caption" color="foreground" weight="600">
-              Zero exceptions, pure multiplication + addition:
-            </Typography>
-            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-              • 20 = 이(2) + 십(10) = 이십{'\n'}
-              • 35 = 삼(3) + 십(10) + 오(5) = 삼십오{'\n'}
-              • 2,500원 = 이천(2,000) + 오백(500) 원{'\n'}
-              • Units: 10 (십), 100 (백), 1,000 (천), 10,000 (만), 100M (억).
-            </Typography>
-          </Card>
+              <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                • 20 = 이(2) + 십(10) = 이십{'\n'}
+                • 35 = 삼(3) + 십(10) + 오(5) = 삼십오{'\n'}
+                • 2,500원 = 이천(2,000) + 오백(500) 원{'\n'}
+                • Units: 10 (십), 100 (백), 1,000 (천), 10,000 (만), 100M (억).
+              </Typography>
+            </Card>
+
+            <Card subtle style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Ionicons name="mic-outline" size={16} color={colors.primary} />
+                <Typography variant="label" color="primary" weight="700" style={{ marginLeft: 4 }}>
+                  Coda Neutralization & Liaison in Sino Numbers
+                </Typography>
+              </View>
+              <Typography variant="caption" color="foreground" weight="600">
+                Stops & smooth sound linkages:
+              </Typography>
+              <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                • <Typography variant="caption" weight="700" color="foreground">육 (6) → [k̚]</Typography>: Final ㄱ stops airflow at the velum [육].{'\n'}
+                • <Typography variant="caption" weight="700" color="foreground">십 (10) → [p̚]</Typography>: Final ㅂ seals unreleased [십]. Before vowels (11 = 십일), links as [시빌].{'\n'}
+                • <Typography variant="caption" weight="700" color="foreground">Special Month Dropping</Typography>: 6월 is written/said as <Typography variant="caption" weight="700" color="primary">유월</Typography> (not 육월), and 10월 is <Typography variant="caption" weight="700" color="primary">시월</Typography> (not 십월).
+              </Typography>
+            </Card>
+          </>
         )}
 
         {/* Character Grid */}
