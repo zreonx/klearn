@@ -786,6 +786,60 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     tags: ['phrase', 'number', 'hybrid', 'time'],
     lessonId: 'lesson-sino-numbers-time',
   },
+  {
+    id: 'voc-num-system-history',
+    type: 'phrase',
+    korean: '순우리말 vs 한자어 숫자',
+    romanization: 'sun-urimal vs hanjaeo sutja',
+    translation: 'Dual Number History: Native vs. Sino-Korean',
+    pronunciation: 'sun-u-ri-mal vs han-ja-eo sut-ja',
+    explanation: 'Historically, ancient Korea had its own native words for counting (하나, 둘, 셋). Over a millennium of trade, scholarship, and classical Chinese character (Hanja 漢字) adoption introduced the parallel Sino-Korean system (일, 이, 삼), creating modern Korean\'s dual numeral architecture.',
+    examples: [
+      {
+        korean: '한국어에는 고유어 숫자와 한자어 숫자가 있어요.',
+        romanization: 'hangugeoeneun goyueo sutjawa hanjaeo sutjaga isseoyo.',
+        translation: 'In Korean, there are Native Korean numbers and Sino-Korean numbers.',
+      },
+    ],
+    tags: ['number', 'history', 'linguistics'],
+    lessonId: 'lesson-number-systems-history',
+  },
+  {
+    id: 'voc-num-boundary-100',
+    type: 'phrase',
+    korean: '100 이상의 수: 백(百), 천(千), 만(萬)',
+    romanization: 'baek, cheon, man',
+    translation: 'The 100+ Boundary: Switching to Sino-Korean',
+    pronunciation: 'baek, cheon, man',
+    explanation: 'While ancient Native Korean had words for 100 (온 - on) and 1,000 (즈믄 - jeumeun), modern Korean retired them for daily counting. Above 99, all numbers (100 = 백, 1,000 = 천, 10,000 = 만) strictly use Sino-Korean.',
+    examples: [
+      {
+        korean: '백 살, 천 원, 만 원',
+        romanization: 'baek sal, cheon won, man won',
+        translation: '100 years old, 1,000 won, 10,000 won',
+      },
+    ],
+    tags: ['number', 'rule', 'boundary'],
+    lessonId: 'lesson-number-systems-history',
+  },
+  {
+    id: 'voc-num-summary-contrast',
+    type: 'phrase',
+    korean: '사과 세 개 vs 삼천 원',
+    romanization: 'sagwa se gae vs samcheon won',
+    translation: 'Physical Counting vs. Mathematical Measurement',
+    pronunciation: 'sa-gwa se gae vs sam-cheon won',
+    explanation: 'The cardinal rule: use Native Korean for real-world physical objects, people, age, and hours (사과 세 개). Use Sino-Korean for money, minutes, phone digits, dates, and calculations (삼천 원).',
+    examples: [
+      {
+        korean: '사과 세 개에 삼천 원이에요.',
+        romanization: 'sagwa se gaee samcheon wonieyo.',
+        translation: 'Three apples cost 3,000 won.',
+      },
+    ],
+    tags: ['number', 'contrast', 'rule'],
+    lessonId: 'lesson-number-systems-history',
+  },
   // Bonus Level: Casual Korean (반말 - Banmal)
   {
     id: 'voc-cas-annyeong',

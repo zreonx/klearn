@@ -48,32 +48,6 @@ export default function LearnScreen() {
         </Typography>
       </View>
 
-      {/* Hangul & Numbers Chart Quick Access Card */}
-      <Card
-        elevated
-        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.xl }]}
-        onPress={() => router.push('/hangul' as any)}
-      >
-        <View style={styles.hangulHeroRow}>
-          <View style={styles.hangulHeroLeft}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Badge label="Interactive Chart" variant="hangul" />
-            </View>
-            <Typography variant="heading" weight="700">
-              Hangul & Numbers Chart
-            </Typography>
-            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-              Letters, Batchim, Native counting & Sino-Korean numbers with audio
-            </Typography>
-          </View>
-          <View style={[styles.hangulBadgeIcon, { backgroundColor: colors.surfaceSubtle }]}>
-            <Typography variant="display" weight="700" color="primary" style={{ fontSize: 28 }}>
-              한
-            </Typography>
-          </View>
-        </View>
-      </Card>
-
       {curriculum?.levels.map((level) => {
         const isBonus = level.id.includes('bonus') || level.id.includes('casual');
         return (
@@ -189,25 +163,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {},
-  hangulHeroCard: {
-    padding: 16,
-  },
-  hangulHeroRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  hangulHeroLeft: {
-    flex: 1,
-    marginRight: 12,
-  },
-  hangulBadgeIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   unitHeader: {
     flexDirection: 'row',
     alignItems: 'center',
