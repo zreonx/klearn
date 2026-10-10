@@ -563,5 +563,127 @@ export const CURRICULUM_DATA: Curriculum = {
         },
       ],
     },
+
+    // Bonus Level: Casual Korean (반말 - Banmal)
+    {
+      id: 'level-casual-banmal',
+      title: 'Bonus: Casual Korean (반말)',
+      description: 'Learn how close friends, peers, and K-drama characters naturally talk without formal speech endings.',
+      order: 3,
+      units: [
+        {
+          id: 'unit-casual-essentials',
+          levelId: 'level-casual-banmal',
+          title: 'Speaking with Close Friends (반말 기초)',
+          description: 'Master informal greetings, casual reactions, dropping -요, and essential friendship slang.',
+          order: 1,
+          lessons: [
+            {
+              id: 'lesson-casual-basics',
+              unitId: 'unit-casual-essentials',
+              title: 'Casual Greetings & Reactions',
+              koreanTitle: '친구와의 인사와 반응',
+              description: 'Say hi/bye with 안녕, yes/no with 응/아니, and express thanks with 고마워.',
+              order: 1,
+              learningObjectives: [
+                'Identify when it is culturally appropriate to use Banmal (close friends, same age, younger)',
+                'Greet peers casually with 안녕, respond with 응/아니, and say thanks with 고마워',
+                'Apologize casually with 미안해 / 미안',
+              ],
+              conceptNote: {
+                summary: 'Banmal (반말, literally "half-speech") is informal Korean used between close friends, same-age peers, or to younger people.',
+                explanation: 'Never use Banmal with strangers, elders, or colleagues unless mutually agreed upon ("말 편하게 하자" = Let\'s speak casually). It strips the polite particle -요 and formal -습니다, creating immediate warmth and closeness.',
+                formalityLevel: 'casual',
+                grammarTip: '안녕하세요 → 안녕! | 감사합니다 → 고마워! | 죄송합니다 → 미안해!',
+              },
+              dialogue: {
+                title: 'Meeting a Close Friend (친구 만나기)',
+                description: 'Two best friends meeting up for lunch on the weekend.',
+                lines: [
+                  {
+                    speaker: '민수',
+                    korean: '지우야, 안녕! 진짜 오랜만이다!',
+                    translation: 'Jiwoo, hi! It\'s really been a while!',
+                    romanization: 'jiwuya, annyeong! jinjja oraenmanida!',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '안녕 민수야! 오늘 날씨 진짜 좋다.',
+                    translation: 'Hi Minsu! The weather today is really great.',
+                    romanization: 'annyeong minsuya! oneul nalssi jinjja jota.',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '밥 먹었어? 아니면 같이 먹으러 갈래?',
+                    translation: 'Did you eat? Or do you want to go eat together?',
+                    romanization: 'bap meogeosseo? animyeon gachi meogeoreo gallae?',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '응, 아직 안 먹었어. 맛있는 거 먹자!',
+                    translation: 'Yeah, I haven\'t eaten yet. Let\'s eat something delicious!',
+                    romanization: 'eung, ajik an meogeosseo. masinneun geo meokja!',
+                  },
+                ],
+              },
+              itemIds: [
+                'voc-cas-annyeong',
+                'voc-cas-eung-ani',
+                'voc-cas-gomawo',
+                'voc-cas-mian',
+              ],
+            },
+            {
+              id: 'lesson-casual-verbs-slang',
+              unitId: 'unit-casual-essentials',
+              title: 'Dropping -요 & Everyday Slang',
+              koreanTitle: '요 떼기와 일상 표현',
+              description: 'Convert polite sentences by dropping -요, use -자 for "Let\'s", and exclaim with 대박 and 진짜.',
+              order: 2,
+              prerequisites: ['lesson-casual-basics'],
+              learningObjectives: [
+                'Drop the polite ending -요 to form casual present tense verbs (뭐 해요? → 뭐 해?)',
+                'Propose activities using the casual suggestion ending -자 (가자, 먹자)',
+                'Express excitement, surprise, and agreement using natural phrases like 대박 and 진짜',
+              ],
+              conceptNote: {
+                summary: 'The simplest way to speak Banmal in the present tense is to drop "-요" from standard polite verbs (-아요/-어요).',
+                explanation: '가요 (I go) → 가! | 먹어요 (I eat) → 먹어! | 공부해요 (I study) → 공부해! To propose doing something together ("Let\'s"), add -자 to the stem: 가자! (Let\'s go!), 보자! (Let\'s see!).',
+                formalityLevel: 'casual',
+                grammarTip: '가요 → 가 (Go) | 가자 (Let\'s go) | 먹어요 → 먹어 (Eat) | 먹자 (Let\'s eat)',
+              },
+              dialogue: {
+                title: 'Watching a K-Drama Together (드라마 보기)',
+                description: 'Friends excited about an unexpected plot twist.',
+                lines: [
+                  {
+                    speaker: '지우',
+                    korean: '민수야, 이 드라마 결말 봤어? 대박이야!',
+                    translation: 'Minsu, did you see the ending of this drama? It is awesome/crazy!',
+                    romanization: 'minsuya, i deurama gyeolmal bwasseo? daebagiya!',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '진짜? 아직 안 봤어! 스포하지 마.',
+                    translation: 'For real? I haven\'t seen it yet! Don\'t spoil it.',
+                    romanization: 'jinjja? ajik an bwasseo! seupohaji ma.',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '알았어, 입 다물게! 오늘 밤에 같이 보자.',
+                    translation: 'Got it, my lips are sealed! Let\'s watch it together tonight.',
+                    romanization: 'arasseo, ip damulge! oneul bame gachi boja.',
+                  },
+                ],
+              },
+              itemIds: [
+                'voc-cas-drop-yo',
+                'voc-cas-daebak',
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
