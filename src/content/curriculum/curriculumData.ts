@@ -564,12 +564,151 @@ export const CURRICULUM_DATA: Curriculum = {
       ],
     },
 
+    // Level 3: Beginner A2
+    {
+      id: 'level-beginner-a2',
+      title: 'Level 3: Beginner A2',
+      description: 'Expand your sentences with direct objects, past tense narratives, and personal desires.',
+      order: 3,
+      units: [
+        {
+          id: 'unit-sentence-expansion',
+          levelId: 'level-beginner-a2',
+          title: 'Direct Objects: 을 / 를',
+          description: 'Construct full Subject-Object-Verb (SOV) sentences using the object marker.',
+          order: 1,
+          lessons: [
+            {
+              id: 'lesson-object-particle',
+              unitId: 'unit-sentence-expansion',
+              title: 'Object Particle 을 / 를',
+              koreanTitle: '목적격 조사 을/를',
+              description: 'Mark what you are reading, drinking, or watching (e.g., 한국어를 공부해요).',
+              order: 1,
+              learningObjectives: [
+                'Choose correctly between 을 and 를 based on final consonant presence',
+                'Assemble complete Subject-Object-Verb Korean sentences',
+              ],
+              conceptNote: {
+                summary: 'The object particle 을/를 marks the direct recipient of an action verb.',
+                explanation: 'Attach "을" to nouns ending in a consonant (밥을 먹어요, 책을 읽어요), and "를" to nouns ending in a vowel (커피를 마셔요, 사과를 사요).',
+                formalityLevel: 'polite',
+                grammarTip: '밥 + 을 = 밥을 (eat rice) | 커피 + 를 = 커피를 (drink coffee)',
+              },
+              dialogue: {
+                title: 'At the Library (도서관에서)',
+                description: 'Asking a friend what they are doing.',
+                lines: [
+                  {
+                    speaker: '민수',
+                    korean: '지우 씨, 지금 무엇을 읽어요?',
+                    translation: 'Jiwoo, what are you reading right now?',
+                    romanization: 'jiwoo ssi, jigeum mueoseul ilgeoyo?',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '저는 한국어 책을 읽어요. 민수 씨는요?',
+                    translation: 'I am reading a Korean book. What about you, Minsu?',
+                    romanization: 'jeoneun hangugeo chaegeul ilgeoyo. minsu ssineunyo?',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '저는 재미있는 한국 영화를 봐요.',
+                    translation: 'I am watching an entertaining Korean movie.',
+                    romanization: 'jeoneun jaemiinneun hanguk yeonghwareul bwayo.',
+                  },
+                ],
+              },
+              itemIds: [
+                'gram-part-eul-reul',
+                'voc-verb-see',
+                'voc-verb-read',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'unit-past-and-desires',
+          levelId: 'level-beginner-a2',
+          title: 'Past Tense & Desires',
+          description: 'Talk about what you did yesterday (-았/었어요) and what you want to do (-고 싶어요).',
+          order: 2,
+          lessons: [
+            {
+              id: 'lesson-past-tense',
+              unitId: 'unit-past-and-desires',
+              title: 'Past Tense: -았어요 / -었어요',
+              koreanTitle: '과거 시제 -았/었어요',
+              description: 'Describe past events using yesterday (어제) and conjugated past verbs.',
+              order: 1,
+              prerequisites: ['lesson-object-particle'],
+              learningObjectives: [
+                'Conjugate verbs into past tense (-았어요, -었어요, 했어요)',
+                'Use time words like 어제 (yesterday) to describe past actions',
+              ],
+              conceptNote: {
+                summary: 'Korean past tense attaches -았어요 or -었어요 to the verb stem.',
+                explanation: 'If the stem ends in ㅏ or ㅗ, add -았어요 (가다 → 갔어요, 보다 → 봤어요). For other vowels, add -었어요 (먹다 → 먹었어요). 하다 becomes 했어요 (공부했어요).',
+                formalityLevel: 'polite',
+                grammarTip: '가다 → 갔어요 | 먹다 → 먹었어요 | 하다 → 했어요',
+              },
+              dialogue: {
+                title: 'Weekend Catch-up (주말 이야기)',
+                description: 'Talking about what you did over the weekend.',
+                lines: [
+                  {
+                    speaker: '지우',
+                    korean: '민수 씨, 어제 뭐 했어요?',
+                    translation: 'Minsu, what did you do yesterday?',
+                    romanization: 'minsu ssi, eoje mwo haesseoyo?',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '어제 친구를 만났어요. 같이 맛있는 점심을 먹었어요.',
+                    translation: 'I met a friend yesterday. We ate a delicious lunch together.',
+                    romanization: 'eoje chingureul mannasseoyo. gachi masinneun jeomsimeul meogeosseoyo.',
+                  },
+                ],
+              },
+              itemIds: [
+                'gram-verb-past',
+                'voc-time-yesterday',
+                'voc-time-tomorrow',
+              ],
+            },
+            {
+              id: 'lesson-desires-want',
+              unitId: 'unit-past-and-desires',
+              title: 'Expressing Desires: -고 싶어요',
+              koreanTitle: '희망 표현 -고 싶어요',
+              description: 'Say "I want to go" (가고 싶어요) or "I want to eat" (먹고 싶어요).',
+              order: 2,
+              prerequisites: ['lesson-past-tense'],
+              learningObjectives: [
+                'Express personal wants and wishes using -고 싶어요',
+                'Ask others what they want to do',
+              ],
+              conceptNote: {
+                summary: '-고 싶어요 attaches directly to any verb stem to mean "I want to [do verb]".',
+                explanation: 'Unlike present/past tense, -고 싶어요 has NO vowel harmony exceptions: simply drop "다" and add -고 싶어요 (가다 → 가고 싶어요, 먹다 → 먹고 싶어요).',
+                formalityLevel: 'polite',
+                grammarTip: '가다 + -고 싶어요 = 가고 싶어요 (I want to go)',
+              },
+              itemIds: [
+                'gram-pattern-want',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
     // Bonus Level: Casual Korean (반말 - Banmal)
     {
       id: 'level-casual-banmal',
       title: 'Bonus: Casual Korean (반말)',
       description: 'Learn how close friends, peers, and K-drama characters naturally talk without formal speech endings.',
-      order: 3,
+      order: 4,
       units: [
         {
           id: 'unit-casual-essentials',

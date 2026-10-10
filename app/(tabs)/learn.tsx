@@ -83,7 +83,7 @@ export default function LearnScreen() {
                 <Badge label="Bonus Track" variant="vocab" style={{ marginRight: theme.spacing.xs }} />
               ) : null}
               <Typography variant="title" color="primary" weight="700">
-                {isBonus ? level.title : `Level ${level.order}: ${level.title}`}
+                {level.title}
               </Typography>
             </View>
             <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
