@@ -28,4 +28,16 @@ describe('ContentCatalog', () => {
 
     expect(word1.id).toBe(word2.id);
   });
+
+  it('provides deterministic daily phrase of type phrase for the same date', () => {
+    const date1 = new Date(2026, 9, 10, 8, 0, 0);
+    const date2 = new Date(2026, 9, 10, 21, 30, 0);
+
+    const phrase1 = contentCatalog.getDailyPhrase(date1);
+    const phrase2 = contentCatalog.getDailyPhrase(date2);
+
+    expect(phrase1.id).toBe(phrase2.id);
+    expect(phrase1.type).toBe('phrase');
+  });
 });
+

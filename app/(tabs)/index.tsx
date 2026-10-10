@@ -137,7 +137,7 @@ export default function TodayScreen() {
         </Card>
       )}
 
-      {/* Daily Word Card (Section 14: Deterministic) */}
+      {/* Daily Word Card */}
       {data?.dailyWord && (
         <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
           <View style={styles.rowBetween}>
@@ -170,6 +170,45 @@ export default function TodayScreen() {
               <Divider style={{ marginVertical: theme.spacing.md }} />
               <Typography variant="caption" color="foregroundMuted">
                 {data.dailyWord.explanation}
+              </Typography>
+            </>
+          ) : null}
+        </Card>
+      )}
+
+      {/* Daily Phrase Card */}
+      {data?.dailyPhrase && (
+        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
+          <View style={styles.rowBetween}>
+            <Badge label="Daily Phrase" variant="vocab" />
+            <TouchableOpacity
+              onPress={() => speak(data.dailyPhrase.korean)}
+              accessibilityLabel="Listen pronunciation"
+              style={{ padding: theme.spacing.xs }}
+            >
+              <Ionicons name="volume-medium" size={22} color={colors.primary} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
+            <Typography variant="heading" weight="700" align="center" style={{ fontSize: 26, marginBottom: 4 }}>
+              {data.dailyPhrase.korean}
+            </Typography>
+            {data.dailyPhrase.romanization ? (
+              <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
+                [{data.dailyPhrase.romanization}]
+              </Typography>
+            ) : null}
+            <Typography variant="title" color="foreground" align="center">
+              {data.dailyPhrase.translation}
+            </Typography>
+          </View>
+
+          {data.dailyPhrase.explanation ? (
+            <>
+              <Divider style={{ marginVertical: theme.spacing.md }} />
+              <Typography variant="caption" color="foregroundMuted">
+                {data.dailyPhrase.explanation}
               </Typography>
             </>
           ) : null}
