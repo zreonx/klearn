@@ -196,6 +196,14 @@ export default function HangulChartScreen() {
                 • <Typography variant="caption" weight="700" color="foreground">ㅂ → [ㅂ / p̚]</Typography>: 일곱(7) and 아홉(9) lips seal shut without releasing an air puff.{'\n'}
                 • <Typography variant="caption" weight="700" color="foreground">ㄼ → [ㄹ / l]</Typography>: 여덟(8) cluster reduces to pure [여덜] before consonants or in isolation.
               </Typography>
+              <View style={{ marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: colors.borderSubtle }}>
+                <Typography variant="caption" color="accent" weight="700">
+                  Native vs. Sino Quick Distinction:
+                </Typography>
+                <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                  Use Native (하나, 둘, 셋...) for physical objects, people, age & hours. For money, minutes, math & 100+, switch to Sino-Korean! Master this interactively in Learn Level 2 Unit 5.
+                </Typography>
+              </View>
             </Card>
           </>
         )}
@@ -235,6 +243,14 @@ export default function HangulChartScreen() {
                 • <Typography variant="caption" weight="700" color="foreground">십 (10) → [p̚]</Typography>: Final ㅂ seals unreleased [십]. Before vowels (11 = 십일), links as [시빌].{'\n'}
                 • <Typography variant="caption" weight="700" color="foreground">Special Month Dropping</Typography>: 6월 is written/said as <Typography variant="caption" weight="700" color="primary">유월</Typography> (not 육월), and 10월 is <Typography variant="caption" weight="700" color="primary">시월</Typography> (not 십월).
               </Typography>
+              <View style={{ marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: colors.borderSubtle }}>
+                <Typography variant="caption" color="accent" weight="700">
+                  Hybrid Time Example:
+                </Typography>
+                <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                  Telling time combines both: Native for Hours (<Typography variant="caption" weight="700" color="foreground">세 시</Typography> = 3:00) + Sino for Minutes (<Typography variant="caption" weight="700" color="foreground">삼십 분</Typography> = 30 min) → <Typography variant="caption" weight="700" color="primary">세 시 삼십 분 (3:30)</Typography>.
+                </Typography>
+              </View>
             </Card>
           </>
         )}
