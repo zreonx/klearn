@@ -39,7 +39,8 @@ export function useMe() {
     setSettings(nextSettings);
 
     if (updated.reminder) {
-      await notificationService.scheduleDailyReminder(nextSettings.reminder);
+      const todaySentence = services.catalog.getDailySentence(new Date());
+      await notificationService.scheduleDailyReminder(nextSettings.reminder, todaySentence?.korean);
     }
   };
 

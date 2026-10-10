@@ -69,6 +69,27 @@ export class ContentCatalog {
     const index = Math.abs(hash) % pool.length;
     return pool[index];
   }
+
+  /**
+   * Deterministically returns the Daily Practical Sentence for a specific date.
+   * Prioritizes communicative full sentences and authentic expressions.
+   */
+  getDailySentence(date: Date = new Date()): LearningItem {
+    const sentenceList = VOCABULARY_ITEMS.filter(
+      (item) => item.tags?.includes('sentence') || (item.type === 'phrase' && item.korean.length >= 6)
+    );
+    const pool = sentenceList.length > 0 ? sentenceList : VOCABULARY_ITEMS;
+
+    const dateKey = `sentence-${format(date, 'yyyy-MM-dd')}`;
+    let hash = 0;
+    for (let i = 0; i < dateKey.length; i++) {
+      hash = (hash << 5) - hash + dateKey.charCodeAt(i);
+      hash |= 0;
+    }
+
+    const index = Math.abs(hash) % pool.length;
+    return pool[index];
+  }
 }
 
 export const contentCatalog = new ContentCatalog();

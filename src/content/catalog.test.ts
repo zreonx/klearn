@@ -39,5 +39,17 @@ describe('ContentCatalog', () => {
     expect(phrase1.id).toBe(phrase2.id);
     expect(phrase1.type).toBe('phrase');
   });
+
+  it('provides deterministic daily sentence for the same date', () => {
+    const date1 = new Date(2026, 9, 10, 8, 0, 0);
+    const date2 = new Date(2026, 9, 10, 21, 30, 0);
+
+    const sent1 = contentCatalog.getDailySentence(date1);
+    const sent2 = contentCatalog.getDailySentence(date2);
+
+    expect(sent1.id).toBe(sent2.id);
+    expect(sent1.korean.length).toBeGreaterThan(4);
+  });
 });
+
 

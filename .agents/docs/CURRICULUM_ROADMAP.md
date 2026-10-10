@@ -88,8 +88,20 @@ Curriculum
 
 | Phase | Target Scope | Key Deliverables |
 |---|---|---|
-| **Phase 1** *(Current)* | Domain model upgrade & Foundation catalog expansion | Extended `Lesson` interface (`conceptNote`, `learningObjectives`, `formalityLevel`), Batchim & Beginner A1 items, Level 1 & 2 curriculum catalog. |
-| **Phase 2** | UI enhancements on Lesson Detail | Redesigned Lesson Overview in `app/learn/[lessonId].tsx` presenting concept notes and grammar breakdown before card drills. |
-| **Phase 3** | Prerequisite tracking & sequential unlocking | Lesson locking mechanism preventing jumping ahead until prerequisites are satisfied. |
-| **Phase 4** | Multimodal practice (Listening, Grammar Assembly) | Quiz engine expansion to support sentence assembly and particle placement. |
+| **Phase 1** *(Completed)* | Domain model upgrade & Foundation catalog expansion | Extended `Lesson` interface (`conceptNote`, `learningObjectives`, `formalityLevel`), Batchim & Beginner A1 items, Level 1 & 2 curriculum catalog. |
+| **Phase 2** *(Completed)* | Interactive Hangul Chart & Audio Reference | Interactive 6-category Hangul chart with TTS audio, Batchim pronunciation values, IPA, and details modal. |
+| **Phase 3** *(Current)* | Curriculum Expansion & Contextual Examples | Added expanded greeting variants, polite gratitude, dining & etiquette unit, daily sentence notifications, and richer example dialogues. |
+| **Phase 4** | Multimodal practice (Listening, Grammar Assembly) | Quiz engine expansion to support sentence assembly, listening discrimination questions, and particle placement. |
 | **Phase 5** | Graded Reading & Conversations | Short dialogues and authentic micro-scenarios connecting learned grammar and vocabulary in context. |
+| **Phase 6** | Syllable Builder Playground & Forecast Analytics | Interactive Hangul syllable builder (CV/CVC) and SRS retention forecast charts on Me tab. |
+
+---
+
+## 5. Architectural Improvements Backlog
+
+1. **Hangul Syllable Builder Playground**: Interactive 2-part and 3-part (CV/CVC with 받침) syllable construction tool with dynamic glyph rendering and instant audio.
+2. **Audio Listening Discrimination Quiz Engine**: Sound-first question formats testing acoustic discrimination between plain, aspirated, and tense Korean consonants.
+3. **Dialogue & Roleplay Line-by-Line Reader**: Audio playback with speaker turns, romanization toggles, and contextual culture notes.
+4. **SRS Review Forecast & Mastery Distribution (Me Tab)**: Visual retention charts showing card distribution (New, Learning, Review, Mastered) and 7-day due forecast.
+5. **Bookmark / Starred Tough Items Deck**: Personal on-demand review deck for tricky items.
+6. **Haptic Feedback Integration**: Subtle haptic pulses on card reveals and quiz answers.

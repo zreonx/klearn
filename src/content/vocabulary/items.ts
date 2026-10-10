@@ -68,6 +68,13 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     translation: 'Goodbye (to someone leaving)',
     pronunciation: 'an-nyeong-hi ga-se-yo',
     explanation: 'Said to someone who is departing (literally "go in peace").',
+    examples: [
+      {
+        korean: '안녕히 가세요, 내일 또 봬요!',
+        romanization: 'annyeonghi gaseyo, naeil tto bwaeyo!',
+        translation: 'Goodbye, see you again tomorrow!',
+      },
+    ],
     tags: ['greeting', 'parting'],
     lessonId: 'lesson-partings',
   },
@@ -76,10 +83,54 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     type: 'phrase',
     korean: '만나서 반갑습니다',
     romanization: 'mannaseo bangapsumnida',
-    translation: 'Nice to meet you',
+    translation: 'Nice to meet you (Formal Polite)',
     pronunciation: 'man-na-seo bang-ap-seum-ni-da',
-    explanation: 'Polite expression said upon meeting someone for the first time.',
+    explanation: 'Standard formal polite expression said upon meeting someone for the first time.',
+    examples: [
+      {
+        korean: '처음 뵙겠습니다, 만나서 반갑습니다.',
+        romanization: 'cheoeum boepgetseumnida, mannaseo bangapsumnida.',
+        translation: 'Pleased to meet you for the first time, nice to meet you.',
+      },
+    ],
     tags: ['phrase', 'greeting', 'polite'],
+    lessonId: 'lesson-greetings',
+  },
+  {
+    id: 'voc-phrase-how-are-you',
+    type: 'phrase',
+    korean: '잘 지내셨어요?',
+    romanization: 'jal jinaesyeosseoyo?',
+    translation: 'Have you been doing well? / How have you been?',
+    pronunciation: 'jal ji-nae-syeo-sseo-yo',
+    explanation: 'Polite greeting asked when reuniting with an acquaintance after some time.',
+    examples: [
+      {
+        korean: '오랜만이에요, 그동안 잘 지내셨어요?',
+        romanization: 'oraenmanieyo, geudong-an jal jinaesyeosseoyo?',
+        translation: 'Long time no see, have you been doing well all this time?',
+      },
+    ],
+    tags: ['phrase', 'greeting', 'polite'],
+    lessonId: 'lesson-greetings',
+  },
+  {
+    id: 'voc-phrase-good-night',
+    type: 'phrase',
+    korean: '안녕히 주무세요',
+    romanization: 'annyeonghi jumuseyo',
+    translation: 'Good night (Honorific polite to elders/parents)',
+    pronunciation: 'an-nyeong-hi ju-mu-se-yo',
+    explanation: 'Highest politeness greeting wishing someone a peaceful night of sleep.',
+    examples: [
+      {
+        korean: '어머니, 아버지, 안녕히 주무세요.',
+        romanization: 'eomeoni, abeoji, annyeonghi jumuseyo.',
+        translation: 'Mother, father, good night (sleep peacefully).',
+      },
+    ],
+    tags: ['phrase', 'greeting', 'honorific'],
+    lessonId: 'lesson-partings',
   },
   {
     id: 'voc-phrase-cheers',
@@ -88,25 +139,49 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     romanization: 'hwaiting!',
     translation: 'Cheer up! / You can do it! / Fighting!',
     explanation: 'Universal Korean encouragement phrase used before an exam, match, or challenging task.',
+    examples: [
+      {
+        korean: '오늘 시험 화이팅하세요!',
+        romanization: 'oneul siheom hwaitinghaseyo!',
+        translation: 'Good luck / do your best on today\'s exam!',
+      },
+    ],
     tags: ['phrase', 'daily'],
+    lessonId: 'lesson-dining-etiquette',
   },
   {
     id: 'voc-phrase-delicious',
     type: 'phrase',
     korean: '잘 먹겠습니다',
     romanization: 'jal meokgetseumnida',
-    translation: 'Thank you for the meal (Before eating)',
+    translation: 'Thank you for the meal (Said before eating)',
     explanation: 'Said politely before eating a meal, literally meaning "I will eat well".',
+    examples: [
+      {
+        korean: '맛있겠네요! 잘 먹겠습니다.',
+        romanization: 'masitgenneyo! jal meokgetseumnida.',
+        translation: 'This looks delicious! Thank you for the meal.',
+      },
+    ],
     tags: ['phrase', 'culture', 'polite'],
+    lessonId: 'lesson-dining-etiquette',
   },
   {
     id: 'voc-phrase-finish-meal',
     type: 'phrase',
     korean: '잘 먹었습니다',
     romanization: 'jal meogeotseumnida',
-    translation: 'Thank you for the meal (After eating)',
+    translation: 'Thank you for the meal (Said after eating)',
     explanation: 'Said to the cook or host after finishing a meal.',
+    examples: [
+      {
+        korean: '정말 맛있었어요. 잘 먹었습니다!',
+        romanization: 'jeongmal masisseosseoyo. jal meogeotseumnida!',
+        translation: 'It was truly delicious. Thank you for the meal!',
+      },
+    ],
     tags: ['phrase', 'culture', 'polite'],
+    lessonId: 'lesson-dining-etiquette',
   },
   {
     id: 'voc-phrase-excuse',
@@ -115,7 +190,15 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     romanization: 'sillyehamnida',
     translation: 'Excuse me',
     explanation: 'Used when passing through a crowd, interrupting someone, or asking for assistance.',
+    examples: [
+      {
+        korean: '실례합니다, 길 좀 여쭤볼게요.',
+        romanization: 'sillyehamnida, gil jom yeojjwobolgeyo.',
+        translation: 'Excuse me, could I ask you for directions?',
+      },
+    ],
     tags: ['phrase', 'polite'],
+    lessonId: 'lesson-dining-etiquette',
   },
   {
     id: 'voc-phrase-wait',
@@ -124,7 +207,15 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     romanization: 'jamsimanyo',
     translation: 'Just a moment, please',
     explanation: 'Polite way to ask someone to wait briefly or excuse yourself through a subway/door.',
+    examples: [
+      {
+        korean: '잠시만요, 먼저 내릴게요.',
+        romanization: 'jamsimanyo, meonjeo naerilgeyo.',
+        translation: 'Just a moment, please, I will get off first.',
+      },
+    ],
     tags: ['phrase', 'daily', 'polite'],
+    lessonId: 'lesson-dining-etiquette',
   },
 
   // Everyday words
@@ -387,5 +478,167 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     explanation: 'Marks the specific subject of the sentence or the target of "있어요/없어요". Use "이" after a consonant and "가" after a vowel.',
     tags: ['grammar', 'particle', 'subject'],
     lessonId: 'lesson-existence',
+  },
+
+  // Level 2: Daily Action Verbs (Unit 4)
+  {
+    id: 'gram-verb-present-ending',
+    type: 'grammar',
+    korean: '-아요 / -어요',
+    romanization: '-ayo / -eoyo',
+    translation: 'Polite Present Tense Verb Ending',
+    explanation: 'Standard polite ending for verbs. Attach -아요 when the verb stem\'s last vowel is ㅏ or ㅗ (like 가다 -> 가요). Attach -어요 for all other vowels (like 먹다 -> 먹어요). Verbs ending in 하다 become 해요.',
+    examples: [
+      {
+        korean: '지금 학교에 가요.',
+        romanization: 'jigeum hakgyo-e gayo.',
+        translation: 'I am going to school now.',
+      },
+      {
+        korean: '맛있게 먹어요.',
+        romanization: 'masitge meogeoyo.',
+        translation: 'I eat deliciously / I am eating well.',
+      },
+    ],
+    tags: ['grammar', 'verb', 'conjugation'],
+    lessonId: 'lesson-daily-actions',
+  },
+  {
+    id: 'voc-verb-go',
+    type: 'vocabulary',
+    korean: '가다 (가요)',
+    romanization: 'gada (gayo)',
+    translation: 'To go (I go / am going)',
+    explanation: 'Basic motion verb.',
+    examples: [
+      {
+        korean: '집에 가요.',
+        romanization: 'jibe gayo.',
+        translation: 'I am going home.',
+      },
+    ],
+    tags: ['verb', 'action'],
+    lessonId: 'lesson-daily-actions',
+  },
+  {
+    id: 'voc-verb-eat',
+    type: 'vocabulary',
+    korean: '먹다 (먹어요)',
+    romanization: 'meokda (meogeoyo)',
+    translation: 'To eat (I eat / am eating)',
+    explanation: 'Essential daily verb.',
+    examples: [
+      {
+        korean: '밥을 먹어요.',
+        romanization: 'babeul meogeoyo.',
+        translation: 'I eat a meal / rice.',
+      },
+    ],
+    tags: ['verb', 'action'],
+    lessonId: 'lesson-daily-actions',
+  },
+  {
+    id: 'voc-verb-drink',
+    type: 'vocabulary',
+    korean: '마시다 (마셔요)',
+    romanization: 'masida (masyeoyo)',
+    translation: 'To drink (I drink / am drinking)',
+    explanation: 'Action verb for liquids.',
+    examples: [
+      {
+        korean: '시원한 물을 마셔요.',
+        romanization: 'siwonhan mureul masyeoyo.',
+        translation: 'I drink cool water.',
+      },
+    ],
+    tags: ['verb', 'action'],
+    lessonId: 'lesson-daily-actions',
+  },
+  {
+    id: 'voc-verb-study',
+    type: 'vocabulary',
+    korean: '공부하다 (공부해요)',
+    romanization: 'gongbuhada (gongbuhaeyo)',
+    translation: 'To study (I study / am studying)',
+    explanation: 'Compound verb with 하다.',
+    examples: [
+      {
+        korean: '한국어를 공부해요.',
+        romanization: 'hangugeo-reul gongbuhaeyo.',
+        translation: 'I study Korean.',
+      },
+    ],
+    tags: ['verb', 'action'],
+    lessonId: 'lesson-daily-actions',
+  },
+
+  // Practical Everyday Sentences
+  {
+    id: 'voc-sent-today-good',
+    type: 'phrase',
+    korean: '오늘도 좋은 하루 보내세요!',
+    romanization: 'oneuldo joeun haru bonaeseyo!',
+    translation: 'Have a wonderful day today as well!',
+    pronunciation: 'o-neul-do jo-eun ha-ru bo-nae-se-yo',
+    explanation: 'Warm daily morning wish commonly said to colleagues, friends, or family.',
+    examples: [
+      {
+        korean: '화이팅하시고 오늘도 좋은 하루 보내세요!',
+        romanization: 'hwaitinghasigo oneuldo joeun haru bonaeseyo!',
+        translation: 'Do your best and have a wonderful day today as well!',
+      },
+    ],
+    tags: ['phrase', 'daily', 'sentence'],
+  },
+  {
+    id: 'voc-sent-korean-fun',
+    type: 'phrase',
+    korean: '한국어 공부가 정말 재미있어요.',
+    romanization: 'hangugeo gongbuga jeongmal jaemiisseoyo.',
+    translation: 'Studying Korean is really fun.',
+    pronunciation: 'han-gu-geo gong-bu-ga jeong-mal jae-mi-i-sseo-yo',
+    explanation: 'A natural sentence expressing enjoyment in learning Korean.',
+    examples: [
+      {
+        korean: '매일 배우니까 한국어 공부가 정말 재미있어요.',
+        romanization: 'maeil baeunikka hangugeo gongbuga jeongmal jaemiisseoyo.',
+        translation: 'Because I learn every day, studying Korean is really fun.',
+      },
+    ],
+    tags: ['phrase', 'daily', 'sentence'],
+  },
+  {
+    id: 'voc-sent-where-is',
+    type: 'phrase',
+    korean: '화장실이 어디에 있어요?',
+    romanization: 'hwajangsiri eodie isseoyo?',
+    translation: 'Where is the restroom?',
+    pronunciation: 'hwa-jang-si-ri eo-di-e i-sseo-yo',
+    explanation: 'Essential practical travel and daily sentence combining location and existence.',
+    examples: [
+      {
+        korean: '실례합니다, 화장실이 어디에 있어요?',
+        romanization: 'sillyehamnida, hwajangsiri eodie isseoyo?',
+        translation: 'Excuse me, where is the restroom?',
+      },
+    ],
+    tags: ['phrase', 'daily', 'sentence', 'travel'],
+  },
+  {
+    id: 'voc-sent-how-much',
+    type: 'phrase',
+    korean: '이거 얼마예요?',
+    romanization: 'igeo eolmayeyo?',
+    translation: 'How much is this?',
+    pronunciation: 'i-geo eol-ma-ye-yo',
+    explanation: 'High-frequency question in Korean markets, cafes, and shops.',
+    examples: [
+      {
+        korean: '선생님, 이거 얼마예요?',
+        romanization: 'seonsaengnim, igeo eolmayeyo?',
+        translation: 'Excuse me, how much is this?',
+      },
+    ],
+    tags: ['phrase', 'daily', 'sentence', 'shopping'],
   },
 ];

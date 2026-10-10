@@ -215,6 +215,45 @@ export default function TodayScreen() {
         </Card>
       )}
 
+      {/* Daily Practical Sentence Card */}
+      {data?.dailySentence && (
+        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
+          <View style={styles.rowBetween}>
+            <Badge label="Daily Sentence" variant="hangul" />
+            <TouchableOpacity
+              onPress={() => speak(data.dailySentence.korean)}
+              accessibilityLabel="Listen pronunciation"
+              style={{ padding: theme.spacing.xs }}
+            >
+              <Ionicons name="volume-medium" size={22} color={colors.primary} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
+            <Typography variant="heading" weight="700" align="center" style={{ fontSize: 22, lineHeight: 30, marginBottom: 4 }}>
+              {data.dailySentence.korean}
+            </Typography>
+            {data.dailySentence.romanization ? (
+              <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
+                [{data.dailySentence.romanization}]
+              </Typography>
+            ) : null}
+            <Typography variant="title" color="foreground" align="center">
+              {data.dailySentence.translation}
+            </Typography>
+          </View>
+
+          {data.dailySentence.explanation ? (
+            <>
+              <Divider style={{ marginVertical: theme.spacing.md }} />
+              <Typography variant="caption" color="foregroundMuted">
+                {data.dailySentence.explanation}
+              </Typography>
+            </>
+          ) : null}
+        </Card>
+      )}
+
       {/* Review Queue Summary Card */}
       {data && data.dueReviewsCount > 0 && (
         <Card subtle style={[styles.card, { marginBottom: theme.spacing.lg }]}>

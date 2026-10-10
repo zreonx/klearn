@@ -21,6 +21,7 @@ export interface RecommendedAction {
 export interface TodayDashboardData {
   dailyWord: LearningItem;
   dailyPhrase: LearningItem;
+  dailySentence: LearningItem;
   dueReviewsCount: number;
   newItemsCount: number;
   reviewsCompletedToday: number;
@@ -39,6 +40,7 @@ export class DashboardUseCases {
   async getTodayDashboard(now: Date = new Date()): Promise<TodayDashboardData> {
     const dailyWord = this.services.catalog.getDailyWord(now);
     const dailyPhrase = this.services.catalog.getDailyPhrase(now);
+    const dailySentence = this.services.catalog.getDailySentence(now);
     const dueReviews = await this.services.reviewRepo.getDueReviews(now);
     const dueReviewsCount = dueReviews.length;
 
@@ -115,6 +117,7 @@ export class DashboardUseCases {
     return {
       dailyWord,
       dailyPhrase,
+      dailySentence,
       dueReviewsCount,
       newItemsCount: activity.newItemsLearnedCount,
       reviewsCompletedToday: activity.reviewsCompletedCount,

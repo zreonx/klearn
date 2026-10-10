@@ -59,7 +59,7 @@ export class NotificationService {
     }
   }
 
-  async scheduleDailyReminder(settings: ReminderSettings): Promise<void> {
+  async scheduleDailyReminder(settings: ReminderSettings, dailySentenceKorean?: string): Promise<void> {
     const notifications = getNotifications();
     if (!notifications) {
       logger.info('Daily reminder simulated (local notifications disabled in Expo Go Android / Web)');
@@ -74,10 +74,14 @@ export class NotificationService {
       const hasPermission = await this.requestPermissions();
       if (!hasPermission) return;
 
+      const notificationBody = dailySentenceKorean
+        ? `Today's Korean: "${dailySentenceKorean}" — Tap to practice and keep your streak alive!`
+        : 'Keep your streak alive. Review due words and practice today!';
+
       await notifications.scheduleNotificationAsync({
         content: {
-          title: 'Time for Korean! 🇰🇷',
-          body: 'Keep your streak alive. Review due words and learn today.',
+          title: 'Daily Korean Sentence 🇰🇷',
+          body: notificationBody,
           sound: true,
         },
         trigger: {
@@ -86,9 +90,30 @@ export class NotificationService {
           minute: settings.minute,
         },
       });
-      logger.info(`Scheduled daily reminder for ${settings.hour}:${settings.minute}`);
+      logger.info(`Scheduled daily sentence notification for ${settings.hour}:${settings.minute}`);
     } catch (err) {
       logger.error('Failed to schedule daily reminder', err);
+    }
+  }
+
+  async sendInstantSentenceNotification(sentenceKorean: string, translation: string): Promise<void> {
+    const notifications = getNotifications();
+    if (!notifications) return;
+
+    try {
+      const hasPermission = await this.requestPermissions();
+      if (!hasPermission) return;
+
+      await notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Today\'s Korean Sentence 🇰🇷',
+          body: `${sentenceKorean} — ${translation}`,
+          sound: true,
+        },
+        trigger: null, // triggers immediately
+      });
+    } catch (err) {
+      logger.error('Failed to send immediate notification', err);
     }
   }
 

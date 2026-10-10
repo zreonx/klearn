@@ -270,10 +270,10 @@ export default function MeScreen() {
         <View style={styles.rowBetween}>
           <View style={styles.settingTextContainer}>
             <Typography variant="body" weight="600">
-              Daily Study Reminder
+              Daily Sentence & Study Reminder
             </Typography>
             <Typography variant="caption" color="foregroundMuted">
-              Receive a quiet local notification every evening (8:00 PM)
+              Receive a quiet local notification with today's Korean sentence every evening (8:00 PM)
             </Typography>
           </View>
           <Switch
