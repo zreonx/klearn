@@ -113,7 +113,13 @@ Scale: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64
 - **Card Padding:** 16–20pt for standard cards, 12–14pt for compact list items.
 - **Section Spacing:** 24–32pt between major distinct sections.
 - **Element Spacing:** 8–12pt between related items (title and description, icon and label).
-- **Safe Area Insets:** Always respect top status bar and bottom home indicator insets.
+- **Safe Area Insets & System Bars:**
+  - Always handle dynamic system insets (status bars, camera notches/cutouts, gesture indicators, and Android 3-button navigation).
+  - Never use hardcoded device heights or arbitrary fixed top/bottom coordinates (`top: 40`, `bottom: 0`).
+  - Lift bottom navigation bars and pinned footers using dynamic insets: `height: 56 + bottomInset`, `paddingBottom: bottomInset`.
+  - Ensure tab screens suppress duplicate framework headers (`headerShown: false`) and provide safe top padding (`Math.max(insets.top + 12, theme.spacing.xl)`).
+  - Pinned bottom action bars (e.g. quiz action bars, flashcard rating bars) must pad above the system navigation area with `paddingBottom: Math.max(insets.bottom, theme.spacing.lg)`.
+  - Content beneath pinned footers must have matching bottom padding so the final items are never clipped.
 - **Max Content Width:** On tablets and web viewports, cap content container width (e.g., 480–640pt) to preserve readability and prevent stretched horizontal layouts.
 
 ## 6. Surfaces, Borders, and Elevation
