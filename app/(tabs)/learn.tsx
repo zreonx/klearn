@@ -16,13 +16,13 @@ import {
 } from '@/components/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
-import { getLessonProgress, isLessonCompleted } from '@/domain/curriculum/types';
+import { getLessonProgress, isLessonCompleted, isLessonUnlocked } from '@/domain/curriculum/types';
 
 export default function LearnScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { curriculum, recordsMap, loading, refresh } = useLearn();
+  const { curriculum, recordsMap, allLessonsMap, loading, refresh } = useLearn();
 
   return (
     <ScrollView
@@ -69,18 +69,25 @@ export default function LearnScreen() {
               {unit.lessons.map((lesson) => {
                 const progress = getLessonProgress(lesson, recordsMap);
                 const completed = isLessonCompleted(lesson, recordsMap);
+                const unlocked = isLessonUnlocked(lesson, allLessonsMap, recordsMap);
 
                 return (
                   <Card
                     key={lesson.id}
-                    elevated
-                    style={{ marginBottom: theme.spacing.md }}
-                    onPress={() => router.push(`/learn/${lesson.id}`)}
+                    elevated={unlocked}
+                    subtle={!unlocked}
+                    style={[
+                      { marginBottom: theme.spacing.md },
+                      !unlocked && { opacity: 0.65 },
+                    ]}
+                    onPress={unlocked ? () => router.push(`/learn/${lesson.id}`) : undefined}
                   >
                     <View style={styles.lessonTopRow}>
                       <View style={[styles.lessonInfo, { marginRight: theme.spacing.md }]}>
                         <View style={styles.titleRow}>
-                          <Typography variant="title">{lesson.title}</Typography>
+                          <Typography variant="title" color={unlocked ? 'foreground' : 'foregroundMuted'}>
+                            {lesson.title}
+                          </Typography>
                           {lesson.koreanTitle ? (
                             <Typography variant="caption" color="foregroundMuted" style={{ marginLeft: theme.spacing.xs }}>
                               ({lesson.koreanTitle})
@@ -92,7 +99,14 @@ export default function LearnScreen() {
                         </Typography>
                       </View>
 
-                      {completed ? (
+                      {!unlocked ? (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surfaceSubtle, paddingHorizontal: 8, paddingVertical: 4, borderRadius: theme.radii.sm }}>
+                          <Ionicons name="lock-closed" size={14} color={colors.foregroundSubtle} />
+                          <Typography variant="caption" color="foregroundSubtle" style={{ marginLeft: 4 }}>
+                            Locked
+                          </Typography>
+                        </View>
+                      ) : completed ? (
                         <Badge label="Completed" variant="success" />
                       ) : progress > 0 ? (
                         <Badge label={`${Math.round(progress * 100)}%`} variant="vocab" />
@@ -101,17 +115,29 @@ export default function LearnScreen() {
                       )}
                     </View>
 
-                    <ProgressBar
-                      progress={progress}
-                      color={completed ? colors.success : colors.primary}
-                      style={{ marginTop: theme.spacing.md, marginBottom: theme.spacing.sm }}
-                    />
+                    {unlocked ? (
+                      <ProgressBar
+                        progress={progress}
+                        color={completed ? colors.success : colors.primary}
+                        style={{ marginTop: theme.spacing.md, marginBottom: theme.spacing.sm }}
+                      />
+                    ) : (
+                      <View style={{ marginTop: theme.spacing.md, marginBottom: theme.spacing.xs }}>
+                        <Typography variant="caption" color="foregroundSubtle">
+                          Complete previous prerequisite lessons to unlock
+                        </Typography>
+                      </View>
+                    )}
 
                     <View style={styles.lessonFooter}>
                       <Typography variant="caption" color="foregroundSubtle">
                         {lesson.itemIds.length} items
                       </Typography>
-                      <Ionicons name="chevron-forward" size={16} color={colors.foregroundSubtle} />
+                      {unlocked ? (
+                        <Ionicons name="chevron-forward" size={16} color={colors.foregroundSubtle} />
+                      ) : (
+                        <Ionicons name="lock-closed-outline" size={14} color={colors.foregroundSubtle} />
+                      )}
                     </View>
                   </Card>
                 );

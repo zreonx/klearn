@@ -35,9 +35,21 @@ export function useLearn() {
 
   const speak = (text: string) => services.speech.speak(text);
 
+  const allLessonsMap = new Map<string, Lesson>();
+  if (curriculum) {
+    for (const level of curriculum.levels) {
+      for (const unit of level.units) {
+        for (const lesson of unit.lessons) {
+          allLessonsMap.set(lesson.id, lesson);
+        }
+      }
+    }
+  }
+
   return {
     curriculum,
     recordsMap,
+    allLessonsMap,
     loading,
     refresh: loadData,
     markItemLearned,

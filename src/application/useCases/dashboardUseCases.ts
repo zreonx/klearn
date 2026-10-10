@@ -1,6 +1,6 @@
 import { AppServices } from '../services';
 import { LearningItem } from '@/domain/learning/types';
-import { Lesson, isLessonCompleted } from '@/domain/curriculum/types';
+import { Lesson, isLessonCompleted, isLessonUnlocked } from '@/domain/curriculum/types';
 import {
   calculateDailyActivityScore,
   calculateDailyGoalProgress,
@@ -51,15 +51,24 @@ export class DashboardUseCases {
     const goalProgress = calculateDailyGoalProgress(activity);
     const isGoalReached = isDailyGoalReached(activity);
 
-    // Find next uncompleted lesson in curriculum
+    // Find next uncompleted and unlocked lesson in curriculum
     const curriculum = this.services.catalog.getCurriculum();
     const recordsMap = await this.services.learningRepo.getAllAsMap();
-    let nextLesson: Lesson | undefined;
 
+    const allLessonsMap = new Map<string, Lesson>();
     for (const level of curriculum.levels) {
       for (const unit of level.units) {
         for (const lesson of unit.lessons) {
-          if (!isLessonCompleted(lesson, recordsMap)) {
+          allLessonsMap.set(lesson.id, lesson);
+        }
+      }
+    }
+
+    let nextLesson: Lesson | undefined;
+    for (const level of curriculum.levels) {
+      for (const unit of level.units) {
+        for (const lesson of unit.lessons) {
+          if (!isLessonCompleted(lesson, recordsMap) && isLessonUnlocked(lesson, allLessonsMap, recordsMap)) {
             nextLesson = lesson;
             break;
           }

@@ -54,6 +54,25 @@ export function isLessonCompleted(lesson: Lesson, recordsMap: Map<string, Learni
 }
 
 /**
+ * Checks if a lesson is unlocked.
+ * A lesson is unlocked if it has no prerequisites, or if all prerequisite lessons are completed.
+ */
+export function isLessonUnlocked(
+  lesson: Lesson,
+  allLessonsMap: Map<string, Lesson>,
+  recordsMap: Map<string, LearningRecord>
+): boolean {
+  if (!lesson.prerequisites || lesson.prerequisites.length === 0) {
+    return true;
+  }
+  return lesson.prerequisites.every((prereqId) => {
+    const prereqLesson = allLessonsMap.get(prereqId);
+    if (!prereqLesson) return true;
+    return isLessonCompleted(prereqLesson, recordsMap);
+  });
+}
+
+/**
  * Calculates percentage completion for a lesson (0 to 1).
  */
 export function getLessonProgress(lesson: Lesson, recordsMap: Map<string, LearningRecord>): number {
