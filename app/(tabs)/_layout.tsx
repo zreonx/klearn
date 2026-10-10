@@ -8,7 +8,9 @@ export default function TabsLayout() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const bottomInset = Math.max(insets.bottom, 8);
+  // Generous bottom inset calculation giving comfortable breathing room
+  // from the Android system navigation bar (3-button / gesture pill)
+  const bottomInset = Math.max(insets.bottom + 8, 20);
 
   return (
     <Tabs
@@ -18,14 +20,14 @@ export default function TabsLayout() {
           backgroundColor: colors.surfaceSubtle,
           borderTopColor: colors.borderSubtle,
           borderTopWidth: 1,
-          height: 56 + bottomInset,
+          height: 60 + bottomInset,
           paddingBottom: bottomInset,
-          paddingTop: 6,
+          paddingTop: 8,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.foregroundSubtle,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
         },
       }}
