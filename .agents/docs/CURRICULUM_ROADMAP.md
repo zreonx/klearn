@@ -90,18 +90,21 @@ Curriculum
 |---|---|---|
 | **Phase 1** *(Completed)* | Domain model upgrade & Foundation catalog expansion | Extended `Lesson` interface (`conceptNote`, `learningObjectives`, `formalityLevel`), Batchim & Beginner A1 items, Level 1 & 2 curriculum catalog. |
 | **Phase 2** *(Completed)* | Interactive Hangul Chart & Audio Reference | Interactive 6-category Hangul chart with TTS audio, Batchim pronunciation values, IPA, and details modal. |
-| **Phase 3** *(Current)* | Curriculum Expansion & Contextual Examples | Added expanded greeting variants, polite gratitude, dining & etiquette unit, daily sentence notifications, and richer example dialogues. |
-| **Phase 4** | Multimodal practice (Listening, Grammar Assembly) | Quiz engine expansion to support sentence assembly, listening discrimination questions, and particle placement. |
-| **Phase 5** | Graded Reading & Conversations | Short dialogues and authentic micro-scenarios connecting learned grammar and vocabulary in context. |
-| **Phase 6** | Syllable Builder Playground & Forecast Analytics | Interactive Hangul syllable builder (CV/CVC) and SRS retention forecast charts on Me tab. |
+| **Phase 3** *(Completed)* | Curriculum Expansion & Contextual Examples | Added expanded greeting variants, polite gratitude, dining & etiquette unit, daily sentence notifications, and richer example dialogues. |
+| **Phase 4** *(Current)* | Expanded Offline Dictionary Bank | 100+ curated high-frequency dictionary entries with parts of speech, semantic domains, and example sentences powering the Daily Word engine. |
+| **Phase 5** | Multimodal practice (Listening, Grammar Assembly) | Quiz engine expansion to support sentence assembly, listening discrimination questions, and particle placement. |
+| **Phase 6** | Graded Reading & Conversations | Short dialogues and authentic micro-scenarios connecting learned grammar and vocabulary in context. |
+| **Phase 7** | Hybrid Architecture: KrDict API + AI Tutors (DeepSeek & Google AI Studio) | Integration with National Institute of Korean Language (국립국어원 KrDict API), AI-assisted grammar explanations, and conversational practice assistants. |
 
 ---
 
 ## 5. Architectural Improvements Backlog
 
-1. **Hangul Syllable Builder Playground**: Interactive 2-part and 3-part (CV/CVC with 받침) syllable construction tool with dynamic glyph rendering and instant audio.
-2. **Audio Listening Discrimination Quiz Engine**: Sound-first question formats testing acoustic discrimination between plain, aspirated, and tense Korean consonants.
-3. **Dialogue & Roleplay Line-by-Line Reader**: Audio playback with speaker turns, romanization toggles, and contextual culture notes.
-4. **SRS Review Forecast & Mastery Distribution (Me Tab)**: Visual retention charts showing card distribution (New, Learning, Review, Mastered) and 7-day due forecast.
-5. **Bookmark / Starred Tough Items Deck**: Personal on-demand review deck for tricky items.
-6. **Haptic Feedback Integration**: Subtle haptic pulses on card reveals and quiz answers.
+1. **Hybrid Dictionary Engine (KrDict API)**: Seamless fallback architecture — operates offline with local dictionary cache, queries KrDict API when online for advanced definitions.
+2. **AI Tutor Assistant (DeepSeek & Google AI Studio)**: Interactive conversational practice, intelligent sentence parsing, contextual nuance explanations, and personalized correction.
+3. **Hangul Syllable Builder Playground**: Interactive 2-part and 3-part (CV/CVC with 받침) syllable construction tool with dynamic glyph rendering and instant audio.
+4. **Audio Listening Discrimination Quiz Engine**: Sound-first question formats testing acoustic discrimination between plain, aspirated, and tense Korean consonants.
+5. **Dialogue & Roleplay Line-by-Line Reader**: Audio playback with speaker turns, romanization toggles, and contextual culture notes.
+6. **SRS Review Forecast & Mastery Distribution (Me Tab)**: Visual retention charts showing card distribution (New, Learning, Review, Mastered) and 7-day due forecast.
+7. **Bookmark / Starred Tough Items Deck**: Personal on-demand review deck for tricky items.
+8. **Haptic Feedback Integration**: Subtle haptic pulses on card reveals and quiz answers.

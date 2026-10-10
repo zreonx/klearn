@@ -50,6 +50,16 @@ describe('ContentCatalog', () => {
     expect(sent1.id).toBe(sent2.id);
     expect(sent1.korean.length).toBeGreaterThan(4);
   });
+
+  it('exposes rich curated dictionary entries in the catalog', () => {
+    const entries = contentCatalog.getDictionaryEntries();
+    expect(entries.length).toBeGreaterThan(20);
+
+    const dailyWord = contentCatalog.getDailyWord(new Date());
+    expect(dailyWord).toBeDefined();
+    expect(dailyWord.korean).toBeTruthy();
+    expect(dailyWord.translation).toBeTruthy();
+  });
 });
 
 

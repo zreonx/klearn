@@ -152,9 +152,14 @@ export default function TodayScreen() {
           </View>
 
           <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
-            <Typography variant="display" weight="700" style={styles.koreanWord}>
-              {data.dailyWord.korean}
-            </Typography>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Typography variant="display" weight="700" style={styles.koreanWord}>
+                {data.dailyWord.korean}
+              </Typography>
+              {(data.dailyWord as any).hanja ? (
+                <Badge label={(data.dailyWord as any).hanja} variant="default" style={{ marginBottom: 4 }} />
+              ) : null}
+            </View>
             {data.dailyWord.romanization ? (
               <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
                 [{data.dailyWord.romanization}]
@@ -172,6 +177,25 @@ export default function TodayScreen() {
                 {data.dailyWord.explanation}
               </Typography>
             </>
+          ) : null}
+
+          {data.dailyWord.examples && data.dailyWord.examples.length > 0 ? (
+            <View style={{ backgroundColor: colors.surfaceSubtle, padding: theme.spacing.md, borderRadius: theme.radii.md, marginTop: theme.spacing.md }}>
+              <Typography variant="label" color="primary" style={{ marginBottom: 2 }}>
+                Example in Context:
+              </Typography>
+              <Typography variant="body" weight="600">
+                {data.dailyWord.examples[0].korean}
+              </Typography>
+              {data.dailyWord.examples[0].romanization ? (
+                <Typography variant="caption" color="foregroundMuted">
+                  [{data.dailyWord.examples[0].romanization}]
+                </Typography>
+              ) : null}
+              <Typography variant="caption" color="foreground">
+                {data.dailyWord.examples[0].translation}
+              </Typography>
+            </View>
           ) : null}
         </Card>
       )}

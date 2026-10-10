@@ -2,10 +2,11 @@ import { LearningItem } from '@/domain/learning/types';
 import { Curriculum, Lesson, Unit } from '@/domain/curriculum/types';
 import { HANGUL_ITEMS } from './hangul/items';
 import { VOCABULARY_ITEMS } from './vocabulary/items';
+import { DICTIONARY_ENTRIES } from './dictionary/dictionaryData';
 import { CURRICULUM_DATA } from './curriculum/curriculumData';
 import { format } from 'date-fns';
 
-const ALL_ITEMS: LearningItem[] = [...HANGUL_ITEMS, ...VOCABULARY_ITEMS];
+const ALL_ITEMS: LearningItem[] = [...HANGUL_ITEMS, ...VOCABULARY_ITEMS, ...DICTIONARY_ENTRIES];
 const ITEM_MAP = new Map<string, LearningItem>(ALL_ITEMS.map((item) => [item.id, item]));
 
 export class ContentCatalog {
@@ -33,12 +34,20 @@ export class ContentCatalog {
   }
 
   /**
+   * Returns all curated Korean dictionary entries.
+   */
+  getDictionaryEntries() {
+    return DICTIONARY_ENTRIES;
+  }
+
+  /**
    * Deterministically returns the Daily Word for a specific date.
-   * Filters specifically for single vocabulary words.
+   * Draws from the rich curated Korean dictionary bank first,
+   * falling back to the lesson vocabulary pool.
    */
   getDailyWord(date: Date = new Date()): LearningItem {
-    const wordList = VOCABULARY_ITEMS.filter((item) => item.type === 'vocabulary');
-    const pool = wordList.length > 0 ? wordList : VOCABULARY_ITEMS;
+    const dictionaryPool = DICTIONARY_ENTRIES.filter((item) => item.type === 'vocabulary');
+    const pool = dictionaryPool.length > 0 ? dictionaryPool : VOCABULARY_ITEMS;
 
     const dateKey = `word-${format(date, 'yyyy-MM-dd')}`;
     let hash = 0;
