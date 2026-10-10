@@ -7,6 +7,7 @@ import {
   Alert,
   TouchableOpacity,
   TextInput,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -434,6 +435,54 @@ export default function MeScreen() {
           onPress={handleReset}
         />
       </Card>
+
+      {/* Support the Developer & Buy Me a Coffee */}
+      <Typography variant="title" style={{ marginTop: theme.spacing.lg, marginBottom: theme.spacing.md }}>
+        Support Klearn
+      </Typography>
+
+      <Card elevated style={{ padding: theme.spacing.lg, marginBottom: theme.spacing.lg }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.xs }}>
+          <Ionicons name="cafe" size={24} color={colors.accent} />
+          <Typography variant="heading" color="accent" weight="700" style={{ marginLeft: theme.spacing.sm }}>
+            Buy Me a Coffee
+          </Typography>
+        </View>
+        <Typography variant="body" color="foreground" style={{ marginTop: theme.spacing.xs }}>
+          Klearn is 100% free, offline, and ad-free. If this app helps your Korean learning journey, you can support future development, dictionary banks, and new lessons with a warm cup of coffee!
+        </Typography>
+
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={[
+            styles.coffeeButton,
+            {
+              backgroundColor: colors.accent,
+              borderRadius: theme.radii.md,
+              marginTop: theme.spacing.md,
+              paddingVertical: theme.spacing.md,
+              paddingHorizontal: theme.spacing.lg,
+            },
+          ]}
+          onPress={() => Linking.openURL('https://buymeacoffee.com/zrodayrit')}
+        >
+          <Ionicons name="heart" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
+          <Typography variant="label" weight="700" style={{ color: '#FFFFFF' }}>
+            Support on Buy Me a Coffee
+          </Typography>
+          <Ionicons name="open-outline" size={16} color="#FFFFFF" style={{ marginLeft: 6 }} />
+        </TouchableOpacity>
+      </Card>
+
+      {/* App Info / About */}
+      <View style={{ alignItems: 'center', marginTop: theme.spacing.sm, marginBottom: theme.spacing.lg }}>
+        <Typography variant="caption" color="foregroundMuted">
+          Klearn v1.0.0 • Free & Local-First Korean Learning
+        </Typography>
+        <Typography variant="caption" color="foregroundSubtle" style={{ marginTop: 2 }}>
+          Crafted with Minimalist Jade Design • Zero Tracking
+        </Typography>
+      </View>
     </ScrollView>
   );
 }
@@ -490,5 +539,10 @@ const styles = StyleSheet.create({
     minHeight: 100,
     fontSize: 13,
     textAlignVertical: 'top',
+  },
+  coffeeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
