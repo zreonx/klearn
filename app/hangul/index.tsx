@@ -142,6 +142,7 @@ export default function HangulChartScreen() {
         ]}
       >
         {/* Category Description Banner */}
+        {/* Category Description Banner */}
         <Card subtle style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
           <View style={styles.bannerRow}>
             <View style={{ flex: 1 }}>
@@ -152,9 +153,53 @@ export default function HangulChartScreen() {
                 {activeCategoryData.description}
               </Typography>
             </View>
-            <Badge label={`${activeCategoryData.characters.length} letters`} variant="hangul" />
+            <Badge
+              label={`${activeCategoryData.characters.length} ${activeCategoryData.id.includes('numbers') ? 'numbers' : 'letters'}`}
+              variant="hangul"
+            />
           </View>
         </Card>
+
+        {/* Simplified Number Construction Cheat-Sheet */}
+        {activeCategoryData.id === 'native-numbers' && (
+          <Card elevated style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <Ionicons name="sparkles" size={16} color={colors.accent} />
+              <Typography variant="label" color="accent" weight="700" style={{ marginLeft: 4 }}>
+                Simplified Rule: 1 to 99
+              </Typography>
+            </View>
+            <Typography variant="caption" color="foreground" weight="600">
+              Combine Tens + Ones:
+            </Typography>
+            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+              • 11 = 열(10) + 하나(1) = 열하나{'\n'}
+              • 25 = 스물(20) + 다섯(5) = 스물다섯{'\n'}
+              • 33 = 서른(30) + 셋(3) = 서른셋{'\n'}
+              • Counter Rule: 1, 2, 3, 4, 20 shorten before counters (한 개, 두 명, 세 권, 네 마리, 스무 살). Above 100, use Sino-Korean 백!
+            </Typography>
+          </Card>
+        )}
+
+        {activeCategoryData.id === 'sino-numbers' && (
+          <Card elevated style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <Ionicons name="sparkles" size={16} color={colors.accent} />
+              <Typography variant="label" color="accent" weight="700" style={{ marginLeft: 4 }}>
+                Simplified Math: Any Number in Seconds
+              </Typography>
+            </View>
+            <Typography variant="caption" color="foreground" weight="600">
+              Zero exceptions, pure multiplication + addition:
+            </Typography>
+            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+              • 20 = 이(2) + 십(10) = 이십{'\n'}
+              • 35 = 삼(3) + 십(10) + 오(5) = 삼십오{'\n'}
+              • 2,500원 = 이천(2,000) + 오백(500) 원{'\n'}
+              • Units: 10 (십), 100 (백), 1,000 (천), 10,000 (만), 100M (억).
+            </Typography>
+          </Card>
+        )}
 
         {/* Character Grid */}
         <View style={styles.charGrid}>
