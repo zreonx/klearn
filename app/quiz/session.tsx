@@ -91,27 +91,34 @@ export default function QuizSessionModal() {
               <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
                 Items to Review ({result.mistakeItems.length})
               </Typography>
-              {result.mistakeItems.map((item) => (
-                <View
-                  key={item.id}
-                  style={[
-                    styles.mistakeRow,
-                    { borderBottomColor: colors.borderSubtle, paddingVertical: theme.spacing.sm },
-                  ]}
-                >
-                  <View>
-                    <Typography variant="bodyLarge" weight="600">
-                      {item.korean}
-                    </Typography>
-                    <Typography variant="caption" color="foregroundMuted">
-                      {item.translation}
-                    </Typography>
+              <View style={{ gap: theme.spacing.sm }}>
+                {result.mistakeItems.map((item) => (
+                  <View
+                    key={item.id}
+                    style={[
+                      styles.mistakeRow,
+                      {
+                        backgroundColor: colors.surfaceSubtle,
+                        borderRadius: theme.radii.md,
+                        paddingHorizontal: theme.spacing.md,
+                        paddingVertical: theme.spacing.md,
+                      },
+                    ]}
+                  >
+                    <View>
+                      <Typography variant="bodyLarge" weight="600">
+                        {item.korean}
+                      </Typography>
+                      <Typography variant="caption" color="foregroundMuted">
+                        {item.translation}
+                      </Typography>
+                    </View>
+                    <TouchableOpacity onPress={() => speak(item.korean)}>
+                      <Ionicons name="volume-medium" size={20} color={colors.primary} />
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity onPress={() => speak(item.korean)}>
-                    <Ionicons name="volume-medium" size={20} color={colors.primary} />
-                  </TouchableOpacity>
-                </View>
-              ))}
+                ))}
+              </View>
             </View>
           )}
 
@@ -336,6 +343,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomWidth: 1,
   },
 });
