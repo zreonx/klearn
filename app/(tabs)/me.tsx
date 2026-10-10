@@ -9,11 +9,13 @@ import {
   TextInput,
   Linking,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Typography,
   Card,
   Button,
+  Badge,
   Divider,
   useTheme,
 } from '@/components/ui';
@@ -36,6 +38,7 @@ export default function MeScreen() {
   } = useMe();
 
   const [exportJson, setExportJson] = useState<string | null>(null);
+  const [copied, setCopied] = useState<boolean>(false);
   const [importJsonInput, setImportJsonInput] = useState<string>('');
   const [showImportBox, setShowImportBox] = useState<boolean>(false);
 
@@ -59,6 +62,15 @@ export default function MeScreen() {
   const handleExport = async () => {
     const json = await exportData();
     setExportJson(json);
+    setCopied(false);
+  };
+
+  const handleCopyJson = async () => {
+    if (!exportJson) return;
+    await Clipboard.setStringAsync(exportJson);
+    setCopied(true);
+    Alert.alert('Copied to Clipboard!', 'Your full backup data has been copied. You can now paste and save it safely anywhere (e.g. Notes or Email).');
+    setTimeout(() => setCopied(false), 3000);
   };
 
   const handleImport = async () => {
@@ -365,14 +377,46 @@ export default function MeScreen() {
 
         {exportJson && (
           <View style={[styles.exportBox, { backgroundColor: colors.surfaceSubtle, padding: theme.spacing.md, borderRadius: theme.radii.md, marginTop: theme.spacing.md }]}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <Typography variant="caption" color="primary" weight="700">
-                Backup Generated (Copy to Save):
+                Backup Data Ready:
               </Typography>
+              <Badge label={`${Math.round(exportJson.length / 1024 * 10) / 10} KB`} variant="vocab" />
             </View>
-            <Typography variant="caption" color="foregroundSubtle" numberOfLines={8} selectable>
-              {exportJson}
-            </Typography>
+
+            <ScrollView
+              style={{ maxHeight: 140, backgroundColor: colors.surface, borderRadius: theme.radii.sm, padding: theme.spacing.sm }}
+              nestedScrollEnabled
+            >
+              <Typography variant="caption" color="foregroundSubtle" selectable style={{ fontFamily: 'monospace', fontSize: 11 }}>
+                {exportJson}
+              </Typography>
+            </ScrollView>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={[
+                styles.copyButton,
+                {
+                  backgroundColor: copied ? colors.success : colors.primary,
+                  borderRadius: theme.radii.md,
+                  marginTop: theme.spacing.md,
+                  paddingVertical: theme.spacing.sm,
+                  paddingHorizontal: theme.spacing.md,
+                },
+              ]}
+              onPress={handleCopyJson}
+            >
+              <Ionicons
+                name={copied ? 'checkmark-circle' : 'copy-outline'}
+                size={16}
+                color="#FFFFFF"
+                style={{ marginRight: 6 }}
+              />
+              <Typography variant="label" weight="700" style={{ color: '#FFFFFF' }}>
+                {copied ? 'Copied to Clipboard!' : 'Copy Full Backup JSON'}
+              </Typography>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -482,7 +526,7 @@ export default function MeScreen() {
           Klearn v1.0.0 • Free Korean Learning
         </Typography>
         <Typography variant="caption" color="foregroundSubtle" style={{ marginTop: 2 }}>
-          Crafted with ❤️ • Zero Tracking
+          Made with ❤️
         </Typography>
       </View>
     </ScrollView>
@@ -543,6 +587,11 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   coffeeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  copyButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
