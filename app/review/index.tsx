@@ -89,17 +89,22 @@ export default function ReviewSessionScreen() {
           styles.header,
           {
             paddingHorizontal: theme.spacing.lg,
-            paddingTop: Math.max(insets.top + 8, theme.spacing.lg),
-            paddingBottom: theme.spacing.sm,
+            paddingTop: Math.max(insets.top + 12, theme.spacing.xl),
+            paddingBottom: theme.spacing.md,
           },
         ]}
       >
-        <View style={[styles.headerTop, { marginBottom: theme.spacing.sm }]}>
+        <View style={[styles.headerTop, { marginBottom: theme.spacing.md }]}>
           <Typography variant="label" color="foregroundMuted">
             Review {currentIndex + 1} of {queue.length}
           </Typography>
-          <TouchableOpacity onPress={() => router.back()} accessibilityLabel="Close review">
-            <Ionicons name="close" size={24} color={colors.foregroundMuted} />
+          <TouchableOpacity
+            onPress={() => router.back()}
+            accessibilityLabel="Close review"
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            style={{ padding: 4 }}
+          >
+            <Ionicons name="close" size={24} color={colors.foreground} />
           </TouchableOpacity>
         </View>
         <ProgressBar progress={progress} color={colors.primary} />

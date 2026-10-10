@@ -147,17 +147,22 @@ export default function QuizSessionModal() {
           styles.header,
           {
             paddingHorizontal: theme.spacing.lg,
-            paddingTop: Math.max(insets.top + 8, theme.spacing.lg),
-            paddingBottom: theme.spacing.sm,
+            paddingTop: Math.max(insets.top + 12, theme.spacing.xl),
+            paddingBottom: theme.spacing.md,
           },
         ]}
       >
-        <View style={[styles.headerTop, { marginBottom: theme.spacing.sm }]}>
+        <View style={[styles.headerTop, { marginBottom: theme.spacing.md }]}>
           <Typography variant="label" color="foregroundMuted">
             Question {currentIndex + 1} of {questions.length}
           </Typography>
-          <TouchableOpacity onPress={() => router.back()} accessibilityLabel="Close quiz">
-            <Ionicons name="close" size={24} color={colors.foregroundMuted} />
+          <TouchableOpacity
+            onPress={() => router.back()}
+            accessibilityLabel="Close quiz"
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            style={styles.closeBtn}
+          >
+            <Ionicons name="close" size={24} color={colors.foreground} />
           </TouchableOpacity>
         </View>
         <ProgressBar progress={progress} color={colors.primary} />
@@ -284,6 +289,11 @@ const styles = StyleSheet.create({
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  closeBtn: {
+    padding: 4,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   questionContent: {},
