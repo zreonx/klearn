@@ -1,0 +1,84 @@
+import { generateQuizQuestions, generateQuestionForItem } from './generator';
+import { LearningItem } from '../learning/types';
+
+describe('Quiz Generator', () => {
+  const sampleItems: LearningItem[] = [
+    {
+      id: 'item-1',
+      type: 'vocabulary',
+      korean: '안녕하세요',
+      romanization: 'annyeonghaseyo',
+      translation: 'Hello',
+    },
+    {
+      id: 'item-2',
+      type: 'vocabulary',
+      korean: '감사합니다',
+      romanization: 'gamsahamnida',
+      translation: 'Thank you',
+    },
+    {
+      id: 'item-3',
+      type: 'vocabulary',
+      korean: '물',
+      romanization: 'mul',
+      translation: 'Water',
+    },
+    {
+      id: 'item-4',
+      type: 'vocabulary',
+      korean: '밥',
+      romanization: 'bap',
+      translation: 'Rice / Meal',
+    },
+  ];
+
+  it('handles empty target items safely', () => {
+    const questions = generateQuizQuestions([], sampleItems);
+    expect(questions).toEqual([]);
+  });
+
+  it('generates question with valid correct answer and unique options', () => {
+    const target = sampleItems[0];
+    const question = generateQuestionForItem(target, sampleItems, 'korean_to_english');
+
+    expect(question).not.toBeNull();
+    if (!question) return;
+
+    expect(question.prompt).toBe('안녕하세요');
+    expect(question.options.length).toBeGreaterThanOrEqual(2);
+
+    // Verify correct option exists
+    const correctOpt = question.options.find((o) => o.id === question.correctAnswerId);
+    expect(correctOpt).toBeDefined();
+    expect(correctOpt?.isCorrect).toBe(true);
+    expect(correctOpt?.label).toBe('Hello');
+
+    // Verify option uniqueness
+    const labels = question.options.map((o) => o.label);
+    const uniqueLabels = new Set(labels);
+    expect(uniqueLabels.size).toBe(labels.length);
+  });
+
+  it('generates english to korean question correctly', () => {
+    const target = sampleItems[1];
+    const question = generateQuestionForItem(target, sampleItems, 'english_to_korean');
+
+    expect(question).not.toBeNull();
+    if (!question) return;
+
+    expect(question.prompt).toBe('Thank you');
+    const correctOpt = question.options.find((o) => o.id === question.correctAnswerId);
+    expect(correctOpt?.label).toBe('감사합니다');
+  });
+
+  it('generates a full quiz batch within requested question count', () => {
+    const questions = generateQuizQuestions(sampleItems, sampleItems, {
+      questionCount: 3,
+    });
+    expect(questions.length).toBe(3);
+    for (const q of questions) {
+      expect(q.options.some((o) => o.isCorrect)).toBe(true);
+    }
+  });
+});

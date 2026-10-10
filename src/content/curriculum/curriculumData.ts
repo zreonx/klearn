@@ -1,0 +1,123 @@
+import { Curriculum } from '@/domain/curriculum/types';
+
+export const CURRICULUM_DATA: Curriculum = {
+  levels: [
+    {
+      id: 'level-beginner',
+      title: 'Beginner Korean',
+      description: 'Master Hangul characters, foundational phrases, and daily vocabulary.',
+      order: 1,
+      units: [
+        {
+          id: 'unit-hangul',
+          levelId: 'level-beginner',
+          title: 'Hangul Foundations',
+          description: 'The Korean alphabet: letters, vowels, and sounds.',
+          order: 1,
+          lessons: [
+            {
+              id: 'lesson-hangul-consonants',
+              unitId: 'unit-hangul',
+              title: 'Basic Consonants',
+              koreanTitle: '기본 자음',
+              description: 'Learn the primary consonants (ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ).',
+              order: 1,
+              itemIds: [
+                'hg-c-g',
+                'hg-c-n',
+                'hg-c-d',
+                'hg-c-r',
+                'hg-c-m',
+                'hg-c-b',
+                'hg-c-s',
+                'hg-c-ng',
+              ],
+            },
+            {
+              id: 'lesson-hangul-vowels',
+              unitId: 'unit-hangul',
+              title: 'Basic Vowels',
+              koreanTitle: '기본 모음',
+              description: 'Master the bright and dark vowels (ㅏ, ㅓ, ㅗ, ㅜ, ㅡ, ㅣ).',
+              order: 2,
+              itemIds: [
+                'hg-v-a',
+                'hg-v-eo',
+                'hg-v-o',
+                'hg-v-u',
+                'hg-v-eu',
+                'hg-v-i',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'unit-greetings',
+          levelId: 'level-beginner',
+          title: 'Essential Greetings',
+          description: 'Polite greetings and courteous expressions for daily encounters.',
+          order: 2,
+          lessons: [
+            {
+              id: 'lesson-greetings',
+              unitId: 'unit-greetings',
+              title: 'Daily Greetings & Thanks',
+              koreanTitle: '인사와 감사',
+              description: 'Essential expressions for meeting people and expressing gratitude.',
+              order: 1,
+              itemIds: ['voc-greet-1', 'voc-greet-2', 'voc-greet-3'],
+            },
+            {
+              id: 'lesson-partings',
+              unitId: 'unit-greetings',
+              title: 'Polite Partings',
+              koreanTitle: '작별 인사',
+              description: 'How to properly say goodbye when staying or departing.',
+              order: 2,
+              itemIds: ['voc-greet-4', 'voc-greet-5'],
+            },
+          ],
+        },
+        {
+          id: 'unit-daily-life',
+          levelId: 'level-beginner',
+          title: 'Daily Vocabulary',
+          description: 'Common everyday nouns and native Korean numbers.',
+          order: 3,
+          lessons: [
+            {
+              id: 'lesson-daily-nouns',
+              unitId: 'unit-daily-life',
+              title: 'Everyday Objects & Places',
+              koreanTitle: '일상 단어',
+              description: 'Core nouns you encounter every day.',
+              order: 1,
+              itemIds: [
+                'voc-noun-water',
+                'voc-noun-rice',
+                'voc-noun-tea',
+                'voc-noun-person',
+                'voc-noun-school',
+              ],
+            },
+            {
+              id: 'lesson-numbers',
+              unitId: 'unit-daily-life',
+              title: 'Native Numbers (1 to 5)',
+              koreanTitle: '순우리말 숫자',
+              description: 'Count objects and items from 1 to 5.',
+              order: 2,
+              itemIds: [
+                'voc-num-1',
+                'voc-num-2',
+                'voc-num-3',
+                'voc-num-4',
+                'voc-num-5',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
