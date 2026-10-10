@@ -7,6 +7,19 @@ export interface LessonConceptNote {
   formalityLevel?: 'formal' | 'polite' | 'casual';
 }
 
+export interface DialogueLine {
+  speaker: string; // e.g. "민수", "지우"
+  korean: string;
+  translation: string;
+  romanization?: string;
+}
+
+export interface LessonDialogue {
+  title: string;
+  description: string;
+  lines: DialogueLine[];
+}
+
 export interface Lesson {
   id: string;
   unitId: string;
@@ -17,6 +30,7 @@ export interface Lesson {
   prerequisites?: string[];
   learningObjectives?: string[];
   conceptNote?: LessonConceptNote;
+  dialogue?: LessonDialogue;
   itemIds: string[];
 }
 

@@ -139,6 +139,59 @@ export default function LessonDetailScreen() {
         </View>
       )}
 
+      {/* Mini Dialogue / Reading Comprehension (Phase 4) */}
+      {lesson.dialogue && (
+        <Card elevated style={{ marginBottom: theme.spacing.xl, padding: theme.spacing.lg }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.xs }}>
+            <Ionicons name="chatbubbles-outline" size={18} color={colors.primary} />
+            <Typography variant="label" color="primary" style={{ marginLeft: theme.spacing.xs }}>
+              Context Dialogue: {lesson.dialogue.title}
+            </Typography>
+          </View>
+          <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.md }}>
+            {lesson.dialogue.description}
+          </Typography>
+
+          <View style={{ gap: theme.spacing.sm }}>
+            {lesson.dialogue.lines.map((line, idx) => (
+              <View
+                key={idx}
+                style={{
+                  backgroundColor: colors.surfaceSubtle,
+                  borderRadius: theme.radii.md,
+                  padding: theme.spacing.md,
+                }}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="caption" color="primary" weight="600">
+                    {line.speaker}
+                  </Typography>
+                  <TouchableOpacity
+                    onPress={() => speak(line.korean)}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    style={{ padding: 2 }}
+                    accessibilityLabel="Listen"
+                  >
+                    <Ionicons name="volume-medium" size={18} color={colors.primary} />
+                  </TouchableOpacity>
+                </View>
+                <Typography variant="body" weight="600" style={{ marginTop: 2 }}>
+                  {line.korean}
+                </Typography>
+                {line.romanization && (
+                  <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                    [{line.romanization}]
+                  </Typography>
+                )}
+                <Typography variant="caption" color="foreground" style={{ marginTop: 2 }}>
+                  {line.translation}
+                </Typography>
+              </View>
+            ))}
+          </View>
+        </Card>
+      )}
+
       {/* Item List */}
       <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
         Items in this lesson ({items.length})

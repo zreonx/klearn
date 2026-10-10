@@ -57,6 +57,37 @@ export function generateQuestionForItem(
       correctLabel = targetItem.romanization;
       speakText = targetItem.korean;
       break;
+
+    case 'particle_fill':
+      // If item has an example sentence with a particle or is grammar
+      if (targetItem.examples && targetItem.examples.length > 0) {
+        const ex = targetItem.examples[0];
+        prompt = ex.translation;
+        subPrompt = `Complete the Korean sentence with the correct particle / word`;
+        correctLabel = targetItem.korean;
+        speakText = ex.korean;
+      } else {
+        prompt = targetItem.translation;
+        subPrompt = 'Select the correct Korean particle / word';
+        correctLabel = targetItem.korean;
+        speakText = targetItem.korean;
+      }
+      break;
+
+    case 'sentence_assembly':
+      if (targetItem.examples && targetItem.examples.length > 0) {
+        const ex = targetItem.examples[0];
+        prompt = ex.translation;
+        subPrompt = 'Choose the matching Korean sentence';
+        correctLabel = ex.korean;
+        speakText = ex.korean;
+      } else {
+        prompt = targetItem.translation;
+        subPrompt = 'Select the correct Korean sentence / phrase';
+        correctLabel = targetItem.korean;
+        speakText = targetItem.korean;
+      }
+      break;
   }
 
   // Filter distractors to exclude the target item itself
@@ -71,9 +102,12 @@ export function generateQuestionForItem(
       case 'listening_recognition':
         return item.translation;
       case 'english_to_korean':
+      case 'particle_fill':
         return item.korean;
       case 'hangul_to_romanization':
         return item.romanization || item.translation;
+      case 'sentence_assembly':
+        return item.examples && item.examples.length > 0 ? item.examples[0].korean : item.korean;
     }
   };
 
@@ -132,6 +166,8 @@ export function generateQuizQuestions(
     'korean_to_english',
     'english_to_korean',
     'listening_recognition',
+    'particle_fill',
+    'sentence_assembly',
   ];
 
   const shuffledTargets = shuffleArray(targetItems, rng).slice(0, questionCount);

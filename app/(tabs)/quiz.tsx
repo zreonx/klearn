@@ -43,10 +43,23 @@ export default function QuizTabScreen() {
       title: 'Listening Practice',
       desc: 'Listen to spoken audio and identify the meaning',
     },
+    {
+      id: 'particle_fill',
+      title: 'Grammar & Particles',
+      desc: 'Master Korean particles (은/는, 이/가) in authentic context',
+    },
+    {
+      id: 'sentence_assembly',
+      title: 'Sentence Assembly',
+      desc: 'Practice forming and reading full Korean sentences',
+    },
   ];
 
   const handleStart = () => {
-    router.push('/quiz/session');
+    router.push({
+      pathname: '/quiz/session',
+      params: selectedType !== 'all' ? { type: selectedType } : undefined,
+    });
   };
 
   return (

@@ -4,7 +4,9 @@ export type QuizQuestionType =
   | 'korean_to_english'
   | 'english_to_korean'
   | 'listening_recognition'
-  | 'hangul_to_romanization';
+  | 'hangul_to_romanization'
+  | 'particle_fill'
+  | 'sentence_assembly';
 
 export interface QuizGenerationConfig {
   questionCount?: number;

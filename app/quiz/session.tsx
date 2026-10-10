@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Typography,
@@ -18,9 +18,11 @@ import {
 } from '@/components/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuiz } from '@/features/quiz/useQuiz';
+import { QuizQuestionType } from '@/domain/quiz/types';
 
 export default function QuizSessionModal() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ type?: string }>();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const {
@@ -40,11 +42,14 @@ export default function QuizSessionModal() {
   } = useQuiz();
 
   useEffect(() => {
-    startQuiz();
+    const config = params.type
+      ? { types: [params.type as QuizQuestionType] }
+      : undefined;
+    startQuiz(config);
     return () => {
       resetQuiz();
     };
-  }, []);
+  }, [params.type]);
 
   if (loading) {
     return (

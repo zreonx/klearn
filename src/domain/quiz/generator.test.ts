@@ -81,4 +81,30 @@ describe('Quiz Generator', () => {
       expect(q.options.some((o) => o.isCorrect)).toBe(true);
     }
   });
+
+  it('generates particle_fill and sentence_assembly questions', () => {
+    const grammarItem: LearningItem = {
+      id: 'gram-part-1',
+      type: 'grammar',
+      korean: '은 / 는',
+      translation: 'Topic Particle',
+      examples: [
+        {
+          korean: '저는 학생이에요.',
+          translation: 'I am a student.',
+        },
+      ],
+    };
+
+    const pool = [...sampleItems, grammarItem];
+
+    const particleQ = generateQuestionForItem(grammarItem, pool, 'particle_fill');
+    expect(particleQ).not.toBeNull();
+    expect(particleQ?.correctAnswerId).toBeDefined();
+    expect(particleQ?.options.some((o) => o.label === '은 / 는' && o.isCorrect)).toBe(true);
+
+    const sentenceQ = generateQuestionForItem(grammarItem, pool, 'sentence_assembly');
+    expect(sentenceQ).not.toBeNull();
+    expect(sentenceQ?.options.some((o) => o.label === '저는 학생이에요.' && o.isCorrect)).toBe(true);
+  });
 });

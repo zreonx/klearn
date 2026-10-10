@@ -224,6 +224,30 @@ export const CURRICULUM_DATA: Curriculum = {
                 explanation: 'If the noun ends in a consonant, attach 이에요 (e.g. 학생 + 이에요). If it ends in a vowel, attach 예요 (e.g. 의사 + 예요).',
                 formalityLevel: 'polite',
               },
+              dialogue: {
+                title: 'Classroom Introduction (교실에서)',
+                description: 'Two students introduce themselves on the first day of class.',
+                lines: [
+                  {
+                    speaker: '민수',
+                    korean: '안녕하세요! 저는 민수예요.',
+                    translation: 'Hello! I am Minsu.',
+                    romanization: 'annyeonghaseyo! jeoneun minsu-yeyo.',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '안녕하세요, 민수 씨! 저는 학생 지우예요.',
+                    translation: 'Hello, Minsu! I am Jiwoo, a student.',
+                    romanization: 'annyeonghaseyo, minsu ssi! jeoneun haksaeng jiwoo-yeyo.',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '만나서 반갑습니다, 지우 씨!',
+                    translation: 'Nice to meet you, Jiwoo!',
+                    romanization: 'mannaseo bangapsumnida, jiwoo ssi!',
+                  },
+                ],
+              },
               itemIds: ['gram-cop-ieyo-yeyo', 'voc-noun-student', 'voc-noun-teacher'],
             },
           ],
