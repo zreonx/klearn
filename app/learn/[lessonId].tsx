@@ -16,6 +16,7 @@ import {
   Divider,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
 import { LearningItem } from '@/domain/learning/types';
 
@@ -23,6 +24,7 @@ export default function LessonDetailScreen() {
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
   const router = useRouter();
   const { colors, theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const { getLessonDetails, markItemLearned, speak, recordsMap } = useLearn();
 
   const [lessonData, setLessonData] = useState<Awaited<
@@ -54,7 +56,13 @@ export default function LessonDetailScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['6xl'] }]}
+      contentContainerStyle={[
+        styles.content,
+        {
+          padding: theme.spacing.lg,
+          paddingBottom: Math.max(insets.bottom + 16, theme.spacing['4xl']),
+        },
+      ]}
     >
       {/* Lesson Header */}
       <View style={{ marginBottom: theme.spacing.xl }}>

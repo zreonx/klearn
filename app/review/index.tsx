@@ -16,12 +16,14 @@ import {
   Divider,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useReview } from '@/features/review/useReview';
 import { ReviewRating } from '@/domain/srs/types';
 
 export default function ReviewSessionScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const {
     currentCard,
     currentIndex,
@@ -82,7 +84,16 @@ export default function ReviewSessionScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Session Progress Header */}
-      <View style={[styles.header, { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.sm }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingHorizontal: theme.spacing.lg,
+            paddingTop: Math.max(insets.top + 8, theme.spacing.lg),
+            paddingBottom: theme.spacing.sm,
+          },
+        ]}
+      >
         <View style={[styles.headerTop, { marginBottom: theme.spacing.sm }]}>
           <Typography variant="label" color="foregroundMuted">
             Review {currentIndex + 1} of {queue.length}
@@ -145,7 +156,17 @@ export default function ReviewSessionScreen() {
 
       {/* SRS Rating Bar (Visible when card is revealed) */}
       {isFlipped ? (
-        <View style={[styles.ratingBar, { backgroundColor: colors.surfaceSubtle, borderTopColor: colors.borderSubtle, padding: theme.spacing.lg, paddingBottom: theme.spacing['3xl'] }]}>
+        <View
+          style={[
+            styles.ratingBar,
+            {
+              backgroundColor: colors.surfaceSubtle,
+              borderTopColor: colors.borderSubtle,
+              padding: theme.spacing.lg,
+              paddingBottom: Math.max(insets.bottom, theme.spacing.lg),
+            },
+          ]}
+        >
           <Typography variant="caption" color="foregroundMuted" align="center" style={{ marginBottom: theme.spacing.sm }}>
             How well did you recall this?
           </Typography>
@@ -200,7 +221,18 @@ export default function ReviewSessionScreen() {
           </View>
         </View>
       ) : (
-        <View style={[styles.revealButtonContainer, { backgroundColor: colors.surfaceSubtle, padding: theme.spacing.lg, paddingBottom: theme.spacing['3xl'] }]}>
+        <View
+          style={[
+            styles.revealButtonContainer,
+            {
+              backgroundColor: colors.surfaceSubtle,
+              borderTopWidth: 1,
+              borderTopColor: colors.borderSubtle,
+              padding: theme.spacing.lg,
+              paddingBottom: Math.max(insets.bottom, theme.spacing.lg),
+            },
+          ]}
+        >
           <Button title="Reveal Meaning" fullWidth onPress={flipCard} />
         </View>
       )}

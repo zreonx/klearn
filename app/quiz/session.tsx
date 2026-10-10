@@ -16,11 +16,13 @@ import {
   Divider,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuiz } from '@/features/quiz/useQuiz';
 
 export default function QuizSessionModal() {
   const router = useRouter();
   const { colors, theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const {
     currentQuestion,
     currentIndex,
@@ -59,7 +61,14 @@ export default function QuizSessionModal() {
     return (
       <ScrollView
         style={[styles.container, { backgroundColor: colors.background }]}
-        contentContainerStyle={[styles.resultContent, { padding: theme.spacing.lg, paddingTop: theme.spacing['3xl'], paddingBottom: theme.spacing['4xl'] }]}
+        contentContainerStyle={[
+          styles.resultContent,
+          {
+            padding: theme.spacing.lg,
+            paddingTop: Math.max(insets.top + 16, theme.spacing['2xl']),
+            paddingBottom: Math.max(insets.bottom + 16, theme.spacing['3xl']),
+          },
+        ]}
       >
         <Card elevated style={{ padding: theme.spacing.xl, alignItems: 'center' }}>
           <View style={[styles.trophyCircle, { backgroundColor: colors.surfaceSubtle }]}>
@@ -133,7 +142,16 @@ export default function QuizSessionModal() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Top Header */}
-      <View style={[styles.header, { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg, paddingBottom: theme.spacing.sm }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingHorizontal: theme.spacing.lg,
+            paddingTop: Math.max(insets.top + 8, theme.spacing.lg),
+            paddingBottom: theme.spacing.sm,
+          },
+        ]}
+      >
         <View style={[styles.headerTop, { marginBottom: theme.spacing.sm }]}>
           <Typography variant="label" color="foregroundMuted">
             Question {currentIndex + 1} of {questions.length}
@@ -230,7 +248,7 @@ export default function QuizSessionModal() {
             backgroundColor: colors.surfaceSubtle,
             borderTopColor: colors.borderSubtle,
             padding: theme.spacing.lg,
-            paddingBottom: theme.spacing['3xl'],
+            paddingBottom: Math.max(insets.bottom, theme.spacing.lg),
           },
         ]}
       >

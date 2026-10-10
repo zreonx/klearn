@@ -15,6 +15,7 @@ import {
   Divider,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
 import { services } from '@/application/services';
 import { LearningItem, LearningRecord } from '@/domain/learning/types';
@@ -23,6 +24,7 @@ export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
   const router = useRouter();
   const { colors, theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const { markItemLearned, speak, recordsMap } = useLearn();
 
   const [item, setItem] = useState<LearningItem | null>(null);
@@ -51,7 +53,13 @@ export default function ItemDetailScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['5xl'] }]}
+      contentContainerStyle={[
+        styles.content,
+        {
+          padding: theme.spacing.lg,
+          paddingBottom: Math.max(insets.bottom + 16, theme.spacing['4xl']),
+        },
+      ]}
     >
       <Card elevated style={{ padding: theme.spacing.xl }}>
         <View style={[styles.topRow, { marginBottom: theme.spacing.lg }]}>
