@@ -18,7 +18,12 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "edgeToEdgeEnabled": true,
+      "navigationBar": {
+        "visible": "always",
+        "backgroundColor": "#EEEEE6"
+      }
     },
     "web": {
       "bundler": "metro",

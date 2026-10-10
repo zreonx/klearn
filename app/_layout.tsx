@@ -8,20 +8,21 @@ import { ThemeProvider, useTheme } from '@/components/ui';
 function RootNavigation() {
   const { colors, isDark } = useTheme();
 
-  // Keep Android navigation bar / gesture bar transparent and edge-to-edge (fullscreen)
-  // so the gesture navigation background seamlessly merges with the navigation menu background
+  // Keep Android navigation bar / gesture bar synchronized with bottom navigation menu
   useEffect(() => {
     if (Platform.OS === 'android') {
       try {
         const NavigationBar = require('expo-navigation-bar');
+        // Set both position and exact background color so whether the OS runs in
+        // edge-to-edge transparent mode or traditional window inset mode, it matches colors.surfaceSubtle
         NavigationBar.setPositionAsync('absolute').catch(() => {});
-        NavigationBar.setBackgroundColorAsync('#00000000').catch(() => {});
+        NavigationBar.setBackgroundColorAsync(colors.surfaceSubtle).catch(() => {});
         NavigationBar.setButtonStyleAsync(isDark ? 'light' : 'dark').catch(() => {});
       } catch {
         // Safe fallback if native module is absent in test environment
       }
     }
-  }, [isDark]);
+  }, [colors.surfaceSubtle, isDark]);
 
   return (
     <>
