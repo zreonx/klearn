@@ -74,14 +74,21 @@ export default function LearnScreen() {
         </View>
       </Card>
 
-      {curriculum?.levels.map((level) => (
-        <View key={level.id} style={{ marginBottom: theme.spacing['2xl'] }}>
-          <Typography variant="title" color="primary" style={{ marginBottom: theme.spacing.xs }}>
-            Level {level.order}: {level.title}
-          </Typography>
-          <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
-            {level.description}
-          </Typography>
+      {curriculum?.levels.map((level) => {
+        const isBonus = level.id.includes('bonus') || level.id.includes('casual');
+        return (
+          <View key={level.id} style={{ marginBottom: theme.spacing['2xl'] }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.xs }}>
+              {isBonus ? (
+                <Badge label="Bonus Track" variant="vocab" style={{ marginRight: theme.spacing.xs }} />
+              ) : null}
+              <Typography variant="title" color="primary" weight="700">
+                {isBonus ? level.title : `Level ${level.order}: ${level.title}`}
+              </Typography>
+            </View>
+            <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
+              {level.description}
+            </Typography>
 
           {level.units.map((unit) => (
             <View key={unit.id} style={{ marginBottom: theme.spacing.lg }}>
@@ -171,7 +178,8 @@ export default function LearnScreen() {
             </View>
           ))}
         </View>
-      ))}
+      );
+    })}
     </ScrollView>
   );
 }
