@@ -1,4 +1,11 @@
-import { LearningItem, LearningRecord } from '../learning/types';
+import { LearningRecord } from '../learning/types';
+
+export interface LessonConceptNote {
+  summary: string;
+  explanation: string;
+  grammarTip?: string;
+  formalityLevel?: 'formal' | 'polite' | 'casual';
+}
 
 export interface Lesson {
   id: string;
@@ -7,6 +14,9 @@ export interface Lesson {
   koreanTitle?: string;
   description: string;
   order: number;
+  prerequisites?: string[];
+  learningObjectives?: string[];
+  conceptNote?: LessonConceptNote;
   itemIds: string[];
 }
 

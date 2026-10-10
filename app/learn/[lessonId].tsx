@@ -90,6 +90,55 @@ export default function LessonDetailScreen() {
         />
       </View>
 
+      {/* Concept Note & Politeness / Grammar Tip */}
+      {lesson.conceptNote && (
+        <Card subtle style={{ marginBottom: theme.spacing.xl, padding: theme.spacing.lg }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: theme.spacing.xs }}>
+            <Ionicons name="bulb-outline" size={18} color={colors.primary} />
+            <Typography variant="label" color="primary" style={{ marginLeft: theme.spacing.xs }}>
+              Lesson Concept
+            </Typography>
+            {lesson.conceptNote.formalityLevel && (
+              <Badge
+                label={lesson.conceptNote.formalityLevel.toUpperCase()}
+                variant="vocab"
+                style={{ marginLeft: 'auto' }}
+              />
+            )}
+          </View>
+          <Typography variant="body" weight="600" style={{ marginTop: theme.spacing.xs }}>
+            {lesson.conceptNote.summary}
+          </Typography>
+          <Typography variant="body" color="foregroundMuted" style={{ marginTop: theme.spacing.xs }}>
+            {lesson.conceptNote.explanation}
+          </Typography>
+          {lesson.conceptNote.grammarTip && (
+            <View style={{ backgroundColor: colors.surfaceElevated, padding: theme.spacing.sm, borderRadius: theme.radii.sm, marginTop: theme.spacing.sm }}>
+              <Typography variant="caption" color="primary" weight="600">
+                Tip: {lesson.conceptNote.grammarTip}
+              </Typography>
+            </View>
+          )}
+        </Card>
+      )}
+
+      {/* Learning Objectives */}
+      {lesson.learningObjectives && lesson.learningObjectives.length > 0 && (
+        <View style={{ marginBottom: theme.spacing.xl }}>
+          <Typography variant="label" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
+            Learning Goals
+          </Typography>
+          {lesson.learningObjectives.map((obj, idx) => (
+            <View key={idx} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+              <Ionicons name="checkmark-circle-outline" size={16} color={colors.primary} />
+              <Typography variant="caption" color="foreground" style={{ marginLeft: theme.spacing.xs }}>
+                {obj}
+              </Typography>
+            </View>
+          ))}
+        </View>
+      )}
+
       {/* Item List */}
       <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
         Items in this lesson ({items.length})

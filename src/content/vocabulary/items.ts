@@ -182,4 +182,155 @@ export const VOCABULARY_ITEMS: LearningItem[] = [
     tags: ['numbers', 'native'],
     lessonId: 'lesson-numbers',
   },
+
+  // Level 2: Topic Particle 은/는
+  {
+    id: 'gram-part-eun-neun',
+    type: 'grammar',
+    korean: '은 / 는',
+    romanization: 'eun / neun',
+    translation: 'Topic Particle (As for / Regarding)',
+    explanation: 'Attach "은" after a consonant-ending noun and "는" after a vowel-ending noun to highlight the topic of the sentence.',
+    examples: [
+      {
+        korean: '저는 학생이에요.',
+        romanization: 'jeoneun haksaeng-ieyo.',
+        translation: 'As for me, I am a student.',
+      },
+      {
+        korean: '이것은 물이에요.',
+        romanization: 'igeoseun murieyo.',
+        translation: 'As for this, it is water.',
+      },
+    ],
+    tags: ['grammar', 'particle', 'topic'],
+    lessonId: 'lesson-topic-particle',
+  },
+  {
+    id: 'voc-pron-jeo',
+    type: 'vocabulary',
+    korean: '저',
+    romanization: 'jeo',
+    translation: 'I / Me (Humble & Polite)',
+    explanation: 'The polite way to refer to oneself in front of others or elders.',
+    tags: ['pronoun', 'polite'],
+    lessonId: 'lesson-topic-particle',
+  },
+
+  // Level 2: Identification 이에요 / 예요
+  {
+    id: 'gram-cop-ieyo-yeyo',
+    type: 'grammar',
+    korean: '이에요 / 예요',
+    romanization: 'ieyo / yeyo',
+    translation: 'To be (Am / Is / Are — Polite)',
+    explanation: 'Informal polite identification copula. Use "이에요" after a consonant and "예요" after a vowel.',
+    examples: [
+      {
+        korean: '저는 한국 사람이에요.',
+        romanization: 'jeoneun hanguk saram-ieyo.',
+        translation: 'I am Korean.',
+      },
+      {
+        korean: '여기는 학교예요.',
+        romanization: 'yeogineun hakgyo-yeyo.',
+        translation: 'Here is school.',
+      },
+    ],
+    tags: ['grammar', 'copula', 'polite'],
+    lessonId: 'lesson-copula-identity',
+  },
+  {
+    id: 'voc-noun-student',
+    type: 'vocabulary',
+    korean: '학생',
+    romanization: 'haksaeng',
+    translation: 'Student',
+    tags: ['noun', 'identity'],
+    lessonId: 'lesson-copula-identity',
+  },
+  {
+    id: 'voc-noun-teacher',
+    type: 'vocabulary',
+    korean: '선생님',
+    romanization: 'seonsaengnim',
+    translation: 'Teacher',
+    tags: ['noun', 'identity', 'honorific'],
+    lessonId: 'lesson-copula-identity',
+  },
+
+  // Level 2: Demonstratives 이, 그, 저
+  {
+    id: 'voc-dem-this',
+    type: 'vocabulary',
+    korean: '이것',
+    romanization: 'igeot',
+    translation: 'This (near speaker)',
+    tags: ['demonstrative'],
+    lessonId: 'lesson-demonstratives',
+  },
+  {
+    id: 'voc-dem-that',
+    type: 'vocabulary',
+    korean: '그것',
+    romanization: 'geugeot',
+    translation: 'That (near listener)',
+    tags: ['demonstrative'],
+    lessonId: 'lesson-demonstratives',
+  },
+  {
+    id: 'voc-dem-that-over-there',
+    type: 'vocabulary',
+    korean: '저것',
+    romanization: 'jeogeot',
+    translation: 'That over there (far from both)',
+    tags: ['demonstrative'],
+    lessonId: 'lesson-demonstratives',
+  },
+
+  // Level 2: Existence 있어요 / 없어요
+  {
+    id: 'gram-verb-isseoyo',
+    type: 'grammar',
+    korean: '있어요',
+    romanization: 'isseoyo',
+    translation: 'To have / To exist',
+    explanation: 'Expresses possession ("I have...") or presence in a location ("There is...").',
+    examples: [
+      {
+        korean: '시간이 있어요.',
+        romanization: 'sigani isseoyo.',
+        translation: 'I have time.',
+      },
+    ],
+    tags: ['grammar', 'verb', 'existence'],
+    lessonId: 'lesson-existence',
+  },
+  {
+    id: 'gram-verb-eopseoyo',
+    type: 'grammar',
+    korean: '없어요',
+    romanization: 'eopseoyo',
+    translation: 'To not have / To not exist',
+    explanation: 'The opposite of 있어요. Expresses lack of possession ("I do not have...") or absence.',
+    examples: [
+      {
+        korean: '돈이 없어요.',
+        romanization: 'doni eopseoyo.',
+        translation: 'I do not have money.',
+      },
+    ],
+    tags: ['grammar', 'verb', 'existence'],
+    lessonId: 'lesson-existence',
+  },
+  {
+    id: 'gram-part-i-ga',
+    type: 'grammar',
+    korean: '이 / 가',
+    romanization: 'i / ga',
+    translation: 'Subject Particle',
+    explanation: 'Marks the specific subject of the sentence or the target of "있어요/없어요". Use "이" after a consonant and "가" after a vowel.',
+    tags: ['grammar', 'particle', 'subject'],
+    lessonId: 'lesson-existence',
+  },
 ];
