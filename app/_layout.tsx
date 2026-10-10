@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react';
-import { Platform } from 'react-native';
+import { Platform, LogBox } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from '@/components/ui';
+
+// Filter out internal React Native LogBox stacktrace warning noise
+LogBox.ignoreLogs([
+  'errorForStackTrace',
+  'Attempted to import the module',
+]);
 
 function RootNavigation() {
   const { colors, isDark } = useTheme();
