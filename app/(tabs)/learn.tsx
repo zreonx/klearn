@@ -14,18 +14,27 @@ import {
   Badge,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
 import { getLessonProgress, isLessonCompleted } from '@/domain/curriculum/types';
 
 export default function LearnScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const { curriculum, recordsMap, loading, refresh } = useLearn();
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['5xl'] }]}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingHorizontal: theme.spacing.lg,
+          paddingTop: Math.max(insets.top + 12, theme.spacing.xl),
+          paddingBottom: theme.spacing['5xl'],
+        },
+      ]}
       refreshControl={
         <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.primary} />
       }

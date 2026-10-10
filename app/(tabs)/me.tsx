@@ -15,12 +15,14 @@ import {
   Divider,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMe } from '@/features/me/useMe';
 import { DailyGoalTarget } from '@/config';
 import { ThemeMode } from '@/domain/settings/types';
 
 export default function MeScreen() {
   const { colors, theme, themePreference, setThemePreference } = useTheme();
+  const insets = useSafeAreaInsets();
   const {
     stats,
     settings,
@@ -75,7 +77,14 @@ export default function MeScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['6xl'] }]}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingHorizontal: theme.spacing.lg,
+          paddingTop: Math.max(insets.top + 12, theme.spacing.xl),
+          paddingBottom: theme.spacing['6xl'],
+        },
+      ]}
     >
       <View style={{ marginBottom: theme.spacing.xl }}>
         <Typography variant="display" weight="700">

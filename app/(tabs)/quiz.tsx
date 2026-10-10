@@ -13,11 +13,13 @@ import {
   Badge,
   useTheme,
 } from '@/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { QuizQuestionType } from '@/domain/quiz/types';
 
 export default function QuizTabScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const [selectedType, setSelectedType] = useState<QuizQuestionType | 'all'>('all');
 
   const modes: Array<{ id: QuizQuestionType | 'all'; title: string; desc: string }> = [
@@ -50,7 +52,14 @@ export default function QuizTabScreen() {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[styles.content, { padding: theme.spacing.lg, paddingBottom: theme.spacing['5xl'] }]}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingHorizontal: theme.spacing.lg,
+          paddingTop: Math.max(insets.top + 12, theme.spacing.xl),
+          paddingBottom: theme.spacing['5xl'],
+        },
+      ]}
     >
       <View style={{ marginBottom: theme.spacing.xl }}>
         <Typography variant="display" weight="700">
