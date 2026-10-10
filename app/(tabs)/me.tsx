@@ -6,6 +6,7 @@ import {
   Switch,
   Alert,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -29,10 +30,13 @@ export default function MeScreen() {
     loading,
     updateSettings,
     exportData,
+    importData,
     resetData,
   } = useMe();
 
   const [exportJson, setExportJson] = useState<string | null>(null);
+  const [importJsonInput, setImportJsonInput] = useState<string>('');
+  const [showImportBox, setShowImportBox] = useState<boolean>(false);
 
   const goalOptions: DailyGoalTarget[] = [5, 10, 15, 20];
   const themeOptions: Array<{ mode: ThemeMode; label: string; icon: keyof typeof Ionicons.glyphMap }> = [
@@ -54,6 +58,26 @@ export default function MeScreen() {
   const handleExport = async () => {
     const json = await exportData();
     setExportJson(json);
+  };
+
+  const handleImport = async () => {
+    if (!importJsonInput.trim()) {
+      Alert.alert('Empty Input', 'Please paste valid JSON data to restore your progress.');
+      return;
+    }
+
+    try {
+      const res = await importData(importJsonInput.trim());
+      if (res.success) {
+        Alert.alert('Success', 'Learning progress and settings restored successfully!');
+        setImportJsonInput('');
+        setShowImportBox(false);
+      } else {
+        Alert.alert('Import Failed', res.error ?? 'Invalid format.');
+      }
+    } catch (e: any) {
+      Alert.alert('Import Error', e?.message ?? 'Malformed JSON.');
+    }
   };
 
   const handleReset = () => {
@@ -351,6 +375,59 @@ export default function MeScreen() {
 
         <Divider style={{ marginVertical: theme.spacing.lg }} />
 
+        <Typography variant="body" weight="600">
+          Restore / Import Progress
+        </Typography>
+        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, marginBottom: theme.spacing.md }}>
+          Import and validate an existing Klearn backup file to restore your stats.
+        </Typography>
+
+        {!showImportBox ? (
+          <Button
+            title="Import Learning Data"
+            variant="outline"
+            onPress={() => setShowImportBox(true)}
+          />
+        ) : (
+          <View>
+            <TextInput
+              multiline
+              numberOfLines={4}
+              value={importJsonInput}
+              onChangeText={setImportJsonInput}
+              placeholder="Paste JSON backup payload here..."
+              placeholderTextColor={colors.foregroundSubtle}
+              style={[
+                styles.importInput,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderColor: colors.borderSubtle,
+                  color: colors.foreground,
+                  borderRadius: theme.radii.md,
+                  padding: theme.spacing.md,
+                },
+              ]}
+            />
+            <View style={{ flexDirection: 'row', gap: 10, marginTop: theme.spacing.md }}>
+              <Button
+                title="Restore Backup"
+                onPress={handleImport}
+                style={{ flex: 1 }}
+              />
+              <Button
+                title="Cancel"
+                variant="outline"
+                onPress={() => {
+                  setShowImportBox(false);
+                  setImportJsonInput('');
+                }}
+              />
+            </View>
+          </View>
+        )}
+
+        <Divider style={{ marginVertical: theme.spacing.lg }} />
+
         <Button
           title="Reset All Progress"
           variant="destructive"
@@ -408,4 +485,10 @@ const styles = StyleSheet.create({
   },
   speedPill: {},
   exportBox: {},
+  importInput: {
+    borderWidth: 1,
+    minHeight: 100,
+    fontSize: 13,
+    textAlignVertical: 'top',
+  },
 });
