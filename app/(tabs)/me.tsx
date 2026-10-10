@@ -126,11 +126,8 @@ export default function MeScreen() {
       </Typography>
 
       <Card style={{ padding: theme.spacing.lg, marginBottom: theme.spacing.lg }}>
-        <Typography variant="body" weight="600">
+        <Typography variant="body" weight="600" style={{ marginBottom: theme.spacing.md }}>
           Theme Mode
-        </Typography>
-        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, marginBottom: theme.spacing.md }}>
-          Deep Jade + Warm Ivory (Light) or Muted Jade + Ink Charcoal (Dark).
         </Typography>
 
         <View style={styles.themeOptionsRow}>
@@ -347,9 +344,9 @@ export default function MeScreen() {
         </View>
       </Card>
 
-      {/* Data Management Section (Section 27 & 52) */}
+      {/* Data Management Section */}
       <Typography variant="title" style={{ marginTop: theme.spacing.sm, marginBottom: theme.spacing.md }}>
-        Data & Storage (Local-First)
+        Data & Storage
       </Typography>
 
       <Card style={{ padding: theme.spacing.lg }}>
@@ -357,7 +354,7 @@ export default function MeScreen() {
           Data Export & Backup
         </Typography>
         <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, marginBottom: theme.spacing.md }}>
-          Export your complete learning history, spaced repetition schedules, and streak to JSON.
+          Generate your complete learning history, spaced repetition schedules, and streak as a JSON text backup.
         </Typography>
 
         <Button
@@ -368,7 +365,12 @@ export default function MeScreen() {
 
         {exportJson && (
           <View style={[styles.exportBox, { backgroundColor: colors.surfaceSubtle, padding: theme.spacing.md, borderRadius: theme.radii.md, marginTop: theme.spacing.md }]}>
-            <Typography variant="caption" color="foregroundSubtle" numberOfLines={6}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <Typography variant="caption" color="primary" weight="700">
+                Backup Generated (Copy to Save):
+              </Typography>
+            </View>
+            <Typography variant="caption" color="foregroundSubtle" numberOfLines={8} selectable>
               {exportJson}
             </Typography>
           </View>
@@ -477,10 +479,10 @@ export default function MeScreen() {
       {/* App Info / About */}
       <View style={{ alignItems: 'center', marginTop: theme.spacing.sm, marginBottom: theme.spacing.lg }}>
         <Typography variant="caption" color="foregroundMuted">
-          Klearn v1.0.0 • Free & Local-First Korean Learning
+          Klearn v1.0.0 • Free Korean Learning
         </Typography>
         <Typography variant="caption" color="foregroundSubtle" style={{ marginTop: 2 }}>
-          Crafted with Minimalist Jade Design • Zero Tracking
+          Crafted with ❤️ • Zero Tracking
         </Typography>
       </View>
     </ScrollView>
