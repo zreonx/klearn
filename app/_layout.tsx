@@ -71,6 +71,13 @@ function RootNavigation() {
             title: 'Learning Item',
           }}
         />
+        <Stack.Screen
+          name="hangul/index"
+          options={{
+            title: 'Hangul Chart',
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   );
