@@ -4,12 +4,12 @@
     "slug": "klearn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/klearn-icon-padded.png",
+    "icon": "./assets/klearn-icon.png",
     "scheme": "klearn",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/klearn-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#F8F7F2"
     },
