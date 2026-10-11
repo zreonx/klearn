@@ -167,13 +167,18 @@ export default function TodayScreen() {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                borderWidth: 1,
+                borderColor: colors.borderSubtle,
               }}
             >
-              <View style={{ flex: 1, marginRight: theme.spacing.sm }}>
-                <Typography variant="label" color="accent" weight="700">
-                  Target Recommendation:
-                </Typography>
-                <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+              <View style={{ flex: 1, marginRight: theme.spacing.md }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                  <Ionicons name="sparkles" size={14} color={colors.accent} />
+                  <Typography variant="label" color="accent" weight="700">
+                    Recommended Focus
+                  </Typography>
+                </View>
+                <Typography variant="caption" color="foregroundMuted" style={{ lineHeight: 18 }}>
                   {data.learnerProfile.recommendedFocus.reason}
                 </Typography>
               </View>
@@ -181,14 +186,18 @@ export default function TodayScreen() {
                 onPress={() => router.push('/review')}
                 style={{
                   backgroundColor: colors.primary,
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  borderRadius: theme.radii.sm,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: theme.radii.md,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 4,
                 }}
               >
                 <Typography variant="caption" color="background" weight="700">
-                  Focus
+                  Practice Now
                 </Typography>
+                <Ionicons name="arrow-forward" size={13} color={colors.primaryForeground} />
               </TouchableOpacity>
             </View>
           )}
