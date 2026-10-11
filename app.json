@@ -23,7 +23,7 @@
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#F8F7F2",
-        "foregroundImage": "./assets/klearn-android-foreground.png",
+        "foregroundImage": "./assets/klearn-icon.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
