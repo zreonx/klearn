@@ -10,11 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.zrodayrit.klearn",
+      "bundleIdentifier": "com.klearn",
       "buildNumber": "1"
     },
     "android": {
-      "package": "com.zrodayrit.klearn",
+      "package": "com.klearn",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#176B55",
