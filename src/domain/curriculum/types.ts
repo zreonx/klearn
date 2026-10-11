@@ -1,5 +1,31 @@
 import { LearningRecord } from '../learning/types';
 
+export type SkillType =
+  | 'vocabulary'
+  | 'grammar'
+  | 'listening'
+  | 'speaking'
+  | 'reading'
+  | 'writing';
+
+export type StageId =
+  | 'stage-foundations'
+  | 'stage-everyday'
+  | 'stage-independent'
+  | 'stage-advanced'
+  | 'stage-mastery';
+
+export interface Stage {
+  id: StageId;
+  order: number;
+  title: string;
+  subtitle: string;
+  topikBenchmark: string;
+  practicalOutcome: string;
+  colorToken?: string;
+  levels: Level[];
+}
+
 export interface LessonConceptNote {
   summary: string;
   explanation: string;
@@ -27,6 +53,7 @@ export interface Lesson {
   koreanTitle?: string;
   description: string;
   order: number;
+  skills?: SkillType[];
   prerequisites?: string[];
   learningObjectives?: string[];
   conceptNote?: LessonConceptNote;
@@ -45,6 +72,7 @@ export interface Unit {
 
 export interface Level {
   id: string;
+  stageId?: StageId;
   title: string;
   description: string;
   order: number;
@@ -52,6 +80,7 @@ export interface Level {
 }
 
 export interface Curriculum {
+  stages?: Stage[];
   levels: Level[];
 }
 

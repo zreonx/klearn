@@ -96,6 +96,126 @@ export default function TodayScreen() {
         </Card>
       )}
 
+      {/* 5-Stage Long-Term Milestone Card */}
+      {data?.learnerProfile && (
+        <Card elevated style={[styles.card, { marginBottom: theme.spacing.lg }]}>
+          <View style={styles.rowBetween}>
+            <View style={{ flex: 1, marginRight: theme.spacing.sm }}>
+              <Badge label="Active Milestone" variant="success" style={{ alignSelf: 'flex-start', marginBottom: 6 }} />
+              <Typography variant="title" weight="700">
+                {data.learnerProfile.stageName}
+              </Typography>
+              <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                {data.learnerProfile.stageOutcome}
+              </Typography>
+            </View>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 58,
+                height: 58,
+                borderRadius: 29,
+                backgroundColor: colors.surfaceSubtle,
+                borderWidth: 1,
+                borderColor: colors.borderSubtle,
+              }}
+            >
+              <Typography variant="title" weight="700" color="primary">
+                {data.learnerProfile.overallFluencyScore}%
+              </Typography>
+              <Typography variant="caption" color="foregroundSubtle" style={{ fontSize: 9 }}>
+                Fluency
+              </Typography>
+            </View>
+          </View>
+
+          {data.learnerProfile.recommendedFocus && (
+            <View
+              style={{
+                backgroundColor: colors.surfaceSubtle,
+                padding: theme.spacing.md,
+                borderRadius: theme.radii.md,
+                marginTop: theme.spacing.md,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <View style={{ flex: 1, marginRight: theme.spacing.sm }}>
+                <Typography variant="label" color="accent" weight="700">
+                  Target Recommendation:
+                </Typography>
+                <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+                  {data.learnerProfile.recommendedFocus.reason}
+                </Typography>
+              </View>
+              <TouchableOpacity
+                onPress={() => router.push('/review')}
+                style={{
+                  backgroundColor: colors.primary,
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: theme.radii.sm,
+                }}
+              >
+                <Typography variant="caption" color="background" weight="700">
+                  Focus
+                </Typography>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Card>
+      )}
+
+      {/* 6-Skill Fluency Radar / Breakdown Card */}
+      {data?.learnerProfile && (
+        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
+          <View style={[styles.rowBetween, { marginBottom: theme.spacing.md }]}>
+            <View>
+              <Typography variant="title" weight="700">
+                6-Skill Competency
+              </Typography>
+              <Typography variant="caption" color="foregroundMuted">
+                Real retention, application & vocabulary memory
+              </Typography>
+            </View>
+            <TouchableOpacity onPress={() => router.push('/learn')}>
+              <Typography variant="caption" color="primary" weight="600">
+                View Path →
+              </Typography>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ gap: 10 }}>
+            {Object.values(data.learnerProfile.skills).map((skillStat) => (
+              <View key={skillStat.skill}>
+                <View style={[styles.rowBetween, { marginBottom: 3 }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Typography variant="body" weight="600">
+                      {skillStat.label}
+                    </Typography>
+                    <Typography variant="caption" color="foregroundMuted">
+                      ({skillStat.koreanLabel})
+                    </Typography>
+                    {skillStat.isWeakArea ? (
+                      <Badge label="Needs Review" variant="warning" style={{ transform: [{ scale: 0.85 }] }} />
+                    ) : null}
+                  </View>
+                  <Typography variant="label" color="foregroundMuted">
+                    {skillStat.score}%
+                  </Typography>
+                </View>
+                <ProgressBar
+                  progress={skillStat.score / 100}
+                  color={skillStat.isWeakArea ? colors.accent : colors.primary}
+                />
+              </View>
+            ))}
+          </View>
+        </Card>
+      )}
+
       {/* Daily Goal Card (Section 13 & 21) */}
       {data && (
         <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>

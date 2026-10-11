@@ -29,29 +29,29 @@ export default function QuizTabScreen() {
       desc: 'Mix of Korean to English, English to Korean, and Listening',
     },
     {
+      id: 'listening_recognition',
+      title: 'Auditory & Listening Mastery',
+      desc: 'Listen to native pronunciation and sharpen spoken recognition',
+    },
+    {
+      id: 'particle_fill',
+      title: 'Grammar & Particles (조사)',
+      desc: 'Master Korean particles (은/는, 이/가, 을/를) in real context',
+    },
+    {
+      id: 'sentence_assembly',
+      title: 'Sentence Construction (SOV)',
+      desc: 'Practice forming and reading full Korean sentences & dialogues',
+    },
+    {
       id: 'korean_to_english',
-      title: 'Korean → English',
+      title: 'Korean → English Recall',
       desc: 'Recognize Korean words and select their English meaning',
     },
     {
       id: 'english_to_korean',
-      title: 'English → Korean',
+      title: 'English → Korean Production',
       desc: 'Recall and produce the right Korean Hangul representation',
-    },
-    {
-      id: 'listening_recognition',
-      title: 'Listening Practice',
-      desc: 'Listen to spoken audio and identify the meaning',
-    },
-    {
-      id: 'particle_fill',
-      title: 'Grammar & Particles',
-      desc: 'Master Korean particles (은/는, 이/가) in authentic context',
-    },
-    {
-      id: 'sentence_assembly',
-      title: 'Sentence Assembly',
-      desc: 'Practice forming and reading full Korean sentences',
     },
   ];
 
@@ -84,14 +84,15 @@ export default function QuizTabScreen() {
       </View>
 
       <Card elevated style={{ marginBottom: theme.spacing.xl }}>
-        <View style={{ marginBottom: theme.spacing.sm }}>
-          <Badge label="Quiz Engine" variant="vocab" />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: theme.spacing.sm }}>
+          <Badge label="Adaptive Quiz Engine" variant="vocab" />
+          <Badge label="TOPIK Referenced" variant="hangul" />
         </View>
         <Typography variant="heading" style={{ marginBottom: theme.spacing.xs }}>
-          Ready to test your Korean?
+          Active Retrieval Practice
         </Typography>
         <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
-          Questions are dynamically generated based on the items you've encountered in your lessons.
+          Questions target your current proficiency stage across the 6 skill areas (Vocabulary, Grammar, Listening, Speaking, Reading, Writing).
         </Typography>
         <Button title="Start Practice Quiz" fullWidth onPress={handleStart} />
       </Card>

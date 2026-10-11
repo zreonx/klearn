@@ -74,6 +74,45 @@ export default function LearnScreen() {
         </View>
       </Card>
 
+      {/* 5-Stage Long-Term Learning Journey Header & Browser */}
+      {curriculum?.stages && curriculum.stages.length > 0 ? (
+        <View style={{ marginBottom: theme.spacing.xl }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing.xs }}>
+            <Typography variant="title" weight="700">
+              5-Stage Proficiency Journey
+            </Typography>
+            <Badge label="TOPIK Aligned" variant="vocab" />
+          </View>
+          <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.md }}>
+            Structured from Hangul script to real-world fluency
+          </Typography>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 4 }}>
+            {curriculum.stages.map((stg) => (
+              <View
+                key={stg.id}
+                style={{
+                  backgroundColor: colors.surfaceSubtle,
+                  borderRadius: theme.radii.md,
+                  padding: 10,
+                  width: 175,
+                  borderWidth: 1,
+                  borderColor: colors.borderSubtle,
+                }}
+              >
+                <Badge label={stg.topikBenchmark} variant="default" style={{ alignSelf: 'flex-start', marginBottom: 4, transform: [{ scale: 0.85 }] }} />
+                <Typography variant="body" weight="700" numberOfLines={1}>
+                  {stg.title}
+                </Typography>
+                <Typography variant="caption" color="foregroundMuted" numberOfLines={2} style={{ fontSize: 11, marginTop: 2 }}>
+                  {stg.practicalOutcome}
+                </Typography>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
+
       {curriculum?.levels.map((level) => {
         const isBonus = level.id.includes('bonus') || level.id.includes('casual');
         return (

@@ -7,6 +7,10 @@ import {
   isDailyGoalReached,
 } from '@/domain/progress/dailyGoal';
 import { getEffectiveStreak } from '@/domain/streak/streakCalculator';
+import {
+  calculateLearnerProfile,
+  LearnerProfileSnapshot,
+} from '@/domain/learning/learnerEngine';
 
 export type RecommendedActionType = 'review' | 'learn' | 'continue_lesson' | 'quiz';
 
@@ -32,6 +36,7 @@ export interface TodayDashboardData {
   streak: number;
   recommendation: RecommendedAction;
   nextLesson?: Lesson;
+  learnerProfile: LearnerProfileSnapshot;
 }
 
 export class DashboardUseCases {
@@ -114,6 +119,12 @@ export class DashboardUseCases {
       };
     }
 
+    // Compute 6-skill learner profile and stage mastery
+    const allItems = this.services.catalog.getAllItems();
+    const itemTypeMap = new Map<string, string>();
+    allItems.forEach((it) => itemTypeMap.set(it.id, it.type));
+    const learnerProfile = calculateLearnerProfile(recordsMap, itemTypeMap);
+
     return {
       dailyWord,
       dailyPhrase,
@@ -128,6 +139,7 @@ export class DashboardUseCases {
       streak: effectiveStreak,
       recommendation,
       nextLesson,
+      learnerProfile,
     };
   }
 }

@@ -1,10 +1,58 @@
 import { Curriculum } from '@/domain/curriculum/types';
 
 export const CURRICULUM_DATA: Curriculum = {
+  stages: [
+    {
+      id: 'stage-foundations',
+      order: 1,
+      title: 'Stage 1 — Foundations',
+      subtitle: 'Hangul, syllables, sound change rules, and basic greetings',
+      topikBenchmark: 'Pre-A1 / TOPIK Foundation',
+      practicalOutcome: 'Read any Hangul script, pronounce natural syllables, and introduce yourself.',
+      levels: [],
+    },
+    {
+      id: 'stage-everyday',
+      order: 2,
+      title: 'Stage 2 — Everyday Korean',
+      subtitle: 'Sentence patterns, particles, verb conjugation, numbers & daily routines',
+      topikBenchmark: 'TOPIK I (Levels 1–2)',
+      practicalOutcome: 'Order food, shop, tell time, navigate directions, and chat about daily routines.',
+      levels: [],
+    },
+    {
+      id: 'stage-independent',
+      order: 3,
+      title: 'Stage 3 — Independent Communication',
+      subtitle: 'Connected speech, longer conversations, nuanced grammar & graded stories',
+      topikBenchmark: 'TOPIK II (Level 3)',
+      practicalOutcome: 'Communicate smoothly in complex social situations and express reasons & feelings.',
+      levels: [],
+    },
+    {
+      id: 'stage-advanced',
+      order: 4,
+      title: 'Stage 4 — Advanced Proficiency',
+      subtitle: 'Idioms, speech levels, formal vs informal registers & authentic texts',
+      topikBenchmark: 'TOPIK II (Levels 4–5)',
+      practicalOutcome: 'Read Korean news, engage in discussions, and master speech registers.',
+      levels: [],
+    },
+    {
+      id: 'stage-mastery',
+      order: 5,
+      title: 'Stage 5 — Mastery & Specialization',
+      subtitle: 'Professional Korean, academic vocabulary, media & cultural immersion',
+      topikBenchmark: 'TOPIK II (Level 6) & Professional',
+      practicalOutcome: 'Work in Korean professional settings and understand unfiltered media.',
+      levels: [],
+    },
+  ],
   levels: [
     // Level 1: Foundations
     {
       id: 'level-foundations',
+      stageId: 'stage-foundations',
       title: 'Level 1: Foundations',
       description: 'Master Hangul alphabet characters, final consonants (Batchim), and essential courtesies.',
       order: 1,
@@ -234,6 +282,7 @@ export const CURRICULUM_DATA: Curriculum = {
     // Level 2: Beginner A1
     {
       id: 'level-beginner-a1',
+      stageId: 'stage-everyday',
       title: 'Level 2: Beginner A1',
       description: 'Form basic Korean sentences with topic particles, identification, and existence.',
       order: 2,
@@ -622,6 +671,7 @@ export const CURRICULUM_DATA: Curriculum = {
     // Level 3: Beginner A2
     {
       id: 'level-beginner-a2',
+      stageId: 'stage-everyday',
       title: 'Level 3: Beginner A2',
       description: 'Expand your sentences with direct objects, past tense narratives, and personal desires.',
       order: 3,
@@ -761,6 +811,7 @@ export const CURRICULUM_DATA: Curriculum = {
     // Bonus Level: Casual Korean (반말 - Banmal)
     {
       id: 'level-casual-banmal',
+      stageId: 'stage-everyday',
       title: 'Bonus: Casual Korean (반말)',
       description: 'Learn how close friends, peers, and K-drama characters naturally talk without formal speech endings.',
       order: 4,
