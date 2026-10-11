@@ -8,6 +8,11 @@
     "scheme": "klearn",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F8F7F2"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.klearn",
@@ -17,7 +22,7 @@
       "package": "com.klearn",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#176B55",
+        "backgroundColor": "#F8F7F2",
         "foregroundImage": "./assets/klearn-android-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
