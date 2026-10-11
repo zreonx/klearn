@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,17 +13,57 @@ import {
   Card,
   ProgressBar,
   Badge,
+  StageJourneyModal,
   useTheme,
 } from '@/components/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
 import { getLessonProgress, isLessonCompleted, isLessonUnlocked } from '@/domain/curriculum/types';
+import { services } from '@/application/services';
 
 export default function LearnScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const { curriculum, recordsMap, allLessonsMap, loading, refresh } = useLearn();
+  const [showStageModal, setShowStageModal] = useState(false);
+  const [isFirstTimeOnboarding, setIsFirstTimeOnboarding] = useState(false);
+
+  // Check onboarding on mount
+  useEffect(() => {
+    let mounted = true;
+    async function checkOnboarding() {
+      try {
+        const userSettings = await services.settingsRepo.getUserSettings();
+        if (mounted && !userSettings.hasCompletedOnboarding) {
+          setIsFirstTimeOnboarding(true);
+          setShowStageModal(true);
+        }
+      } catch (e) {
+        // Fallback silently if settings fail
+      }
+    }
+    checkOnboarding();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleCloseStageModal = async () => {
+    setShowStageModal(false);
+    if (isFirstTimeOnboarding) {
+      setIsFirstTimeOnboarding(false);
+      try {
+        const userSettings = await services.settingsRepo.getUserSettings();
+        await services.settingsRepo.saveUserSettings({
+          ...userSettings,
+          hasCompletedOnboarding: true,
+        });
+      } catch (e) {
+        // Ignore persistence error
+      }
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -102,43 +142,41 @@ export default function LearnScreen() {
         </View>
       </Card>
 
-      {/* 5-Stage Long-Term Learning Journey Header & Browser */}
+      {/* 5-Stage Proficiency Journey Quick Access Banner */}
       {curriculum?.stages && curriculum.stages.length > 0 ? (
-        <View style={{ marginBottom: theme.spacing.xl }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing.xs }}>
-            <Typography variant="title" weight="700">
-              5-Stage Proficiency Journey
-            </Typography>
-            <Badge label="TOPIK Aligned" variant="vocab" />
-          </View>
-          <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: theme.spacing.md }}>
-            Structured from Hangul script to real-world fluency
-          </Typography>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 4 }}>
-            {curriculum.stages.map((stg) => (
-              <View
-                key={stg.id}
-                style={{
-                  backgroundColor: colors.surfaceSubtle,
-                  borderRadius: theme.radii.md,
-                  padding: 10,
-                  width: 175,
-                  borderWidth: 1,
-                  borderColor: colors.borderSubtle,
-                }}
-              >
-                <Badge label={stg.topikBenchmark} variant="default" style={{ alignSelf: 'flex-start', marginBottom: 4, transform: [{ scale: 0.85 }] }} />
-                <Typography variant="body" weight="700" numberOfLines={1}>
-                  {stg.title}
-                </Typography>
-                <Typography variant="caption" color="foregroundMuted" numberOfLines={2} style={{ fontSize: 11, marginTop: 2 }}>
-                  {stg.practicalOutcome}
-                </Typography>
+        <Card
+          subtle
+          style={[styles.journeyBannerCard, { marginBottom: theme.spacing.xl }]}
+          onPress={() => setShowStageModal(true)}
+        >
+          <View style={styles.journeyBannerRow}>
+            <View style={{ flex: 1, paddingRight: theme.spacing.sm }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <Badge label="5-Stage Roadmap" variant="vocab" />
+                <Badge label="TOPIK Aligned" variant="default" />
               </View>
-            ))}
-          </ScrollView>
-        </View>
+              <Typography variant="title" weight="700">
+                Korean Proficiency Journey
+              </Typography>
+              <Typography
+                variant="caption"
+                color="foregroundMuted"
+                style={{ marginTop: 2, lineHeight: 18 }}
+              >
+                From Hangul foundations to real-world fluency. View all 5 stages and learning outcomes.
+              </Typography>
+            </View>
+
+            <View
+              style={[
+                styles.journeyArrowCircle,
+                { backgroundColor: colors.surface, borderColor: colors.borderSubtle },
+              ]}
+            >
+              <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+            </View>
+          </View>
+        </Card>
       ) : null}
 
       {curriculum?.levels.map((level) => {
@@ -247,6 +285,13 @@ export default function LearnScreen() {
         </View>
       );
     })}
+
+      <StageJourneyModal
+        visible={showStageModal}
+        stages={curriculum?.stages ?? []}
+        onClose={handleCloseStageModal}
+        isFirstTime={isFirstTimeOnboarding}
+      />
     </ScrollView>
   );
 }
@@ -276,6 +321,22 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  journeyBannerCard: {
+    padding: 16,
+  },
+  journeyBannerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  journeyArrowCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

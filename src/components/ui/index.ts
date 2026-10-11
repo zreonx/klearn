@@ -6,4 +6,5 @@ export * from './Badge';
 export * from './ProgressBar';
 export * from './Divider';
 export * from './ScreenLayout';
+export * from './StageJourneyModal';
 export { ThemeProvider, useTheme } from '@/app/providers/ThemeProvider';
