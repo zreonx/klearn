@@ -173,27 +173,43 @@ export function calculateLearnerProfile(
   skillScores.sort((a, b) => a.score - b.score);
   const weakestSkills = skillScores.slice(0, 2).map((s) => s.skill);
   const strongestSkills = skillScores.slice(-2).reverse().map((s) => s.skill);
-
-  // Overall fluency score is average of all 6 skills
+  // Overall fluency score is based on weighted mastered items and retention accuracy
   const totalSkillScore = skillScores.reduce((acc, curr) => acc + curr.score, 0);
   const overallFluencyScore = Math.round(totalSkillScore / skillScores.length);
 
-  // Current stage determination
+  // Compute total unique items learned and mastered across the app
+  let totalUniqueLearned = 0;
+  let totalUniqueMastered = 0;
+  recordsMap.forEach((record) => {
+    if (record.status !== 'unseen') {
+      totalUniqueLearned += 1;
+      if (record.status === 'mastered') {
+        totalUniqueMastered += 1;
+      }
+    }
+  });
+
+  // Accurate Stage Determination based on concrete curriculum progression:
+  // Stage 1 (Foundations): Starts at Level 1 (Hangul letters, batchim, greetings ~20-30 items)
+  // Stage 2 (Everyday Korean): Unlocked once Stage 1 basics are covered (~30+ items)
+  // Stage 3 (Independent): 60+ items with high grammar & dialogue mastery
+  // Stage 4 (Advanced): 100+ items
+  // Stage 5 (Mastery): 150+ items
   let currentStageId: StageId = 'stage-foundations';
-  let stageName = 'Stage 1: Foundations';
+  let stageName = 'Stage 1 — Foundations';
   let stageOutcome = 'Read Hangul & Introduce yourself';
 
-  if (overallFluencyScore >= 65) {
+  if (totalUniqueLearned >= 120 && overallFluencyScore >= 65) {
     currentStageId = 'stage-advanced';
-    stageName = 'Stage 4: Advanced Proficiency';
+    stageName = 'Stage 4 — Advanced Proficiency';
     stageOutcome = 'Understand authentic media & express nuanced ideas';
-  } else if (overallFluencyScore >= 40) {
+  } else if (totalUniqueLearned >= 70 && overallFluencyScore >= 45) {
     currentStageId = 'stage-independent';
-    stageName = 'Stage 3: Independent Communication';
+    stageName = 'Stage 3 — Independent Communication';
     stageOutcome = 'Hold connected conversations & read graded stories';
-  } else if (overallFluencyScore >= 18) {
+  } else if (totalUniqueLearned >= 25) {
     currentStageId = 'stage-everyday';
-    stageName = 'Stage 2: Everyday Korean';
+    stageName = 'Stage 2 — Everyday Korean';
     stageOutcome = 'Daily routines, numbers, food & polite interactions';
   }
 
@@ -202,7 +218,7 @@ export function calculateLearnerProfile(
   let reason = `Target practice in ${SKILL_METADATA[weakSkillKey].label} will give you the fastest fluency gain.`;
   let actionText = `Practice ${SKILL_METADATA[weakSkillKey].label}`;
 
-  if (skills.vocabulary.itemsLearned > 20 && skills.listening.score < skills.vocabulary.score - 15) {
+  if (skills.vocabulary.itemsLearned > 15 && skills.listening.score < skills.vocabulary.score - 10) {
     reason = 'You recognize many words visually—listening practice will train your ear for natural speech.';
     actionText = 'Train Auditory Recognition';
   }

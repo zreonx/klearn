@@ -33,9 +33,20 @@ export default function LessonDetailScreen() {
 
   useEffect(() => {
     if (lessonId) {
-      getLessonDetails(lessonId).then(setLessonData);
+      getLessonDetails(lessonId).then(async (details) => {
+        setLessonData(details);
+        // Automatically mark all unseen items in this lesson as learned when viewed
+        if (details && details.items) {
+          for (const item of details.items) {
+            const currentRecord = recordsMap.get(item.id);
+            if (!currentRecord || currentRecord.status === 'unseen') {
+              await markItemLearned(item.id);
+            }
+          }
+        }
+      });
     }
-  }, [lessonId, recordsMap]);
+  }, [lessonId, recordsMap, markItemLearned]);
 
   if (!lessonData || !lessonData.lesson) {
     return (
@@ -255,20 +266,12 @@ export default function LessonDetailScreen() {
             <Divider style={{ marginVertical: theme.spacing.md }} />
 
             <View style={styles.actionRow}>
-              {isLearned ? (
-                <View style={styles.learnedStatus}>
-                  <Ionicons name="checkmark-circle" size={18} color={colors.success} />
-                  <Typography variant="label" color="success" style={{ marginLeft: theme.spacing.xs }}>
-                    Learned (in Spaced Repetition)
-                  </Typography>
-                </View>
-              ) : (
-                <Button
-                  title="Mark as Learned"
-                  size="sm"
-                  onPress={() => handleLearnItem(item)}
-                />
-              )}
+              <View style={styles.learnedStatus}>
+                <Ionicons name="checkmark-circle" size={18} color={colors.success} />
+                <Typography variant="label" color="success" style={{ marginLeft: theme.spacing.xs }}>
+                  Learned · Scheduled for Review
+                </Typography>
+              </View>
             </View>
           </Card>
         );

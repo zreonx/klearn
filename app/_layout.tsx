@@ -84,6 +84,14 @@ function RootNavigation() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="search"
+          options={{
+            title: 'Search',
+            headerShown: false,
+            animation: 'fade',
+          }}
+        />
       </Stack>
     </>
   );

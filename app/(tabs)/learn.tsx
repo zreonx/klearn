@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Typography,
@@ -24,6 +25,12 @@ export default function LearnScreen() {
   const insets = useSafeAreaInsets();
   const { curriculum, recordsMap, allLessonsMap, loading, refresh } = useLearn();
 
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -39,13 +46,34 @@ export default function LearnScreen() {
         <RefreshControl refreshing={loading} onRefresh={refresh} tintColor={colors.primary} />
       }
     >
-      <View style={{ marginBottom: theme.spacing.xl }}>
-        <Typography variant="display" weight="700">
-          Curriculum
-        </Typography>
-        <Typography variant="caption" color="foregroundMuted">
-          Structured Korean lessons from Hangul to everyday mastery
-        </Typography>
+      <View style={[styles.headerRow, { marginBottom: theme.spacing.xl, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+        <View style={{ flex: 1 }}>
+          <Typography variant="display" weight="700">
+            Curriculum
+          </Typography>
+          <Typography variant="caption" color="foregroundMuted">
+            Structured Korean lessons from Hangul to everyday mastery
+          </Typography>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => router.push('/search' as any)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 19,
+            backgroundColor: colors.surfaceSubtle,
+            borderWidth: 1,
+            borderColor: colors.borderSubtle,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: theme.spacing.sm,
+          }}
+          accessibilityLabel="Search dictionary and lessons"
+        >
+          <Ionicons name="search" size={18} color={colors.foreground} />
+        </TouchableOpacity>
       </View>
 
       {/* Hangul & Numbers Chart Quick Access Card */}
@@ -228,6 +256,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {},
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   hangulHeroCard: {
     padding: 16,
   },

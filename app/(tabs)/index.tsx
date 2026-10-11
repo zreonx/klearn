@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,7 +6,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Typography,
@@ -25,6 +25,13 @@ export default function TodayScreen() {
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const { data, loading, refresh, speak } = useDashboard();
+
+  // Auto-refresh stats and recommendations whenever user switches to or views the Today tab
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   return (
     <ScrollView
@@ -52,25 +59,45 @@ export default function TodayScreen() {
           </Typography>
         </View>
 
-        {data ? (
-          <View
-            style={[
-              styles.streakBadge,
-              {
-                backgroundColor: colors.surfaceSubtle,
-                borderColor: colors.borderSubtle,
-                paddingHorizontal: theme.spacing.md,
-                paddingVertical: theme.spacing.xs,
-                borderRadius: theme.radii.full,
-              },
-            ]}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <TouchableOpacity
+            onPress={() => router.push('/search' as any)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 19,
+              backgroundColor: colors.surfaceSubtle,
+              borderWidth: 1,
+              borderColor: colors.borderSubtle,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            accessibilityLabel="Search dictionary and lessons"
           >
-            <Ionicons name="flame" size={18} color={colors.accent} />
-            <Typography variant="label" color="foreground" style={[styles.streakText, { marginLeft: theme.spacing.xs }]}>
-              {data.streak} {data.streak === 1 ? 'day' : 'days'}
-            </Typography>
-          </View>
-        ) : null}
+            <Ionicons name="search" size={18} color={colors.foreground} />
+          </TouchableOpacity>
+
+          {data ? (
+            <View
+              style={[
+                styles.streakBadge,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderColor: colors.borderSubtle,
+                  paddingHorizontal: theme.spacing.md,
+                  paddingVertical: theme.spacing.xs,
+                  borderRadius: theme.radii.full,
+                },
+              ]}
+            >
+              <Ionicons name="flame" size={18} color={colors.accent} />
+              <Typography variant="label" color="foreground" style={[styles.streakText, { marginLeft: theme.spacing.xs }]}>
+                {data.streak} {data.streak === 1 ? 'day' : 'days'}
+              </Typography>
+            </View>
+          ) : null}
+        </View>
       </View>
 
       {/* Recommended Action Card (Section 65) */}
