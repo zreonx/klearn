@@ -4,7 +4,7 @@
     "slug": "klearn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/klearn-icon.png",
+    "icon": "./assets/klearn-icon-padded.png",
     "scheme": "klearn",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -18,7 +18,7 @@
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#176B55",
-        "foregroundImage": "./assets/klearn-icon.png",
+        "foregroundImage": "./assets/klearn-android-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
@@ -32,7 +32,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/klearn-faviicon.png"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       [
