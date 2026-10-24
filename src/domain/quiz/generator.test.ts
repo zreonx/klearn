@@ -121,4 +121,17 @@ describe('Quiz Generator', () => {
     expect(acousticQ.options.some((o) => o.isCorrect)).toBe(true);
     expect(acousticQ.explanation).toBeTruthy();
   });
+
+  it('generates dictation question with audio prompt and syllable tiles', () => {
+    const questions = generateQuizQuestions(sampleItems, sampleItems, {
+      types: ['dictation'],
+      questionCount: 2,
+    });
+
+    const dictationQ = questions.find((q) => q.type === 'dictation');
+    expect(dictationQ).toBeDefined();
+    expect(dictationQ?.speakText).toBeTruthy();
+    expect(dictationQ?.tiles).toBeDefined();
+    expect(dictationQ?.tiles!.length).toBeGreaterThan(0);
+  });
 });

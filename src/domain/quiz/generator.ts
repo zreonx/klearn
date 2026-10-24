@@ -91,6 +91,14 @@ export function generateQuestionForItem(
       break;
     }
 
+    case 'dictation': {
+      prompt = 'Listen & spell what you hear (받아쓰기)';
+      subPrompt = `Meaning: ${targetItem.translation}`;
+      correctLabel = targetItem.korean;
+      speakText = targetItem.korean;
+      break;
+    }
+
     case 'acoustic_discrimination':
       return generateAcousticQuestion(rng);
   }
@@ -159,6 +167,14 @@ export function generateQuestionForItem(
 
     const tilePool = extraTile ? [...cleanTokens, extraTile] : cleanTokens;
     tiles = shuffleArray(tilePool, rng);
+  } else if (type === 'dictation') {
+    const cleanChars = correctLabel.replace(/[\s.,?!~]/g, '').split('');
+    const distractorCandidates = ['가', '나', '다', '라', '마', '바', '사', '아', '자', '차', '카', '타', '파', '하', '물', '밥', '집'];
+    const extraSyllables = shuffleArray(
+      distractorCandidates.filter((c) => !cleanChars.includes(c)),
+      rng
+    ).slice(0, Math.min(3, Math.max(1, 6 - cleanChars.length)));
+    tiles = shuffleArray([...cleanChars, ...extraSyllables], rng);
   }
 
   return {

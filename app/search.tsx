@@ -19,11 +19,14 @@ import { services } from '@/application/services';
 import { LearningItem } from '@/domain/learning/types';
 import { matchesChoseong } from '@/domain/hangul/choseongSearch';
 
+type SearchCategory = 'all' | 'vocabulary' | 'grammar' | 'sentence' | 'hangul';
+
 export default function SearchScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState<SearchCategory>('all');
 
   const allItems = useMemo(() => {
     return services.catalog.getAllItems();
@@ -31,9 +34,22 @@ export default function SearchScreen() {
 
   const results = useMemo(() => {
     const trimmed = query.trim().toLowerCase();
-    if (!trimmed) return [];
+    let pool = allItems;
+    if (category === 'vocabulary') {
+      pool = pool.filter((it) => it.type === 'vocabulary' && !it.tags?.includes('sentence'));
+    } else if (category === 'grammar') {
+      pool = pool.filter((it) => it.type === 'grammar');
+    } else if (category === 'sentence') {
+      pool = pool.filter((it) => it.tags?.includes('sentence') || (it.type === 'phrase' && it.korean.length >= 6));
+    } else if (category === 'hangul') {
+      pool = pool.filter((it) => it.type.startsWith('hangul'));
+    }
 
-    return allItems
+    if (!trimmed) {
+      return category !== 'all' ? pool.slice(0, 30) : [];
+    }
+
+    return pool
       .filter((item) => {
         const matchKorean = item.korean.toLowerCase().includes(trimmed);
         const matchChoseong = matchesChoseong(item.korean, trimmed);
@@ -44,7 +60,7 @@ export default function SearchScreen() {
         return matchKorean || matchChoseong || matchTrans || matchRom || matchTags || matchHanja;
       })
       .slice(0, 50); // Fast responsive rendering
-  }, [query, allItems]);
+  }, [query, allItems, category]);
 
   const speak = (text: string) => {
     services.speech.speak(text);
@@ -89,6 +105,47 @@ export default function SearchScreen() {
             </TouchableOpacity>
           )}
         </View>
+      </View>
+
+      {/* Category Filter Pills */}
+      <View style={{ marginBottom: theme.spacing.sm }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 8, paddingHorizontal: theme.spacing.lg, paddingVertical: 2 }}
+        >
+          {[
+            { id: 'all', label: 'All Items' },
+            { id: 'vocabulary', label: 'Vocabulary' },
+            { id: 'grammar', label: 'Grammar' },
+            { id: 'sentence', label: 'Sentences' },
+            { id: 'hangul', label: 'Hangul' },
+          ].map((cat) => {
+            const isSelected = category === cat.id;
+            return (
+              <TouchableOpacity
+                key={cat.id}
+                onPress={() => setCategory(cat.id as SearchCategory)}
+                style={[
+                  styles.filterChip,
+                  {
+                    backgroundColor: isSelected ? colors.primary : colors.surfaceSubtle,
+                    borderColor: isSelected ? colors.primary : colors.borderSubtle,
+                    borderRadius: theme.radii.full,
+                  },
+                ]}
+              >
+                <Typography
+                  variant="caption"
+                  weight="600"
+                  color={isSelected ? 'primaryForeground' : 'foreground'}
+                >
+                  {cat.label}
+                </Typography>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </View>
 
       {/* Results List */}
@@ -229,6 +286,11 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   content: {},
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderWidth: 1,
+  },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',

@@ -7,7 +7,8 @@ export type QuizQuestionType =
   | 'acoustic_discrimination'
   | 'hangul_to_romanization'
   | 'particle_fill'
-  | 'sentence_assembly';
+  | 'sentence_assembly'
+  | 'dictation';
 
 export interface QuizGenerationConfig {
   questionCount?: number;

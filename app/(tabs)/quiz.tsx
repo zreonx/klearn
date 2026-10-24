@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +23,7 @@ export default function QuizTabScreen() {
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [selectedType, setSelectedType] = useState<QuizQuestionType | 'all'>('all');
+  const [selectedCount, setSelectedCount] = useState<number>(10);
   const [starredCount, setStarredCount] = useState<number>(0);
 
   useFocusEffect(
@@ -37,6 +39,11 @@ export default function QuizTabScreen() {
       id: 'all',
       title: 'Balanced Practice',
       desc: 'Mix of Korean to English, English to Korean, and Listening',
+    },
+    {
+      id: 'dictation',
+      title: 'Korean Dictation (받아쓰기)',
+      desc: 'Listen to native speech and spell the syllables you hear',
     },
     {
       id: 'sentence_assembly',
@@ -73,7 +80,10 @@ export default function QuizTabScreen() {
   const handleStart = () => {
     router.push({
       pathname: '/quiz/session',
-      params: selectedType !== 'all' ? { type: selectedType } : undefined,
+      params: {
+        ...(selectedType !== 'all' ? { type: selectedType } : {}),
+        count: String(selectedCount),
+      },
     });
   };
 
@@ -106,9 +116,44 @@ export default function QuizTabScreen() {
         <Typography variant="heading" style={{ marginBottom: theme.spacing.xs }}>
           Active Retrieval Practice
         </Typography>
-        <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
+        <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.md }}>
           Questions target your current proficiency stage across the 6 skill areas (Vocabulary, Grammar, Listening, Speaking, Reading, Writing).
         </Typography>
+
+        {/* Session Length Chips */}
+        <View style={{ marginBottom: theme.spacing.lg }}>
+          <Typography variant="caption" color="foregroundSubtle" style={{ marginBottom: 6 }}>
+            Session Length:
+          </Typography>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            {[5, 10, 15, 20].map((cnt) => {
+              const isSelected = selectedCount === cnt;
+              return (
+                <TouchableOpacity
+                  key={cnt}
+                  style={[
+                    styles.countPill,
+                    {
+                      backgroundColor: isSelected ? colors.primary : colors.surfaceSubtle,
+                      borderColor: isSelected ? colors.primary : colors.borderSubtle,
+                      borderRadius: theme.radii.md,
+                    },
+                  ]}
+                  onPress={() => setSelectedCount(cnt)}
+                >
+                  <Typography
+                    variant="caption"
+                    weight="700"
+                    color={isSelected ? 'primaryForeground' : 'foreground'}
+                  >
+                    {cnt} Qs
+                  </Typography>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
         <Button title="Start Practice Quiz" fullWidth onPress={handleStart} />
       </Card>
 
@@ -192,5 +237,12 @@ const styles = StyleSheet.create({
   },
   modeInfo: {
     flex: 1,
+  },
+  countPill: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    borderWidth: 1.5,
   },
 });

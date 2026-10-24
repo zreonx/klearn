@@ -20,6 +20,58 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
 import { getLessonProgress, isLessonCompleted, isLessonUnlocked } from '@/domain/curriculum/types';
 import { services } from '@/application/services';
+import { hapticService } from '@/infrastructure/haptics/hapticService';
+
+const TOOLKIT_ITEMS = [
+  {
+    id: 'numbers',
+    title: 'Numbers & Time',
+    korean: '숫자 & 시계',
+    desc: 'Dual systems & clock practice',
+    icon: 'calculator-outline',
+    route: '/tools/numbers',
+  },
+  {
+    id: 'conjugator',
+    title: 'Verb Conjugator',
+    korean: '동사/형용사 활용',
+    desc: '6 spoken tenses & irregulars',
+    icon: 'flash-outline',
+    route: '/tools/conjugator',
+  },
+  {
+    id: 'sound-rules',
+    title: 'Sound Rules',
+    korean: '발음 법칙',
+    desc: 'Liaison & natural spoken sound',
+    icon: 'volume-high-outline',
+    route: '/grammar/sound-rules',
+  },
+  {
+    id: 'stories',
+    title: 'Cultural Stories',
+    korean: '짧은 읽기',
+    desc: 'Everyday Seoul reading bites',
+    icon: 'book-outline',
+    route: '/reading',
+  },
+  {
+    id: 'hangul',
+    title: 'Hangul Chart',
+    korean: '한글 & 음절',
+    desc: 'Alphabet & syllable builder',
+    icon: 'text-outline',
+    route: '/hangul',
+  },
+  {
+    id: 'particles',
+    title: 'Particles Guide',
+    korean: '조사 정리',
+    desc: '은/는, 이/가, 에/에서 cheatsheet',
+    icon: 'git-network-outline',
+    route: '/grammar/particles',
+  },
+];
 
 export default function LearnScreen() {
   const router = useRouter();
@@ -116,56 +168,67 @@ export default function LearnScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Hangul & Numbers Chart Quick Access Card */}
-      <Card
-        elevated
-        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.md }]}
-        onPress={() => router.push('/hangul' as any)}
-      >
-        <View style={styles.hangulHeroRow}>
-          <View style={styles.hangulHeroLeft}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Badge label="Interactive Chart" variant="hangul" />
-            </View>
-            <Typography variant="heading" weight="700">
-              Hangul & Numbers Chart
-            </Typography>
-            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-              Letters, Batchim, Native counting & Sino-Korean numbers with audio
-            </Typography>
-          </View>
-          <View style={[styles.hangulBadgeIcon, { backgroundColor: colors.surfaceSubtle }]}>
-            <Typography variant="display" weight="700" color="primary" style={{ fontSize: 28 }}>
-              한
-            </Typography>
-          </View>
+      {/* Reference & Mastery Toolkit */}
+      <View style={{ marginBottom: theme.spacing.lg }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing.xs }}>
+          <Typography variant="label" weight="700">
+            Mastery Toolkit
+          </Typography>
+          <Typography variant="caption" color="foregroundMuted">
+            6 Reference Tools
+          </Typography>
         </View>
-      </Card>
 
-      {/* Korean Particles Guide Quick Access Card */}
-      <Card
-        elevated
-        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.md }]}
-        onPress={() => router.push('/grammar/particles' as any)}
-      >
-        <View style={styles.hangulHeroRow}>
-          <View style={styles.hangulHeroLeft}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-              <Badge label="Grammar Cheatsheet" variant="hangul" />
-              <Badge label="Comparisons" variant="default" style={{ marginLeft: 6 }} />
-            </View>
-            <Typography variant="heading" weight="700">
-              Korean Particles Guide (조사 정리)
-            </Typography>
-            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-              Master 은/는 vs 이/가, 에 vs 에서, 을/를, (으)로 with side-by-side rules & audio
-            </Typography>
-          </View>
-          <View style={[styles.hangulBadgeIcon, { backgroundColor: colors.surfaceSubtle }]}>
-            <Ionicons name="git-network-outline" size={26} color={colors.primary} />
-          </View>
-        </View>
-      </Card>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 10, paddingVertical: 4 }}
+        >
+          {TOOLKIT_ITEMS.map((tool) => (
+            <TouchableOpacity
+              key={tool.id}
+              activeOpacity={0.8}
+              onPress={() => {
+                hapticService.lightTick();
+                router.push(tool.route as any);
+              }}
+              style={[
+                styles.toolCard,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderColor: colors.borderSubtle,
+                  borderRadius: theme.radii.lg,
+                  padding: theme.spacing.md,
+                },
+              ]}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View
+                  style={[
+                    styles.toolIconCircle,
+                    {
+                      backgroundColor: colors.surface,
+                      borderRadius: theme.radii.md,
+                    },
+                  ]}
+                >
+                  <Ionicons name={tool.icon as any} size={20} color={colors.primary} />
+                </View>
+                <Typography variant="caption" weight="700" color="primary">
+                  {tool.korean}
+                </Typography>
+              </View>
+
+              <Typography variant="label" weight="700" color="foreground" style={{ marginTop: 10 }}>
+                {tool.title}
+              </Typography>
+              <Typography variant="caption" color="foregroundMuted" numberOfLines={1} style={{ marginTop: 2, fontSize: 11 }}>
+                {tool.desc}
+              </Typography>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       {/* AI Conversation & Speaking Roleplay Quick Access Card */}
       <Card
@@ -354,6 +417,16 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  toolCard: {
+    width: 170,
+    borderWidth: 1,
+  },
+  toolIconCircle: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   hangulHeroCard: {
     padding: 16,

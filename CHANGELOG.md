@@ -9,6 +9,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- **Korean Number Systems & Counters Playground (`숫자 & 단위 연습기`)**:
+  - Implemented full Sino-Korean integer conversion (0 to 999,999,999) with units (십, 백, 천, 만, 억) and daily presets (money, minutes, dates) (`src/domain/numbers/sinoKorean.ts`).
+  - Implemented Native Korean conversion (1 to 99) with standalone vs. counter contractions (`한, 두, 세, 네, 스무`) (`src/domain/numbers/nativeKorean.ts`).
+  - Added catalog of 12 essential Korean counters (`개, 명, 잔, 병, 마리, 권, 살, 시, 분, 원, 층, 번`) and `formatKoreanClockTime` combining Native hours with Sino minutes (`src/domain/numbers/counters.ts`).
+  - Created interactive Playground screen (`app/tools/numbers.tsx`) featuring real-time integer conversion, live Korean clock preview, and counter catalog with TTS audio playback.
+- **Korean Verb & Adjective Conjugator (`동사/형용사 활용기`)**:
+  - Curated 25+ essential Korean verbs and adjectives covering regular roots and all major irregulars (`ㄷ, ㅂ, ㅡ, 르, ㄹ, ㅅ, ㅎ`) (`src/domain/conjugation/curatedVerbs.ts`).
+  - Built pure Unicode vowel harmony engine generating 6 essential spoken forms: Polite Present (`-아요/어요`), Formal Deferential (`-습니다/습니까`), Past (`-았/었어요`), Future (`-(으)ㄹ 거예요`), Polite Request (`-(으)세요`), and Negation (`안 ~ / -지 않아요`) (`src/domain/conjugation/engine.ts`).
+  - Created interactive Conjugator screen (`app/tools/conjugator.tsx`) with dictionary root search, filter chips (All, Verbs, Adjectives, Irregulars), rule callout badges, and pronunciation audio.
+- **Korean Sound-Change & Pronunciation Rules Guide (`한국어 발음 법칙`)**:
+  - Comprehensive guide covering Liaison (`연음`), Nasalization (`비음화`), Tensification (`경음화`), Aspiration (`격음화`), and Palatalization (`구개음화`) (`src/content/grammar/soundChangeRules.ts`).
+  - Created interactive sound-rules screen (`app/grammar/sound-rules.tsx`) with rule-by-rule tabs, side-by-side written vs. real spoken `[발음]` badges, and comparative TTS audio.
+- **Cultural Micro-Stories & Reading Bites (`짧은 한국어 읽기`)**:
+  - Authored 4 authentic, bite-sized Seoul life stories (*Late-Night Convenience Store*, *Han River Chicken*, *Subway Etiquette*, *Iced Americano "얼죽아"*) with reading time estimates and CEFR/Level tags (`src/content/reading/stories.ts`).
+  - Created Reading Hub (`app/reading/index.tsx`) and Reader screen (`app/reading/[storyId].tsx`) with sentence-by-sentence audio playback, interactive vocabulary chips, translation toggles, and instant-feedback reading comprehension questions.
+- **Korean Dictation / Bada-sseugi (`받아쓰기`) & Configurable Quiz Sessions**:
+  - Extended domain quiz engine (`src/domain/quiz/types.ts`, `generator.ts`) with new `'dictation'` question type: plays audio and presents target syllable tiles with distractor tiles for spelling assembly.
+  - Added dictation mode and customizable session length chips (`5, 10, 15, 20` questions) to the Quiz tab (`app/(tabs)/quiz.tsx`) and quiz runner (`app/quiz/session.tsx`).
+- **Search Category Filters & Learn Tab Mastery Toolkit**:
+  - Added horizontal category filter chips (`All Items, Vocabulary, Grammar, Sentences, Hangul`) and instant browsing in global search (`app/search.tsx`).
+  - Redesigned the Learn tab (`app/(tabs)/learn.tsx`) to replace stacked vertical feature banners with a sleek, non-overwhelming horizontal **Mastery Toolkit** carousel, keeping beginner onboarding calm and welcoming while providing 1-tap reference access.
 - **CI/CD Pipeline Hardening & NPM Dependency Resolution**:
   - Aligned `@react-native/jest-preset` to `^0.86.3` in `package.json` to resolve `ERESOLVE` peer dependency conflicts with `jest-expo@57.0.5` and `react-native@0.86.3`.
   - Added `.npmrc` (`legacy-peer-deps=true`) and `--legacy-peer-deps` to `npm ci` across `.github/workflows/ci.yml` and `.github/workflows/release.yml`.

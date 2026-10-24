@@ -23,7 +23,7 @@ import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 export default function QuizSessionModal() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ type?: string; starred?: string }>();
+  const params = useLocalSearchParams<{ type?: string; starred?: string; count?: string }>();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const {
@@ -42,7 +42,7 @@ export default function QuizSessionModal() {
     resetQuiz,
   } = useQuiz();
 
-  // Sentence Assembly interactive tile state
+  // Sentence Assembly & Dictation interactive tile state
   const [assembledTiles, setAssembledTiles] = useState<string[]>([]);
   const [availableTiles, setAvailableTiles] = useState<string[]>([]);
   const [isAssemblyCorrect, setIsAssemblyCorrect] = useState<boolean | null>(null);
@@ -51,6 +51,7 @@ export default function QuizSessionModal() {
     const config = {
       types: params.type ? [params.type as QuizQuestionType] : undefined,
       starredOnly: params.starred === 'true',
+      questionCount: params.count ? parseInt(params.count as string, 10) : undefined,
     };
     startQuiz(config);
     return () => {
@@ -60,10 +61,16 @@ export default function QuizSessionModal() {
 
   // Synchronize tiles when current question changes
   useEffect(() => {
-    if (currentQuestion?.type === 'sentence_assembly' && currentQuestion.tiles) {
+    if (
+      (currentQuestion?.type === 'sentence_assembly' || currentQuestion?.type === 'dictation') &&
+      currentQuestion.tiles
+    ) {
       setAssembledTiles([]);
       setAvailableTiles([...currentQuestion.tiles]);
       setIsAssemblyCorrect(null);
+      if (currentQuestion.type === 'dictation' && currentQuestion.speakText) {
+        speak(currentQuestion.speakText);
+      }
     }
   }, [currentIndex, currentQuestion]);
 
@@ -218,7 +225,9 @@ export default function QuizSessionModal() {
     );
   }
 
-  const isSentenceAssembly = currentQuestion.type === 'sentence_assembly' && !!currentQuestion.tiles;
+  const isTileAssembly =
+    (currentQuestion.type === 'sentence_assembly' || currentQuestion.type === 'dictation') &&
+    !!currentQuestion.tiles;
   const progress = questions.length > 0 ? (currentIndex + 1) / questions.length : 1;
 
   return (
@@ -256,7 +265,9 @@ export default function QuizSessionModal() {
           <View style={[styles.promptTop, { marginBottom: theme.spacing.md }]}>
             <Badge
               label={
-                isSentenceAssembly
+                currentQuestion.type === 'dictation'
+                  ? 'Dictation • 받아쓰기'
+                  : currentQuestion.type === 'sentence_assembly'
                   ? 'Sentence Assembly'
                   : currentQuestion.type === 'acoustic_discrimination'
                   ? 'Acoustic Discrimination'
@@ -265,7 +276,9 @@ export default function QuizSessionModal() {
                   : 'Quiz Question'
               }
               variant={
-                isSentenceAssembly
+                currentQuestion.type === 'dictation'
+                  ? 'vocab'
+                  : currentQuestion.type === 'sentence_assembly'
                   ? 'hangul'
                   : currentQuestion.type === 'acoustic_discrimination'
                   ? 'vocab'
@@ -284,7 +297,7 @@ export default function QuizSessionModal() {
           </View>
 
           <Typography
-            variant={isSentenceAssembly ? 'heading' : 'display'}
+            variant={isTileAssembly ? 'heading' : 'display'}
             weight="700"
             align="center"
             style={styles.promptTitle}
@@ -319,12 +332,12 @@ export default function QuizSessionModal() {
           )}
         </Card>
 
-        {/* Dynamic Question Body: 1) Interactive Sentence Builder OR 2) Multiple Choice Options */}
-        {isSentenceAssembly ? (
+        {/* Dynamic Question Body: 1) Interactive Tile Builder (Sentence & Dictation) OR 2) Multiple Choice Options */}
+        {isTileAssembly ? (
           <View style={{ marginBottom: theme.spacing.lg }}>
             {/* Top Assembled Slots Area */}
             <Typography variant="label" color="foregroundMuted" weight="700" style={{ marginBottom: 6 }}>
-              Your Assembled Sentence:
+              {currentQuestion.type === 'dictation' ? 'Your Spelled Korean:' : 'Your Assembled Sentence:'}
             </Typography>
 
             <View
@@ -518,9 +531,9 @@ export default function QuizSessionModal() {
         ]}
       >
         {!hasAnswered ? (
-          isSentenceAssembly ? (
+          isTileAssembly ? (
             <Button
-              title="Check Sentence"
+              title={currentQuestion.type === 'dictation' ? 'Check Spelling' : 'Check Sentence'}
               disabled={assembledTiles.length === 0}
               fullWidth
               onPress={handleCheckSentenceAssembly}
