@@ -85,6 +85,27 @@ function RootNavigation() {
           }}
         />
         <Stack.Screen
+          name="grammar/particles"
+          options={{
+            title: 'Particles Guide',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="conversation/index"
+          options={{
+            title: 'AI Conversation',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="conversation/[scenarioId]"
+          options={{
+            title: 'Conversation',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="search"
           options={{
             title: 'Search',

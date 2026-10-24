@@ -1,4 +1,4 @@
-import { generateQuizQuestions, generateQuestionForItem } from './generator';
+import { generateQuizQuestions, generateQuestionForItem, generateAcousticQuestion } from './generator';
 import { LearningItem } from '../learning/types';
 
 describe('Quiz Generator', () => {
@@ -106,5 +106,19 @@ describe('Quiz Generator', () => {
     const sentenceQ = generateQuestionForItem(grammarItem, pool, 'sentence_assembly');
     expect(sentenceQ).not.toBeNull();
     expect(sentenceQ?.options.some((o) => o.label === '저는 학생이에요.' && o.isCorrect)).toBe(true);
+    expect(sentenceQ?.tiles).toBeDefined();
+    expect(sentenceQ?.tiles?.length).toBeGreaterThanOrEqual(2);
+    expect(sentenceQ?.tiles).toContain('저는');
+    expect(sentenceQ?.correctAnswerText).toBe('저는 학생이에요.');
+  });
+
+  it('generates acoustic discrimination question with minimal pair options', () => {
+    const acousticQ = generateAcousticQuestion();
+    expect(acousticQ).toBeDefined();
+    expect(acousticQ.type).toBe('acoustic_discrimination');
+    expect(acousticQ.speakText).toBeTruthy();
+    expect(acousticQ.options.length).toBeGreaterThanOrEqual(2);
+    expect(acousticQ.options.some((o) => o.isCorrect)).toBe(true);
+    expect(acousticQ.explanation).toBeTruthy();
   });
 });

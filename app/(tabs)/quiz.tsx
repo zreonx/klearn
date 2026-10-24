@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Typography,
@@ -15,18 +15,38 @@ import {
 } from '@/components/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { QuizQuestionType } from '@/domain/quiz/types';
+import { services } from '@/application/services';
 
 export default function QuizTabScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [selectedType, setSelectedType] = useState<QuizQuestionType | 'all'>('all');
+  const [starredCount, setStarredCount] = useState<number>(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      services.learningRepo.getStarredItemIds().then((ids) => {
+        setStarredCount(ids.length);
+      });
+    }, [])
+  );
 
   const modes: Array<{ id: QuizQuestionType | 'all'; title: string; desc: string }> = [
     {
       id: 'all',
       title: 'Balanced Practice',
       desc: 'Mix of Korean to English, English to Korean, and Listening',
+    },
+    {
+      id: 'sentence_assembly',
+      title: 'Interactive Sentence Builder (SOV)',
+      desc: 'Tap scrambled word & particle tiles to assemble Korean sentences',
+    },
+    {
+      id: 'acoustic_discrimination',
+      title: 'Acoustic Minimal Pairs (소리 구분 퀴즈)',
+      desc: 'Discriminate plain vs. aspirated vs. tense sounds (불 vs 풀 vs 뿔)',
     },
     {
       id: 'listening_recognition',
@@ -37,11 +57,6 @@ export default function QuizTabScreen() {
       id: 'particle_fill',
       title: 'Grammar & Particles (조사)',
       desc: 'Master Korean particles (은/는, 이/가, 을/를) in real context',
-    },
-    {
-      id: 'sentence_assembly',
-      title: 'Sentence Construction (SOV)',
-      desc: 'Practice forming and reading full Korean sentences & dialogues',
     },
     {
       id: 'korean_to_english',
@@ -96,6 +111,35 @@ export default function QuizTabScreen() {
         </Typography>
         <Button title="Start Practice Quiz" fullWidth onPress={handleStart} />
       </Card>
+
+      {/* Starred Deck Banner */}
+      {starredCount > 0 && (
+        <Card
+          subtle
+          style={{ marginBottom: theme.spacing.xl, padding: theme.spacing.md }}
+          onPress={() => router.push({ pathname: '/quiz/session', params: { starred: 'true' } } as any)}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 8 }}>
+              <Ionicons name="star" size={24} color={colors.accent} style={{ marginRight: 10 }} />
+              <View style={{ flex: 1 }}>
+                <Typography variant="body" weight="700" color="foreground">
+                  Starred Tricky Cards ({starredCount})
+                </Typography>
+                <Typography variant="caption" color="foregroundMuted">
+                  Practice cards you starred during lessons or reviews
+                </Typography>
+              </View>
+            </View>
+            <Button
+              title="Practice"
+              size="sm"
+              variant="outline"
+              onPress={() => router.push({ pathname: '/quiz/session', params: { starred: 'true' } } as any)}
+            />
+          </View>
+        </Card>
+      )}
 
       <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
         Quiz Modes

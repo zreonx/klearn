@@ -36,6 +36,7 @@ export interface LearningRecord {
   correctCount: number;
   incorrectCount: number;
   streak: number;
+  isStarred?: boolean;
 }
 
 export function createInitialLearningRecord(itemId: string, learnedAt = new Date().toISOString()): LearningRecord {
@@ -48,5 +49,6 @@ export function createInitialLearningRecord(itemId: string, learnedAt = new Date
     correctCount: 0,
     incorrectCount: 0,
     streak: 0,
+    isStarred: false,
   };
 }

@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { services } from '@/application/services';
 import { LearningItem } from '@/domain/learning/types';
+import { matchesChoseong } from '@/domain/hangul/choseongSearch';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -35,11 +36,12 @@ export default function SearchScreen() {
     return allItems
       .filter((item) => {
         const matchKorean = item.korean.toLowerCase().includes(trimmed);
+        const matchChoseong = matchesChoseong(item.korean, trimmed);
         const matchTrans = item.translation.toLowerCase().includes(trimmed);
         const matchRom = item.romanization?.toLowerCase().includes(trimmed);
         const matchTags = item.tags?.some((t) => t.toLowerCase().includes(trimmed));
         const matchHanja = (item as any).hanja?.toLowerCase().includes(trimmed);
-        return matchKorean || matchTrans || matchRom || matchTags || matchHanja;
+        return matchKorean || matchChoseong || matchTrans || matchRom || matchTags || matchHanja;
       })
       .slice(0, 50); // Fast responsive rendering
   }, [query, allItems]);
@@ -75,7 +77,7 @@ export default function SearchScreen() {
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="Search Korean, English, Hangul, Hanja..."
+            placeholder="Search Korean, English, Hangul, or 초성 (ㄱㅅ)..."
             placeholderTextColor={colors.foregroundSubtle}
             autoFocus
             style={[styles.input, { color: colors.foreground }]}

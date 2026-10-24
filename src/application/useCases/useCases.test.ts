@@ -26,6 +26,7 @@ describe('Application Use Cases', () => {
       srs: defaultSRS,
       catalog: contentCatalog,
       speech: { speak: jest.fn(), stop: jest.fn() } as any,
+      aiTutor: { generateReply: jest.fn().mockResolvedValue(null) } as any,
     };
   });
 
@@ -115,5 +116,23 @@ describe('Application Use Cases', () => {
     const result = await dataUseCases.importJsonData('{ "invalid": true }');
     expect(result.success).toBe(false);
     expect(result.error).toContain('Invalid data format');
+  });
+
+  it('computes SRS mastery distribution, 7-day review forecast, and 6-skill profile in getLearningStats', async () => {
+    const learningUseCases = new LearningUseCases(mockServices);
+    const dataUseCases = new DataUseCases(mockServices);
+
+    await learningUseCases.markItemLearned('voc-greet-1');
+    const stats = await dataUseCases.getLearningStats();
+
+    expect(stats.totalItemsLearned).toBe(1);
+    expect(stats.masteryDistribution.learning).toBe(1);
+    expect(stats.masteryDistribution.totalCatalog).toBeGreaterThan(50);
+    expect(stats.reviewForecast.length).toBe(7);
+    expect(stats.reviewForecast[0].label).toBe('Today');
+    expect(stats.learnerProfile.skills.vocabulary).toBeDefined();
+    expect(stats.learnerProfile.skills.grammar).toBeDefined();
+    expect(stats.achievements.length).toBeGreaterThanOrEqual(5);
+    expect(stats.achievements[0].isUnlocked).toBe(true); // 'First Step' unlocked
   });
 });

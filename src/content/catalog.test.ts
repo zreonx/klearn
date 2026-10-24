@@ -1,9 +1,16 @@
 import { contentCatalog } from './catalog';
 
 describe('ContentCatalog', () => {
-  it('contains all items and resolves every curriculum lesson item', () => {
+  it('contains all items and resolves every curriculum lesson item across all 5 stages', () => {
     const curriculum = contentCatalog.getCurriculum();
-    expect(curriculum.levels.length).toBeGreaterThan(0);
+    const stages = curriculum.stages ?? [];
+    expect(stages.length).toBe(5);
+    expect(curriculum.levels.length).toBeGreaterThanOrEqual(6);
+
+    const populatedStageIds = new Set(curriculum.levels.map((l) => l.stageId));
+    for (const stage of stages) {
+      expect(populatedStageIds.has(stage.id)).toBe(true);
+    }
 
     for (const level of curriculum.levels) {
       for (const unit of level.units) {

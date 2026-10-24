@@ -29,6 +29,16 @@ export class QuizUseCases {
       targetItems = allCatalog.slice(0, 6);
     }
 
+    if (config.starredOnly) {
+      const starredIds = await this.services.learningRepo.getStarredItemIds();
+      const starredItems = starredIds
+        .map((id) => this.services.catalog.getItemById(id))
+        .filter((item): item is LearningItem => item !== undefined);
+      if (starredItems.length > 0) {
+        targetItems = starredItems;
+      }
+    }
+
     const questions = generateQuizQuestions(targetItems, allCatalog, config);
 
     return {

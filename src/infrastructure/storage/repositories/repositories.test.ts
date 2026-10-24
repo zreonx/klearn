@@ -27,6 +27,17 @@ describe('Storage Repositories', () => {
 
     const all = await repo.getAll();
     expect(all.length).toBe(1);
+
+    // Test toggleStar and getStarredItemIds
+    const isStarred = await repo.toggleStar('item-123');
+    expect(isStarred).toBe(true);
+
+    const starredIds = await repo.getStarredItemIds();
+    expect(starredIds).toContain('item-123');
+
+    const unstarred = await repo.toggleStar('item-123');
+    expect(unstarred).toBe(false);
+    expect(await repo.getStarredItemIds()).not.toContain('item-123');
   });
 
   it('correctly filters due reviews based on date', async () => {

@@ -23,6 +23,14 @@ import {
   HangulCategory,
   HangulCharacter,
 } from '@/content/hangul/alphabetData';
+import {
+  CHOSEONG_LIST,
+  JUNGSEONG_LIST,
+  JONGSEONG_LIST,
+  PRESET_SYLLABLES,
+  composeHangulSyllable,
+} from '@/domain/hangul/syllableBuilder';
+import { getStrokeOrder } from '@/domain/hangul/strokeOrder';
 import { speechService } from '@/infrastructure/speech/speechService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -35,6 +43,14 @@ export default function HangulChartScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string>('basic-consonants');
   const [activeChar, setActiveChar] = useState<HangulCharacter | null>(null);
   const [playingChar, setPlayingChar] = useState<string | null>(null);
+
+  // Syllable Builder state (defaults to ㅎ + ㅏ + ㄴ = 한)
+  const [choseongIdx, setChoseongIdx] = useState<number>(18);
+  const [jungseongIdx, setJungseongIdx] = useState<number>(0);
+  const [jongseongIdx, setJongseongIdx] = useState<number>(4);
+
+  const composedSyllable = composeHangulSyllable(choseongIdx, jungseongIdx, jongseongIdx);
+  const isSyllableBuilder = selectedCategory === 'syllable-builder';
 
   const activeCategoryData: HangulCategory =
     HANGUL_CATEGORIES.find((c) => c.id === selectedCategory) ?? HANGUL_CATEGORIES[0];
@@ -127,6 +143,38 @@ export default function HangulChartScreen() {
               </TouchableOpacity>
             );
           })}
+
+          {/* Interactive Syllable Builder Tab */}
+          <TouchableOpacity
+            onPress={() => setSelectedCategory('syllable-builder')}
+            style={[
+              styles.categoryPill,
+              {
+                backgroundColor: isSyllableBuilder ? colors.accent : colors.background,
+                borderColor: isSyllableBuilder ? colors.accent : colors.accent,
+                borderRadius: theme.radii.full,
+                paddingHorizontal: theme.spacing.md,
+                paddingVertical: theme.spacing.xs + 2,
+                marginRight: theme.spacing.sm,
+                flexDirection: 'row',
+                alignItems: 'center',
+              },
+            ]}
+          >
+            <Ionicons
+              name="construct-outline"
+              size={14}
+              color={isSyllableBuilder ? colors.primaryForeground : colors.accent}
+              style={{ marginRight: 4 }}
+            />
+            <Typography
+              variant="label"
+              weight="700"
+              color={isSyllableBuilder ? 'primaryForeground' : 'accent'}
+            >
+              Syllable Builder (조합기)
+            </Typography>
+          </TouchableOpacity>
         </ScrollView>
       </View>
 
@@ -141,7 +189,226 @@ export default function HangulChartScreen() {
           },
         ]}
       >
-        {/* Category Description Banner */}
+        {isSyllableBuilder ? (
+          <>
+            {/* Syllable Builder Intro Banner */}
+            <Card subtle style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <View style={styles.bannerRow}>
+                <View style={{ flex: 1 }}>
+                  <Typography variant="title" color="primary" weight="700">
+                    Hangul Syllable Builder (음절 조합기)
+                  </Typography>
+                  <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 4 }}>
+                    Combine any Initial Consonant (초성), Medial Vowel (중성), and optional Final Batchim (종성) to compose and hear live Korean syllable blocks.
+                  </Typography>
+                </View>
+                <Badge label={composedSyllable.structure} variant="hangul" />
+              </View>
+            </Card>
+
+            {/* Live Composed Syllable Stage */}
+            <Card elevated style={{ marginBottom: theme.spacing.md, padding: theme.spacing.lg }}>
+              <View style={{ alignItems: 'center' }}>
+                <Badge label={composedSyllable.formula} variant="default" />
+                <Typography
+                  variant="display"
+                  weight="700"
+                  align="center"
+                  style={{
+                    fontSize: 76,
+                    lineHeight: 88,
+                    color: colors.primary,
+                    marginVertical: theme.spacing.sm,
+                  }}
+                >
+                  {composedSyllable.char}
+                </Typography>
+
+                <Typography variant="title" weight="600" color="foreground">
+                  [{composedSyllable.romanization || 'a'}]
+                </Typography>
+
+                {composedSyllable.meaningHint ? (
+                  <View
+                    style={{
+                      marginTop: theme.spacing.xs,
+                      paddingHorizontal: theme.spacing.md,
+                      paddingVertical: 4,
+                      backgroundColor: colors.surfaceSubtle,
+                      borderRadius: theme.radii.full,
+                    }}
+                  >
+                    <Typography variant="caption" color="accent" weight="700">
+                      Word Meaning: {composedSyllable.meaningHint}
+                    </Typography>
+                  </View>
+                ) : (
+                  <Typography variant="caption" color="foregroundSubtle" style={{ marginTop: 4 }}>
+                    {composedSyllable.choseong.name} + {composedSyllable.jungseong.name}
+                    {composedSyllable.jongseong.index > 0 ? ` + ${composedSyllable.jongseong.name}` : ''}
+                  </Typography>
+                )}
+
+                <Button
+                  title={`Pronounce "${composedSyllable.char}"`}
+                  icon={<Ionicons name="volume-high-outline" size={18} color={colors.primaryForeground} />}
+                  onPress={() => handlePlayWord(composedSyllable.char)}
+                  style={{ marginTop: theme.spacing.md, minWidth: 180 }}
+                />
+              </View>
+            </Card>
+
+            {/* Quick Word Presets */}
+            <Card style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <Typography variant="label" color="foregroundMuted" weight="700" style={{ marginBottom: theme.spacing.xs }}>
+                Quick Word Presets:
+              </Typography>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {PRESET_SYLLABLES.map((preset) => {
+                  const isActivePreset =
+                    choseongIdx === preset.choseongIndex &&
+                    jungseongIdx === preset.jungseongIndex &&
+                    jongseongIdx === preset.jongseongIndex;
+                  return (
+                    <TouchableOpacity
+                      key={preset.label}
+                      onPress={() => {
+                        setChoseongIdx(preset.choseongIndex);
+                        setJungseongIdx(preset.jungseongIndex);
+                        setJongseongIdx(preset.jongseongIndex);
+                      }}
+                      style={{
+                        backgroundColor: isActivePreset ? colors.primary : colors.surfaceSubtle,
+                        borderColor: isActivePreset ? colors.primary : colors.borderSubtle,
+                        borderWidth: 1,
+                        borderRadius: theme.radii.md,
+                        paddingHorizontal: theme.spacing.sm + 2,
+                        paddingVertical: 6,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        weight="700"
+                        color={isActivePreset ? 'primaryForeground' : 'foreground'}
+                      >
+                        {preset.label}
+                      </Typography>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </Card>
+
+            {/* 1. Choseong (Initial Consonant) Selector */}
+            <Card style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <Typography variant="label" color="primary" weight="700" style={{ marginBottom: 6 }}>
+                1. Initial Consonant • 초성 ({composedSyllable.choseong.name})
+              </Typography>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                {CHOSEONG_LIST.map((item) => {
+                  const selected = choseongIdx === item.index;
+                  return (
+                    <TouchableOpacity
+                      key={`cho-${item.index}`}
+                      onPress={() => setChoseongIdx(item.index)}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: theme.radii.md,
+                        borderWidth: 1,
+                        backgroundColor: selected ? colors.primary : colors.surfaceSubtle,
+                        borderColor: selected ? colors.primary : colors.borderSubtle,
+                      }}
+                    >
+                      <Typography
+                        variant="title"
+                        weight="700"
+                        color={selected ? 'primaryForeground' : 'foreground'}
+                      >
+                        {item.jamo}
+                      </Typography>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </Card>
+
+            {/* 2. Jungseong (Medial Vowel) Selector */}
+            <Card style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <Typography variant="label" color="primary" weight="700" style={{ marginBottom: 6 }}>
+                2. Medial Vowel • 중성 ({composedSyllable.jungseong.name})
+              </Typography>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                {JUNGSEONG_LIST.map((item) => {
+                  const selected = jungseongIdx === item.index;
+                  return (
+                    <TouchableOpacity
+                      key={`jung-${item.index}`}
+                      onPress={() => setJungseongIdx(item.index)}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: theme.radii.md,
+                        borderWidth: 1,
+                        backgroundColor: selected ? colors.primary : colors.surfaceSubtle,
+                        borderColor: selected ? colors.primary : colors.borderSubtle,
+                      }}
+                    >
+                      <Typography
+                        variant="title"
+                        weight="700"
+                        color={selected ? 'primaryForeground' : 'foreground'}
+                      >
+                        {item.jamo}
+                      </Typography>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </Card>
+
+            {/* 3. Jongseong (Final Batchim) Selector */}
+            <Card style={{ marginBottom: theme.spacing.md, padding: theme.spacing.md }}>
+              <Typography variant="label" color="primary" weight="700" style={{ marginBottom: 6 }}>
+                3. Final Batchim • 종성 ({composedSyllable.jongseong.name})
+              </Typography>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                {JONGSEONG_LIST.map((item) => {
+                  const selected = jongseongIdx === item.index;
+                  return (
+                    <TouchableOpacity
+                      key={`jong-${item.index}`}
+                      onPress={() => setJongseongIdx(item.index)}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: theme.radii.md,
+                        borderWidth: 1,
+                        backgroundColor: selected ? colors.primary : colors.surfaceSubtle,
+                        borderColor: selected ? colors.primary : colors.borderSubtle,
+                      }}
+                    >
+                      <Typography
+                        variant="title"
+                        weight="700"
+                        color={selected ? 'primaryForeground' : 'foreground'}
+                      >
+                        {item.jamo}
+                      </Typography>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </Card>
+          </>
+        ) : (
+          <>
         {/* Category Description Banner */}
         <Card subtle style={{ marginBottom: theme.spacing.lg, padding: theme.spacing.md }}>
           <View style={styles.bannerRow}>
@@ -158,6 +425,22 @@ export default function HangulChartScreen() {
               variant="hangul"
             />
           </View>
+          <TouchableOpacity
+            onPress={() => setSelectedCategory('syllable-builder')}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: theme.spacing.sm,
+              paddingTop: theme.spacing.xs,
+              borderTopWidth: 1,
+              borderTopColor: colors.borderSubtle,
+            }}
+          >
+            <Ionicons name="construct-outline" size={15} color={colors.accent} />
+            <Typography variant="caption" color="accent" weight="700" style={{ marginLeft: 6 }}>
+              Open Interactive Syllable Builder (음절 조합기) →
+            </Typography>
+          </TouchableOpacity>
         </Card>
 
         {/* Simplified Number Construction Cheat-Sheet */}
@@ -340,6 +623,8 @@ export default function HangulChartScreen() {
             Tap any letter to hear its native Korean pronunciation immediately. Tap the info icon (i) or press and hold any card to inspect stroke names, IPA values, and everyday sample words.
           </Typography>
         </Card>
+          </>
+        )}
       </ScrollView>
 
       {/* Detail Modal */}
@@ -403,6 +688,45 @@ export default function HangulChartScreen() {
                   {activeChar.soundDescription}
                 </Typography>
               </View>
+
+              {/* Stroke Order Guide (획순 가이드) */}
+              {(() => {
+                const strokeInfo = getStrokeOrder(activeChar.char);
+                if (!strokeInfo) return null;
+                return (
+                  <View
+                    style={[
+                      styles.modalDescBox,
+                      {
+                        backgroundColor: colors.surfaceSubtle,
+                        borderColor: colors.borderSubtle,
+                        borderWidth: 1,
+                        padding: theme.spacing.md,
+                        borderRadius: theme.radii.md,
+                        marginTop: theme.spacing.md,
+                      },
+                    ]}
+                  >
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                      <Typography variant="label" color="primary" weight="700">
+                        Stroke Order (획순)
+                      </Typography>
+                      <Badge
+                        label={`${strokeInfo.strokeCount} ${strokeInfo.strokeCount === 1 ? 'stroke' : 'strokes'}`}
+                        variant="hangul"
+                      />
+                    </View>
+                    <Typography variant="caption" color="foregroundMuted" style={{ marginBottom: 4 }}>
+                      {strokeInfo.generalRule}
+                    </Typography>
+                    {strokeInfo.steps.map((step, sIdx) => (
+                      <Typography key={sIdx} variant="caption" color="foreground" weight="500">
+                        • {step}
+                      </Typography>
+                    ))}
+                  </View>
+                );
+              })()}
 
               {/* Example Word */}
               {activeChar.exampleWord && (

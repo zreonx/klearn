@@ -1,4 +1,4 @@
-import { LearningRecord } from '@/domain/learning/types';
+import { LearningRecord, createInitialLearningRecord } from '@/domain/learning/types';
 import { StorageAdapter } from '../adapter';
 import { APP_CONFIG } from '@/config';
 
@@ -8,6 +8,8 @@ export interface LearningRepository {
   getAll(): Promise<LearningRecord[]>;
   getAllAsMap(): Promise<Map<string, LearningRecord>>;
   batchSave(records: LearningRecord[]): Promise<void>;
+  toggleStar(itemId: string): Promise<boolean>;
+  getStarredItemIds(): Promise<string[]>;
   clear(): Promise<void>;
 }
 
@@ -54,6 +56,22 @@ export class LearningStorageRepository implements LearningRepository {
       existing[record.itemId] = record;
     }
     await this.adapter.setItem(this.storageKey, existing, APP_CONFIG.storage.currentVersion);
+  }
+
+  async toggleStar(itemId: string): Promise<boolean> {
+    let record = await this.getByItemId(itemId);
+    if (!record) {
+      record = createInitialLearningRecord(itemId);
+    }
+    const newStatus = !record.isStarred;
+    record.isStarred = newStatus;
+    await this.save(record);
+    return newStatus;
+  }
+
+  async getStarredItemIds(): Promise<string[]> {
+    const records = await this.getAll();
+    return records.filter((r) => r.isStarred).map((r) => r.itemId);
   }
 
   async clear(): Promise<void> {

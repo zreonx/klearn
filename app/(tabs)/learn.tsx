@@ -119,7 +119,7 @@ export default function LearnScreen() {
       {/* Hangul & Numbers Chart Quick Access Card */}
       <Card
         elevated
-        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.xl }]}
+        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.md }]}
         onPress={() => router.push('/hangul' as any)}
       >
         <View style={styles.hangulHeroRow}>
@@ -138,6 +138,56 @@ export default function LearnScreen() {
             <Typography variant="display" weight="700" color="primary" style={{ fontSize: 28 }}>
               한
             </Typography>
+          </View>
+        </View>
+      </Card>
+
+      {/* Korean Particles Guide Quick Access Card */}
+      <Card
+        elevated
+        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.md }]}
+        onPress={() => router.push('/grammar/particles' as any)}
+      >
+        <View style={styles.hangulHeroRow}>
+          <View style={styles.hangulHeroLeft}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <Badge label="Grammar Cheatsheet" variant="hangul" />
+              <Badge label="Comparisons" variant="default" style={{ marginLeft: 6 }} />
+            </View>
+            <Typography variant="heading" weight="700">
+              Korean Particles Guide (조사 정리)
+            </Typography>
+            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+              Master 은/는 vs 이/가, 에 vs 에서, 을/를, (으)로 with side-by-side rules & audio
+            </Typography>
+          </View>
+          <View style={[styles.hangulBadgeIcon, { backgroundColor: colors.surfaceSubtle }]}>
+            <Ionicons name="git-network-outline" size={26} color={colors.primary} />
+          </View>
+        </View>
+      </Card>
+
+      {/* AI Conversation & Speaking Roleplay Quick Access Card */}
+      <Card
+        elevated
+        style={[styles.hangulHeroCard, { marginBottom: theme.spacing.xl }]}
+        onPress={() => router.push('/conversation' as any)}
+      >
+        <View style={styles.hangulHeroRow}>
+          <View style={styles.hangulHeroLeft}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <Badge label="Interactive Roleplay" variant="vocab" />
+              <Badge label="Voice Audio" variant="default" style={{ marginLeft: 6 }} />
+            </View>
+            <Typography variant="heading" weight="700">
+              AI Conversation & Speaking
+            </Typography>
+            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
+              Practice cafe ordering, introductions, and directions with live politeness feedback
+            </Typography>
+          </View>
+          <View style={[styles.hangulBadgeIcon, { backgroundColor: colors.surfaceSubtle }]}>
+            <Ionicons name="chatbubbles-outline" size={26} color={colors.primary} />
           </View>
         </View>
       </Card>

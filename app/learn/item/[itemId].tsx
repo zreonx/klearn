@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLearn } from '@/features/learn/useLearn';
 import { services } from '@/application/services';
 import { LearningItem, LearningRecord } from '@/domain/learning/types';
+import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -28,13 +29,25 @@ export default function ItemDetailScreen() {
   const { markItemLearned, speak, recordsMap } = useLearn();
 
   const [item, setItem] = useState<LearningItem | null>(null);
+  const [isStarred, setIsStarred] = useState<boolean>(false);
 
   useEffect(() => {
     if (itemId) {
       const found = services.catalog.getItemById(itemId);
       if (found) setItem(found);
+
+      services.learningRepo.getByItemId(itemId).then((rec) => {
+        setIsStarred(Boolean(rec?.isStarred));
+      });
     }
-  }, [itemId]);
+  }, [itemId, recordsMap]);
+
+  const handleToggleStar = async () => {
+    if (!item) return;
+    hapticService.lightTick();
+    const newStatus = await services.learningRepo.toggleStar(item.id);
+    setIsStarred(newStatus);
+  };
 
   if (!item) {
     return (
@@ -64,13 +77,27 @@ export default function ItemDetailScreen() {
       <Card elevated style={{ padding: theme.spacing.xl }}>
         <View style={[styles.topRow, { marginBottom: theme.spacing.lg }]}>
           <Badge label={item.type.replace('_', ' ').toUpperCase()} variant="vocab" />
-          <TouchableOpacity
-            onPress={() => speak(item.korean)}
-            accessibilityLabel="Listen"
-            style={{ padding: theme.spacing.xs }}
-          >
-            <Ionicons name="volume-medium" size={26} color={colors.primary} />
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <TouchableOpacity
+              onPress={handleToggleStar}
+              accessibilityLabel={isStarred ? 'Unstar card' : 'Star card'}
+              style={{ padding: theme.spacing.xs }}
+            >
+              <Ionicons
+                name={isStarred ? 'star' : 'star-outline'}
+                size={24}
+                color={isStarred ? colors.accent : colors.foregroundMuted}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => speak(item.korean)}
+              accessibilityLabel="Listen"
+              style={{ padding: theme.spacing.xs }}
+            >
+              <Ionicons name="volume-medium" size={26} color={colors.primary} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={[styles.koreanBlock, { marginVertical: theme.spacing.lg }]}>

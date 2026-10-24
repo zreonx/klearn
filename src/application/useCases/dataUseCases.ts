@@ -1,7 +1,14 @@
 import { z } from 'zod';
 import { AppServices } from '../services';
 import { APP_CONFIG } from '@/config';
-import { format } from 'date-fns';
+import { addDays, endOfDay, format, isAfter, isBefore, startOfDay } from 'date-fns';
+import {
+  calculateLearnerProfile,
+  LearnerProfileSnapshot,
+} from '@/domain/learning/learnerEngine';
+import { LearningRecord } from '@/domain/learning/types';
+import { Achievement } from '@/domain/achievements/types';
+import { evaluateAchievements } from '@/domain/achievements/evaluator';
 
 const ExportSchema = z.object({
   version: z.number(),
@@ -16,6 +23,7 @@ const ExportSchema = z.object({
       correctCount: z.number(),
       incorrectCount: z.number(),
       streak: z.number(),
+      isStarred: z.boolean().optional(),
     })
   ),
   reviewStates: z.array(
@@ -41,6 +49,13 @@ const ExportSchema = z.object({
     }),
     themeMode: z.enum(['system', 'light', 'dark']).optional().default('system'),
     hasCompletedOnboarding: z.boolean(),
+    aiTutor: z
+      .object({
+        provider: z.enum(['offline', 'groq', 'openrouter', 'gemini', 'deepseek']),
+        apiKey: z.string().optional(),
+        modelName: z.string().optional(),
+      })
+      .optional(),
   }),
   streakData: z.object({
     currentStreak: z.number(),
@@ -52,6 +67,20 @@ const ExportSchema = z.object({
 
 export type ExportDataPayload = z.infer<typeof ExportSchema>;
 
+export interface MasteryDistribution {
+  unseen: number;
+  learning: number;
+  reviewing: number;
+  mastered: number;
+  totalCatalog: number;
+}
+
+export interface ReviewForecastDay {
+  dateKey: string;
+  label: string;
+  dueCount: number;
+}
+
 export interface LearningStats {
   totalItemsLearned: number;
   totalMastered: number;
@@ -59,6 +88,10 @@ export interface LearningStats {
   longestStreak: number;
   currentStreak: number;
   activeLearningDays: number;
+  masteryDistribution: MasteryDistribution;
+  reviewForecast: ReviewForecastDay[];
+  learnerProfile: LearnerProfileSnapshot;
+  achievements: Achievement[];
 }
 
 export class DataUseCases {
@@ -66,11 +99,51 @@ export class DataUseCases {
 
   async getLearningStats(): Promise<LearningStats> {
     const records = await this.services.learningRepo.getAll();
+    const reviewStates = await this.services.reviewRepo.getAllReviewStates();
     const streak = await this.services.progressRepo.getStreakData();
+    const allItems = this.services.catalog.getAllItems();
 
     const totalItemsLearned = records.filter((r) => r.status !== 'unseen').length;
     const totalMastered = records.filter((r) => r.status === 'mastered').length;
     const totalReviewsDone = records.reduce((acc, r) => acc + r.reviewCount, 0);
+
+    const learningCount = records.filter((r) => r.status === 'learning').length;
+    const reviewingCount = records.filter((r) => r.status === 'reviewing').length;
+    const totalCatalog = allItems.length;
+    const unseenCount = Math.max(0, totalCatalog - totalItemsLearned);
+
+    const masteryDistribution: MasteryDistribution = {
+      unseen: unseenCount,
+      learning: learningCount,
+      reviewing: reviewingCount,
+      mastered: totalMastered,
+      totalCatalog,
+    };
+
+    const now = new Date();
+    const reviewForecast: ReviewForecastDay[] = [];
+    for (let offset = 0; offset < 7; offset++) {
+      const targetDay = addDays(now, offset);
+      const dayStart = startOfDay(targetDay);
+      const dayEnd = endOfDay(targetDay);
+      const dateKey = format(targetDay, 'yyyy-MM-dd');
+      const label = offset === 0 ? 'Today' : offset === 1 ? 'Tmrw' : format(targetDay, 'EEE');
+
+      const dueCount = reviewStates.filter((state) => {
+        const due = new Date(state.dueDate);
+        if (offset === 0) {
+          return !isAfter(due, dayEnd);
+        }
+        return !isBefore(due, dayStart) && !isAfter(due, dayEnd);
+      }).length;
+
+      reviewForecast.push({ dateKey, label, dueCount });
+    }
+
+    const recordsMap = new Map<string, LearningRecord>(records.map((r) => [r.itemId, r]));
+    const itemTypeMap = new Map<string, string>(allItems.map((i) => [i.id, i.type]));
+    const learnerProfile = calculateLearnerProfile(recordsMap, itemTypeMap);
+    const achievements = evaluateAchievements({ records, streak, totalReviewsDone });
 
     return {
       totalItemsLearned,
@@ -79,6 +152,10 @@ export class DataUseCases {
       longestStreak: streak.longestStreak,
       currentStreak: streak.currentStreak,
       activeLearningDays: streak.activeDates.length,
+      masteryDistribution,
+      reviewForecast,
+      learnerProfile,
+      achievements,
     };
   }
 

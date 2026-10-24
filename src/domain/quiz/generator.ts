@@ -1,5 +1,6 @@
 import { LearningItem } from '../learning/types';
 import { QuizQuestion, QuizOption, QuizQuestionType, QuizGenerationConfig } from './types';
+import { MINIMAL_PAIR_SETS } from '@/content/hangul/minimalPairs';
 
 /**
  * Pure helper to pseudo-randomly or deterministically shuffle an array.
@@ -74,20 +75,24 @@ export function generateQuestionForItem(
       }
       break;
 
-    case 'sentence_assembly':
+    case 'sentence_assembly': {
       if (targetItem.examples && targetItem.examples.length > 0) {
         const ex = targetItem.examples[0];
         prompt = ex.translation;
-        subPrompt = 'Choose the matching Korean sentence';
+        subPrompt = 'Assemble the Korean sentence in correct word order';
         correctLabel = ex.korean;
         speakText = ex.korean;
       } else {
         prompt = targetItem.translation;
-        subPrompt = 'Select the correct Korean sentence / phrase';
+        subPrompt = 'Assemble the Korean phrase in correct word order';
         correctLabel = targetItem.korean;
         speakText = targetItem.korean;
       }
       break;
+    }
+
+    case 'acoustic_discrimination':
+      return generateAcousticQuestion(rng);
   }
 
   // Filter distractors to exclude the target item itself
@@ -108,6 +113,8 @@ export function generateQuestionForItem(
         return item.romanization || item.translation;
       case 'sentence_assembly':
         return item.examples && item.examples.length > 0 ? item.examples[0].korean : item.korean;
+      default:
+        return item.korean;
     }
   };
 
@@ -137,6 +144,23 @@ export function generateQuestionForItem(
 
   const shuffledOptions = shuffleArray(optionList, rng);
 
+  // Generate word tiles if sentence assembly
+  let tiles: string[] | undefined;
+  if (type === 'sentence_assembly') {
+    const rawTokens = correctLabel.split(/\s+/).filter(Boolean);
+    const cleanTokens = rawTokens.map((t) => t.replace(/[.,?!~]/g, ''));
+    const distractorTileCandidates = candidatePool
+      .filter((it) => it.id !== targetItem.id && it.korean.length <= 6)
+      .map((it) => it.korean);
+    const extraTile =
+      distractorTileCandidates.length > 0 && cleanTokens.length <= 4
+        ? distractorTileCandidates[Math.floor(rng() * distractorTileCandidates.length)]
+        : undefined;
+
+    const tilePool = extraTile ? [...cleanTokens, extraTile] : cleanTokens;
+    tiles = shuffleArray(tilePool, rng);
+  }
+
   return {
     id: `q-${targetItem.id}-${type}`,
     itemId: targetItem.id,
@@ -146,7 +170,36 @@ export function generateQuestionForItem(
     speakText,
     options: shuffledOptions,
     correctAnswerId: `opt-correct-${targetItem.id}`,
+    correctAnswerText: correctLabel,
+    tiles,
     explanation: targetItem.explanation,
+  };
+}
+
+/**
+ * Generates an acoustic discrimination question testing plain vs. aspirated vs. tense sounds.
+ */
+export function generateAcousticQuestion(rng = Math.random): QuizQuestion {
+  const chosenSet = MINIMAL_PAIR_SETS[Math.floor(rng() * MINIMAL_PAIR_SETS.length)];
+  const target = chosenSet.items[Math.floor(rng() * chosenSet.items.length)];
+
+  const options: QuizOption[] = chosenSet.items.map((it) => ({
+    id: `opt-${it.id}`,
+    label: `${it.korean} [${it.romanization}] — ${it.translation}`,
+    isCorrect: it.id === target.id,
+  }));
+
+  return {
+    id: `q-acoustic-${target.id}-${Math.floor(rng() * 10000)}`,
+    itemId: target.id,
+    type: 'acoustic_discrimination',
+    prompt: 'Listen closely. Which sound did you hear?',
+    subPrompt: `${chosenSet.title} • Plain vs. Aspirated vs. Tense`,
+    speakText: target.korean,
+    options: shuffleArray(options, rng),
+    correctAnswerId: `opt-${target.id}`,
+    correctAnswerText: target.korean,
+    explanation: `${target.korean} [${target.romanization}] starts with '${target.consonantLetter}' (${target.consonantType} consonant).`,
   };
 }
 

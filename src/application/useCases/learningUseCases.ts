@@ -51,4 +51,20 @@ export class LearningUseCases {
       isCompleted,
     };
   }
+
+  async toggleStar(itemId: string): Promise<boolean> {
+    return this.services.learningRepo.toggleStar(itemId);
+  }
+
+  async isItemStarred(itemId: string): Promise<boolean> {
+    const record = await this.services.learningRepo.getByItemId(itemId);
+    return Boolean(record?.isStarred);
+  }
+
+  async getStarredItems() {
+    const ids = await this.services.learningRepo.getStarredItemIds();
+    return ids
+      .map((id) => this.services.catalog.getItemById(id))
+      .filter((item): item is NonNullable<typeof item> => item !== undefined);
+  }
 }

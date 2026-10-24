@@ -61,7 +61,7 @@ interface QuizSessionState {
 
   startQuiz: (questions: QuizQuestion[]) => void;
   selectOption: (optionId: string) => void;
-  submitAnswer: () => void;
+  submitAnswer: (customIsCorrect?: boolean) => void;
   nextQuestion: () => void;
   setResult: (result: QuizSessionResult) => void;
   resetQuiz: () => void;
@@ -92,11 +92,14 @@ export const useQuizSessionStore = create<QuizSessionState>((set) => ({
   selectOption: (optionId) =>
     set((state) => (state.hasAnswered ? {} : { selectedOptionId: optionId })),
 
-  submitAnswer: () =>
+  submitAnswer: (customIsCorrect?: boolean) =>
     set((state) => {
-      if (state.hasAnswered || !state.selectedOptionId) return {};
+      if (state.hasAnswered) return {};
       const currentQ = state.questions[state.currentIndex];
-      const isCorrect = currentQ.correctAnswerId === state.selectedOptionId;
+      const isCorrect =
+        customIsCorrect !== undefined
+          ? customIsCorrect
+          : Boolean(state.selectedOptionId && currentQ.correctAnswerId === state.selectedOptionId);
 
       return {
         hasAnswered: true,

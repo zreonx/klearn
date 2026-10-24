@@ -805,6 +805,368 @@ export const CURRICULUM_DATA: Curriculum = {
             },
           ],
         },
+        {
+          id: 'unit-locations-movement',
+          levelId: 'level-beginner-a2',
+          title: 'Locations & Movement: 에 vs. 에서',
+          description: 'Distinguish static locations and destinations (에) from active action sites (에서).',
+          order: 3,
+          lessons: [
+            {
+              id: 'lesson-location-particles',
+              unitId: 'unit-locations-movement',
+              title: 'Location Particles: 에 vs. 에서',
+              koreanTitle: '장소 조사 에 / 에서',
+              description: 'Say where you are going (학교에 가요) vs. where an action happens (카페에서 공부해요).',
+              order: 1,
+              prerequisites: ['lesson-desires-want'],
+              learningObjectives: [
+                'Use 에 with static existence (있어요/없어요) and movement verbs (가요/와요)',
+                'Use 에서 when performing an active action inside a place (먹어요, 공부해요, 만나요)',
+                'Combine everyday place nouns with the right location marker',
+              ],
+              conceptNote: {
+                summary: 'Choosing between 에 and 에서 depends on whether the verb is static/directional or an active action.',
+                explanation: 'Use "에" for being somewhere (집에 있어요 = I am at home) or going somewhere (식당에 가요 = I go to the restaurant). Use "에서" when doing an action at that place (식당에서 밥을 먹어요 = I eat at the restaurant).',
+                formalityLevel: 'polite',
+                grammarTip: '카페에 가요 (Go to the cafe) vs. 카페에서 커피를 마셔요 (Drink coffee at the cafe)',
+              },
+              dialogue: {
+                title: 'Meeting at a Cafe (카페에서 만나기)',
+                description: 'Coordinating where to meet and study together.',
+                lines: [
+                  {
+                    speaker: '민수',
+                    korean: '지우 씨, 지금 집에 있어요?',
+                    translation: 'Jiwoo, are you at home right now?',
+                    romanization: 'jiwoo ssi, jigeum jibe isseoyo?',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '아니요, 지금 카페에 가요. 카페에서 한국어를 공부하고 싶어요.',
+                    translation: 'No, I am going to the cafe now. I want to study Korean at the cafe.',
+                    romanization: 'aniyo, jigeum kape-e gayo. kape-eseo hangugeo-reul gongbuhago sipeoyo.',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '좋아요! 저도 그 카페에서 공부하고 식당에서 저녁을 먹어요.',
+                    translation: 'Great! I will also study at that cafe and eat dinner at the restaurant.',
+                    romanization: 'joayo! jeodo geu kape-eseo gongbuhago sikdang-eseo jeonyeogeul meogeoyo.',
+                  },
+                ],
+              },
+              itemIds: [
+                'gram-part-e-eseo',
+                'voc-place-home',
+                'voc-place-cafe',
+                'voc-place-restaurant',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
+    // Level 4: Elementary Communication (Stage 3 — Independent Communication)
+    {
+      id: 'level-elementary',
+      stageId: 'stage-independent',
+      title: 'Level 4: Elementary Communication',
+      description: 'Express negation, inability, connected actions, and nuanced reasons in multi-clause sentences.',
+      order: 4,
+      units: [
+        {
+          id: 'unit-negation',
+          levelId: 'level-elementary',
+          title: 'Negation & Ability (안, 못, -지 않아요)',
+          description: 'Distinguish between choosing not to do something (안) and being unable to do it (못).',
+          order: 1,
+          lessons: [
+            {
+              id: 'lesson-negation-an-mot',
+              unitId: 'unit-negation',
+              title: 'Negation: 안 vs. 못 & -지 않아요',
+              koreanTitle: '부정 표현 안/못, -지 않아요',
+              description: 'Express "do not", "cannot", and polite long-form negation accurately.',
+              order: 1,
+              prerequisites: ['lesson-location-particles'],
+              learningObjectives: [
+                'Contrast personal choice negation (안) with external inability (못)',
+                'Place 안 and 못 properly with compound 하다 verbs (공부 안 해요)',
+                'Form long negation using verb/adjective stem + -지 않아요',
+              ],
+              conceptNote: {
+                summary: 'Korean distinguishes between not doing something by choice (안) and being unable to do it due to circumstances (못).',
+                explanation: 'Place 안 or 못 right before the verb: 안 가요 (I don\'t go), 못 가요 (I can\'t go). For Noun+하다 verbs, split the noun and 하다: 공부(를) 안 해요 / 공부(를) 못 해요. Alternatively, attach -지 않아요 to any stem (가지 않아요).',
+                formalityLevel: 'polite',
+                grammarTip: '안 먹어요 (Don\'t eat) | 못 먹어요 (Can\'t eat) | 먹지 않아요 (Do not eat)',
+              },
+              dialogue: {
+                title: 'Why Couldn\'t You Come? (어제 왜 못 왔어요?)',
+                description: 'Explaining a busy schedule to a friend.',
+                lines: [
+                  {
+                    speaker: '지우',
+                    korean: '민수 씨, 어제 모임에 왜 안 왔어요?',
+                    translation: 'Minsu, why didn\'t you come to the gathering yesterday?',
+                    romanization: 'minsu ssi, eoje moime wae an wasseoyo?',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '안 간 게 아니라 일이 많아서 못 갔어요.',
+                    translation: 'It\'s not that I chose not to go—I had a lot of work so I couldn\'t go.',
+                    romanization: 'an gan ge anira iri manaseo mot gasseoyo.',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '아, 그랬군요! 오늘은 바쁘지 않아요?',
+                    translation: 'Ah, I see! Are you not busy today?',
+                    romanization: 'a, geuraetgunyo! oneureun bappeuji anayo?',
+                  },
+                ],
+              },
+              itemIds: [
+                'gram-neg-an',
+                'gram-neg-mot',
+                'gram-neg-ji-anayo',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'unit-connecting-clauses',
+          levelId: 'level-elementary',
+          title: 'Connecting Clauses & Reasons',
+          description: 'Link ideas smoothly using -고 (and), -지만 (but), -아/어서 (because), and -(으)니까 (since).',
+          order: 2,
+          lessons: [
+            {
+              id: 'lesson-connectors-go-jiman',
+              unitId: 'unit-connecting-clauses',
+              title: 'Connecting Sentences: -고 & -지만',
+              koreanTitle: '문장 연결 -고 / -지만',
+              description: 'Chain actions in sequence (-고) and express contrast (-지만).',
+              order: 1,
+              prerequisites: ['lesson-negation-an-mot'],
+              learningObjectives: [
+                'Connect two clauses with -고 ("and / and then")',
+                'Express contrast between clauses using -지만 ("but / although")',
+              ],
+              conceptNote: {
+                summary: 'Clause connectors attach directly to verb or adjective stems to join two thoughts into one natural sentence.',
+                explanation: 'Attach -고 to list facts or sequential actions (밥을 먹고 차를 마셔요). Attach -지만 to contrast two statements (한국어는 어렵지만 재미있어요).',
+                formalityLevel: 'polite',
+                grammarTip: '먹다 + -고 → 먹고 (eat and...) | 어렵다 + -지만 → 어렵지만 (difficult, but...)',
+              },
+              dialogue: {
+                title: 'Weekend Plans (주말 계획)',
+                description: 'Talking about studying together and grabbing coffee.',
+                lines: [
+                  {
+                    speaker: '민수',
+                    korean: '한국어 문법은 조금 어렵지만 정말 재미있어요.',
+                    translation: 'Korean grammar is a bit difficult, but really fun.',
+                    romanization: 'hangugeo munbeobeun jogeum eoryeopjiman jeongmal jaemiisseoyo.',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '맞아요! 오늘 같이 숙제를 하고 맛있는 커피를 마셔요.',
+                    translation: 'That\'s right! Let\'s do homework together today and then drink delicious coffee.',
+                    romanization: 'majayo! oneul gachi sukjereul hago masinneun keopireul masyeoyo.',
+                  },
+                ],
+              },
+              itemIds: [
+                'gram-conn-go',
+                'gram-conn-jiman',
+                'voc-adv-together',
+              ],
+            },
+            {
+              id: 'lesson-reasons-aseo-eunikka',
+              unitId: 'unit-connecting-clauses',
+              title: 'Expressing Reasons: -아/어서 vs. -(으)니까',
+              koreanTitle: '이유 표현 -아/어서와 -(으)니까',
+              description: 'Know when to use objective cause (-아/어서) vs. reason for a suggestion (-(으)니까).',
+              order: 2,
+              prerequisites: ['lesson-connectors-go-jiman'],
+              learningObjectives: [
+                'Form -아/어서 for natural causes and polite excuses (늦어서 죄송합니다)',
+                'Use -(으)니까 when the main clause is a command, request, or "let\'s" suggestion',
+              ],
+              conceptNote: {
+                summary: 'Both -아/어서 and -(으)니까 mean "because/so", but they follow strict grammatical rules.',
+                explanation: 'Use -아/어서 for natural cause-and-effect statements (바빠서 못 갔어요). Never use -아/어서 before commands or suggestions! When proposing an action ("Since X, let\'s do Y"), always use -(으)니까 (비가 오니까 집에 가요).',
+                formalityLevel: 'polite',
+                grammarTip: '바빠서 못 가요 (Statement → -아서) | 바쁘니까 내일 만나요! (Suggestion → -으니까)',
+              },
+              itemIds: [
+                'gram-conn-aseo-eoseo',
+                'gram-conn-eunikka',
+                'voc-adj-busy',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
+    // Level 5: Intermediate & Honorific Nuance (Stage 4 — Advanced Proficiency)
+    {
+      id: 'level-intermediate',
+      stageId: 'stage-advanced',
+      title: 'Level 5: Honorifics & Formal Registers',
+      description: 'Master Korean subject honorifics (-(으)시-), special honorific verbs, and formal business speech (-습니다).',
+      order: 5,
+      units: [
+        {
+          id: 'unit-honorifics-registers',
+          levelId: 'level-intermediate',
+          title: 'Honorifics & Formal Polite Speech',
+          description: 'Speak respectfully to elders, teachers, and professional colleagues.',
+          order: 1,
+          lessons: [
+            {
+              id: 'lesson-honorific-si-seyo',
+              unitId: 'unit-honorifics-registers',
+              title: 'Subject Honorific -(으)시- & Special Verbs',
+              koreanTitle: '주체 높임법 -(으)시-',
+              description: 'Elevate the subject with -(으)세요 and use honorific vocabulary (드시다, 주무시다).',
+              order: 1,
+              prerequisites: ['lesson-reasons-aseo-eunikka'],
+              learningObjectives: [
+                'Insert -(으)시- into verbs when talking about elders, teachers, or guests',
+                'Use dedicated honorific verbs: 드시다 (eat/drink), 주무시다 (sleep), 계시다 (be/stay)',
+              ],
+              conceptNote: {
+                summary: 'Subject honorifics show respect toward the person performing the action.',
+                explanation: 'Add -시- after vowel stems (가다 → 가시다 → 가세요) and -으시- after consonant stems (읽다 → 읽으시다 → 읽으세요). Some everyday verbs transform completely into special honorific words: 먹다/마시다 → 드시다, 자다 → 주무시다, 있다 → 계시다.',
+                formalityLevel: 'formal',
+                grammarTip: '가다 → 가세요 | 먹다 → 드세요 | 자다 → 주무세요',
+              },
+              dialogue: {
+                title: 'Welcoming Grandparents (조부모님 맞이하기)',
+                description: 'Using respectful honorific speech with family elders.',
+                lines: [
+                  {
+                    speaker: '민수',
+                    korean: '할머니, 어서 오세요! 어젯밤에 잘 주무셨어요?',
+                    translation: 'Grandmother, welcome! Did you sleep well last night?',
+                    romanization: 'halmeoni, eoseo oseyo! eojetbame jal jumusyeosseoyo?',
+                  },
+                  {
+                    speaker: '할머니',
+                    korean: '응, 잘 잤어. 우리 민수 요즘 바쁘지?',
+                    translation: 'Yes, I slept well. Our Minsu is busy these days, right?',
+                    romanization: 'eung, jal jasseo. uri minsu yojeum bappeuji?',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '괜찮아요! 따뜻한 차 준비했으니까 천천히 많이 드세요.',
+                    translation: 'I\'m fine! Since I prepared warm tea, please take your time and enjoy plenty.',
+                    romanization: 'gwaenchanayo! ttatteuthan cha junbihaesseunikka cheoncheonhi mani deuseyo.',
+                  },
+                ],
+              },
+              itemIds: [
+                'gram-hon-si',
+                'voc-hon-deusida',
+                'voc-hon-jumusida',
+              ],
+            },
+            {
+              id: 'lesson-formal-hapsho',
+              unitId: 'unit-honorifics-registers',
+              title: 'Formal Polite Register: -습니다 / -습니까',
+              koreanTitle: '격식체 합쇼체 (-습니다)',
+              description: 'Use formal deferential endings for presentations, meetings, news, and public announcements.',
+              order: 2,
+              prerequisites: ['lesson-honorific-si-seyo'],
+              learningObjectives: [
+                'Attach -ㅂ니다 / -습니다 for formal statements and -ㅂ니까 / -습니까 for formal questions',
+                'Apply the nasal assimilation rule: ㅂ + ㄴ is pronounced [ㅁㄴ]',
+              ],
+              conceptNote: {
+                summary: '합쇼체 (-습니다/-습니까) is the formal polite speech level used in business meetings, broadcasts, customer service, and formal introductions.',
+                explanation: 'After a vowel stem, attach -ㅂ니다 (가다 → 갑니다 [감니다]). After a consonant stem, attach -습니다 (먹다 → 먹습니다 [먹씀니다]). Questions end in -ㅂ니까? / -습니까?',
+                formalityLevel: 'formal',
+                grammarTip: '가다 + -ㅂ니다 = 갑니다 | 먹다 + -습니다 = 먹습니다',
+              },
+              itemIds: [
+                'gram-reg-hapsho',
+                'voc-work-meeting',
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
+    // Level 6: Mastery, Idioms & Cultural Nuance (Stage 5 — Mastery & Specialization)
+    {
+      id: 'level-mastery-fluency',
+      stageId: 'stage-mastery',
+      title: 'Level 6: Idioms, Proverbs & Cultural Fluency',
+      description: 'Master vivid Korean body idioms (관용표현) and classic proverbs (속담) used by native speakers.',
+      order: 6,
+      units: [
+        {
+          id: 'unit-idioms-proverbs',
+          levelId: 'level-mastery-fluency',
+          title: 'Korean Idioms & Proverbs (관용표현과 속담)',
+          description: 'Understand figurative expressions that go beyond literal word-for-word translation.',
+          order: 1,
+          lessons: [
+            {
+              id: 'lesson-korean-idioms',
+              unitId: 'unit-idioms-proverbs',
+              title: 'Essential Body Idioms & Proverbs',
+              koreanTitle: '필수 관용표현과 속담',
+              description: 'Use natural expressions like 눈이 높다 (high standards), 손이 크다 (generous), and 시작이 반이다.',
+              order: 1,
+              prerequisites: ['lesson-formal-hapsho'],
+              learningObjectives: [
+                'Interpret figurative Korean body idioms in daily conversation',
+                'Encourage others with the classic proverb 시작이 반이다 ("Well begun is half done")',
+              ],
+              conceptNote: {
+                summary: 'Korean uses body parts (눈 eye, 손 hand, 발 foot, 입 mouth) in rich idiomatic phrases that express personality and social relationships.',
+                explanation: '눈이 높다 literally means "eyes are high", describing picky taste or high standards. 손이 크다 literally means "hands are big", praising someone who cooks or shares in generous abundance.',
+                formalityLevel: 'polite',
+                grammarTip: '눈이 높다 (High standards) | 손이 크다 (Generous) | 시작이 반이다 (Well begun is half done)',
+              },
+              dialogue: {
+                title: 'Preparing a Housewarming Feast (집들이 준비)',
+                description: 'Friends talking about cooking and starting a new challenge.',
+                lines: [
+                  {
+                    speaker: '지우',
+                    korean: '민수 씨, 음식을 왜 이렇게 많이 만들었어요? 정말 손이 크네요!',
+                    translation: 'Minsu, why did you make this much food? You are truly so generous!',
+                    romanization: 'minsu ssi, eumsigeul wae ireoke mani mandeureosseoyo? jeongmal soni keuneyo!',
+                  },
+                  {
+                    speaker: '민수',
+                    korean: '친구들이 오니까 넉넉하게 준비했어요. 요즘 한국어 고급 시험 준비는 어때요?',
+                    translation: 'Since friends are coming, I prepared plenty. How is your advanced Korean exam prep going these days?',
+                    romanization: 'chingudeuri onikka neongneokhage junbihaesseoyo. yojeum hangugeo gogeup siheom junbineun eottaeyo?',
+                  },
+                  {
+                    speaker: '지우',
+                    korean: '아직 갈 길이 멀지만, 시작이 반이니까 매일 꾸준히 하고 있어요!',
+                    translation: 'I still have a long way to go, but since well begun is half done, I am doing it steadily every day!',
+                    romanization: 'ajik gal giri meoljiman, sijagi baninikka maeil kkujunhi hago isseoyo!',
+                  },
+                ],
+              },
+              itemIds: [
+                'phr-idiom-eye-high',
+                'phr-idiom-hand-big',
+                'phr-proverb-start-half',
+              ],
+            },
+          ],
+        },
       ],
     },
 
@@ -814,7 +1176,7 @@ export const CURRICULUM_DATA: Curriculum = {
       stageId: 'stage-everyday',
       title: 'Bonus: Casual Korean (반말)',
       description: 'Learn how close friends, peers, and K-drama characters naturally talk without formal speech endings.',
-      order: 4,
+      order: 7,
       units: [
         {
           id: 'unit-casual-essentials',

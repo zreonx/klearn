@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { services } from '@/application/services';
 import { DataUseCases, LearningStats } from '@/application/useCases/dataUseCases';
 import { UserSettings } from '@/domain/settings/types';
-import { notificationService } from '@/infrastructure/notifications/notificationService';
+import { notificationService, NotificationDeliveryResult } from '@/infrastructure/notifications/notificationService';
 
 const dataUseCases = new DataUseCases(services);
 
@@ -40,8 +40,21 @@ export function useMe() {
 
     if (updated.reminder) {
       const todaySentence = services.catalog.getDailySentence(new Date());
-      await notificationService.scheduleDailyReminder(nextSettings.reminder, todaySentence?.korean);
+      await notificationService.scheduleDailyReminder(nextSettings.reminder, {
+        sentenceKorean: todaySentence?.korean,
+        translation: todaySentence?.translation,
+        streakDays: stats?.currentStreak,
+      });
     }
+  };
+
+  const sendTestNotification = async (): Promise<NotificationDeliveryResult> => {
+    const todaySentence = services.catalog.getDailySentence(new Date());
+    return await notificationService.sendInstantStudyNotification({
+      sentenceKorean: todaySentence?.korean,
+      translation: todaySentence?.translation,
+      streakDays: stats?.currentStreak,
+    });
   };
 
   const exportData = async () => {
@@ -62,12 +75,16 @@ export function useMe() {
     await loadData();
   };
 
+  const todaySentence = services.catalog.getDailySentence(new Date());
+
   return {
     stats,
     settings,
     loading,
+    todaySentence,
     refresh: loadData,
     updateSettings,
+    sendTestNotification,
     exportData,
     importData,
     resetData,

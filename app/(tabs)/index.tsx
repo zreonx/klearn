@@ -434,6 +434,32 @@ export default function TodayScreen() {
         </Card>
       )}
 
+      {/* AI Conversation & Speaking Roleplay Card */}
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => router.push('/conversation' as any)}
+      >
+        <Card elevated style={[styles.card, { marginBottom: theme.spacing.lg, padding: theme.spacing.lg }]}>
+          <View style={[styles.rowBetween, { marginBottom: theme.spacing.xs }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="chatbubbles" size={20} color={colors.primary} />
+              <Typography variant="heading" color="primary" weight="700" style={{ marginLeft: 8 }}>
+                AI Conversation & Speaking
+              </Typography>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.foregroundSubtle} />
+          </View>
+          <Typography variant="body" color="foreground" style={{ fontSize: 13, lineHeight: 18, marginTop: 4 }}>
+            Practice interactive roleplay scenarios (Seoul Cafe, Introductions, Directions, Dining) with native voice audio & politeness coaching.
+          </Typography>
+          <View style={{ flexDirection: 'row', gap: 6, marginTop: theme.spacing.sm }}>
+            <Badge label="5 Scenarios" variant="hangul" />
+            <Badge label="Voice Audio" variant="vocab" />
+            <Badge label="Politeness Coach" variant="default" />
+          </View>
+        </Card>
+      </TouchableOpacity>
+
       {/* Review Queue Summary Card */}
       {data && data.dueReviewsCount > 0 && (
         <Card subtle style={[styles.card, { marginBottom: theme.spacing.lg }]}>

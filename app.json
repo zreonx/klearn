@@ -21,6 +21,9 @@
     "android": {
       "package": "com.klearn",
       "versionCode": 1,
+      "permissions": [
+        "POST_NOTIFICATIONS"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#F8F7F2",
         "foregroundImage": "./assets/klearn-icon.png",
@@ -56,6 +59,13 @@
             "image": "./assets/klearn-icon.png",
             "backgroundColor": "#151C1A"
           }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/klearn-icon.png",
+          "color": "#176B55"
         }
       ]
     ],

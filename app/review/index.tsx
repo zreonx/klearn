@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -19,6 +19,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useReview } from '@/features/review/useReview';
 import { ReviewRating } from '@/domain/srs/types';
+import { services } from '@/application/services';
+import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 export default function ReviewSessionScreen() {
   const router = useRouter();
@@ -37,12 +39,39 @@ export default function ReviewSessionScreen() {
     resetSession,
   } = useReview();
 
+  const [isStarred, setIsStarred] = useState<boolean>(false);
+
   useEffect(() => {
     startSession();
     return () => {
       resetSession();
     };
   }, []);
+
+  useEffect(() => {
+    if (currentCard?.item.id) {
+      services.learningRepo.getByItemId(currentCard.item.id).then((rec) => {
+        setIsStarred(Boolean(rec?.isStarred));
+      });
+    }
+  }, [currentCard]);
+
+  const handleToggleStar = async () => {
+    if (!currentCard?.item) return;
+    hapticService.lightTick();
+    const newStatus = await services.learningRepo.toggleStar(currentCard.item.id);
+    setIsStarred(newStatus);
+  };
+
+  const handleFlipCard = () => {
+    hapticService.lightTick();
+    flipCard();
+  };
+
+  const handleRatingPress = async (rating: ReviewRating) => {
+    hapticService.lightTick();
+    await submitRating(rating);
+  };
 
   if (loading) {
     return (
@@ -54,36 +83,34 @@ export default function ReviewSessionScreen() {
     );
   }
 
-  // Session completed or empty queue
-  if (!currentCard || queue.length === 0) {
+  // Empty queue / completed state
+  if (queue.length === 0 || currentIndex >= queue.length) {
     return (
       <View style={[styles.centerContainer, { backgroundColor: colors.background, padding: theme.spacing.xl }]}>
-        <Card elevated style={[styles.completionCard, { padding: theme.spacing['2xl'], borderRadius: theme.radii.xl }]}>
-          <View style={[styles.checkCircle, { backgroundColor: colors.successSurface }]}>
-            <Ionicons name="checkmark-done" size={40} color={colors.success} />
-          </View>
-          <Typography variant="heading" align="center" style={{ marginBottom: theme.spacing.sm }}>
-            All Reviews Complete!
-          </Typography>
-          <Typography variant="body" color="foregroundMuted" align="center" style={{ marginBottom: theme.spacing['2xl'] }}>
-            You have reviewed all cards scheduled for today. Great job keeping your memory fresh!
-          </Typography>
-          <Button
-            title="Return to Today"
-            fullWidth
-            onPress={() => router.back()}
-          />
-        </Card>
+        <View style={[styles.trophyCircle, { backgroundColor: colors.surfaceSubtle }]}>
+          <Ionicons name="checkmark-done" size={48} color={colors.primary} />
+        </View>
+        <Typography variant="heading" align="center" style={{ marginBottom: theme.spacing.xs }}>
+          All Caught Up!
+        </Typography>
+        <Typography variant="body" color="foregroundMuted" align="center" style={{ marginBottom: theme.spacing.xl }}>
+          You have zero cards due for review today. Great job keeping your memory fresh!
+        </Typography>
+        <Button
+          title="Return to Dashboard"
+          onPress={() => router.back()}
+          style={{ minWidth: 200 }}
+        />
       </View>
     );
   }
 
+  const item = currentCard!.item;
   const progress = queue.length > 0 ? (currentIndex + 1) / queue.length : 1;
-  const item = currentCard.item;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Session Progress Header */}
+      {/* Top Header */}
       <View
         style={[
           styles.header,
@@ -96,7 +123,7 @@ export default function ReviewSessionScreen() {
       >
         <View style={[styles.headerTop, { marginBottom: theme.spacing.md }]}>
           <Typography variant="label" color="foregroundMuted">
-            Review {currentIndex + 1} of {queue.length}
+            Reviewing {currentIndex + 1} of {queue.length}
           </Typography>
           <TouchableOpacity
             onPress={() => router.back()}
@@ -111,16 +138,30 @@ export default function ReviewSessionScreen() {
       </View>
 
       <ScrollView contentContainerStyle={[styles.cardContainer, { padding: theme.spacing.lg }]}>
-        <Card elevated style={[styles.flashcard, { padding: theme.spacing.xl, borderRadius: theme.radii.xl }]} onPress={flipCard}>
+        <Card elevated style={[styles.flashcard, { padding: theme.spacing.xl, borderRadius: theme.radii.xl }]} onPress={handleFlipCard}>
           <View style={styles.flashcardHeader}>
             <Badge label="Korean" variant="vocab" />
-            <TouchableOpacity
-              onPress={() => speak(item.korean)}
-              style={{ padding: theme.spacing.xs }}
-              accessibilityLabel="Listen"
-            >
-              <Ionicons name="volume-medium" size={24} color={colors.primary} />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <TouchableOpacity
+                onPress={handleToggleStar}
+                accessibilityLabel={isStarred ? 'Unstar card' : 'Star card'}
+                style={{ padding: theme.spacing.xs }}
+              >
+                <Ionicons
+                  name={isStarred ? 'star' : 'star-outline'}
+                  size={24}
+                  color={isStarred ? colors.accent : colors.foregroundMuted}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => speak(item.korean)}
+                style={{ padding: theme.spacing.xs }}
+                accessibilityLabel="Listen"
+              >
+                <Ionicons name="volume-medium" size={24} color={colors.primary} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Front Prompt */}
@@ -178,69 +219,54 @@ export default function ReviewSessionScreen() {
           <View style={[styles.ratingButtonsRow, { gap: theme.spacing.sm }]}>
             <TouchableOpacity
               style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.destructive, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
-              onPress={() => submitRating(ReviewRating.Again)}
+              onPress={() => handleRatingPress(ReviewRating.Again)}
             >
               <Typography variant="label" color="destructive">
                 Again
               </Typography>
-              <Typography variant="caption" color="foregroundSubtle">
-                1 day
+              <Typography variant="caption" color="foregroundMuted" style={{ fontSize: 10 }}>
+                &lt; 1d
               </Typography>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.warning, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
-              onPress={() => submitRating(ReviewRating.Hard)}
+              onPress={() => handleRatingPress(ReviewRating.Hard)}
             >
               <Typography variant="label" color="warning">
                 Hard
               </Typography>
-              <Typography variant="caption" color="foregroundSubtle">
-                Slow
+              <Typography variant="caption" color="foregroundMuted" style={{ fontSize: 10 }}>
+                ~ 1d
               </Typography>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.primary, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
-              onPress={() => submitRating(ReviewRating.Good)}
+              onPress={() => handleRatingPress(ReviewRating.Good)}
             >
               <Typography variant="label" color="primary">
                 Good
               </Typography>
-              <Typography variant="caption" color="foregroundSubtle">
-                Standard
+              <Typography variant="caption" color="foregroundMuted" style={{ fontSize: 10 }}>
+                ~ 3d
               </Typography>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.ratingBtn, { backgroundColor: colors.surfaceElevated, borderColor: colors.success, borderRadius: theme.radii.md, paddingVertical: theme.spacing.md }]}
-              onPress={() => submitRating(ReviewRating.Easy)}
+              onPress={() => handleRatingPress(ReviewRating.Easy)}
             >
               <Typography variant="label" color="success">
                 Easy
               </Typography>
-              <Typography variant="caption" color="foregroundSubtle">
-                Bonus
+              <Typography variant="caption" color="foregroundMuted" style={{ fontSize: 10 }}>
+                ~ 5d
               </Typography>
             </TouchableOpacity>
           </View>
         </View>
-      ) : (
-        <View
-          style={[
-            styles.revealButtonContainer,
-            {
-              backgroundColor: colors.surfaceSubtle,
-              borderTopWidth: 1,
-              borderTopColor: colors.borderSubtle,
-              padding: theme.spacing.lg,
-              paddingBottom: Math.max(insets.bottom, theme.spacing.lg),
-            },
-          ]}
-        >
-          <Button title="Reveal Meaning" fullWidth onPress={flipCard} />
-        </View>
-      )}
+      ) : null}
     </View>
   );
 }
@@ -265,7 +291,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   flashcard: {
-    minHeight: 280,
+    width: '100%',
+    minHeight: 340,
     justifyContent: 'space-between',
   },
   flashcardHeader: {
@@ -275,10 +302,11 @@ const styles = StyleSheet.create({
   },
   promptArea: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
   koreanText: {
-    fontSize: 48,
-    marginBottom: 4,
+    fontSize: 44,
+    lineHeight: 54,
   },
   revealHint: {
     flexDirection: 'row',
@@ -297,7 +325,6 @@ const styles = StyleSheet.create({
   },
   ratingButtonsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   ratingBtn: {
     flex: 1,
@@ -305,15 +332,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1.5,
   },
-  revealButtonContainer: {},
-  completionCard: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  checkCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+  trophyCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
