@@ -45,6 +45,18 @@
         {
           "root": "./app"
         }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/klearn-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#F8F7F2",
+          "dark": {
+            "image": "./assets/klearn-icon.png",
+            "backgroundColor": "#151C1A"
+          }
+        }
       ]
     ],
     "experiments": {
