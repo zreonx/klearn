@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- **Calm UI Hierarchy & Beginner Anti-Overwhelm Redesign**:
+  - Consolidated the Today tab (`app/(tabs)/index.tsx`) by unifying three sprawling vertical cards (Daily Word, Daily Phrase, and Daily Practical Sentence) into a single interactive **"Daily Korean Bite" (`오늘의 한마디`)** card with an interactive 3-segment switcher (`Word 단어`, `Phrase 표현`, `Sentence 문장`) and pronunciation audio, eliminating scrolling fatigue.
+  - Streamlined Today tab action hierarchy to focus on one unambiguous primary action (*Continue Learning* / *Review*), keeping deep 6-Skill proficiency bars and long-term milestones exclusively in the **Me** tab where comprehensive analytics reside.
+  - Fixed category browsing in Search (`app/search.tsx`) so selecting category pills (Vocabulary, Grammar, Sentences, Hangul) displays catalog items immediately even when the search query is blank.
+  - Grouped Quiz tab modes (`app/(tabs)/quiz.tsx`) into clear **Core Practice** and **Interactive Drills** sections with subtle badges, haptics, and clean typography.
+  - Cleaned up design tokens and mobile inputs, adding `keyboardType="number-pad"` in numbers converter and replacing raw hexes with semantic tokens (`colors.borderSubtle`, `colors.primaryForeground`).
 - **Korean Number Systems & Counters Playground (`숫자 & 단위 연습기`)**:
   - Implemented full Sino-Korean integer conversion (0 to 999,999,999) with units (십, 백, 천, 만, 억) and daily presets (money, minutes, dates) (`src/domain/numbers/sinoKorean.ts`).
   - Implemented Native Korean conversion (1 to 99) with standalone vs. counter contractions (`한, 두, 세, 네, 스무`) (`src/domain/numbers/nativeKorean.ts`).

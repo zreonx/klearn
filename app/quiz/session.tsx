@@ -57,7 +57,7 @@ export default function QuizSessionModal() {
     return () => {
       resetQuiz();
     };
-  }, [params.type, params.starred]);
+  }, [params.type, params.starred, params.count]);
 
   // Synchronize tiles when current question changes
   useEffect(() => {

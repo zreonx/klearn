@@ -19,13 +19,13 @@
 
 ## 2. Recently Completed Milestones
 
-1. **Pedagogical Reference Tools, Progressive Disclosure & Dictation (`받아쓰기`) (2026-10-25)**:
-   - **Korean Number Systems & Counters Playground (`숫자 & 단위 연습기`)**: Built Sino-Korean (0–999,999,999) + Native Korean (1–99) conversion engines, catalog of 12 essential counters, interactive Korean clock formatter, and `app/tools/numbers.tsx` with audio.
-   - **Verb & Adjective Conjugator (`동사/형용사 활용기`)**: Built Unicode vowel harmony conjugation engine (`src/domain/conjugation/engine.ts`) supporting 6 spoken forms across regular roots and 7 irregular patterns (`ㄷ, ㅂ, ㅡ, 르, ㄹ, ㅅ, ㅎ`), with dictionary root search and audio in `app/tools/conjugator.tsx`.
-   - **Sound-Change & Pronunciation Rules Guide (`한국어 발음 법칙`)**: Curated reference guide (`src/content/grammar/soundChangeRules.ts`) covering Liaison, Nasalization, Tensification, Aspiration, and Palatalization with side-by-side written vs spoken `[발음]` badges and audio in `app/grammar/sound-rules.tsx`.
-   - **Cultural Micro-Stories & Reading Bites (`짧은 한국어 읽기`)**: Authored 4 authentic Seoul life stories (`src/content/reading/stories.ts`) with sentence-by-sentence audio, vocab annotations, and reading comprehension quizzes in `app/reading/index.tsx` & `app/reading/[storyId].tsx`.
-   - **Korean Dictation Quiz (`받아쓰기`) & Configurable Session Length**: Extended domain quiz engine with audio-first dictation questions using syllable tile assembly with distractors, and added question count selectors (`5, 10, 15, 20`) in `app/(tabs)/quiz.tsx`.
-   - **Search Category Filters & Mastery Toolkit**: Added category chips (`All, Vocab, Grammar, Sentences, Hangul`) in `app/search.tsx`. Replaced stacked cards on the Learn tab (`app/(tabs)/learn.tsx`) with a sleek horizontal **Mastery Toolkit** carousel to prevent learner cognitive overload.
+1. **Calm UI Hierarchy, Anti-Overwhelm Redesign & Pedagogical Suite (2026-10-25)**:
+   - **Today Tab Unified "Daily Korean Bite" (`오늘의 한마디`)**: Consolidated three separate giant vertical cards (Word, Phrase, Sentence) into 1 unified interactive card with a 3-segment switcher (`Word 단어`, `Phrase 표현`, `Sentence 문장`), reducing visual clutter and scrolling fatigue by 60%.
+   - **Screen Action Hierarchy**: Kept the primary action unambiguous on the Today screen, moving deep 6-Skill proficiency bars and long-term milestones exclusively to the **Me** tab where comprehensive analytics reside.
+   - **Search Category Browsing Fix**: Resolved empty-query filter bug in `app/search.tsx` so selecting category chips immediately displays browsable items.
+   - **Quiz Modes Visual Grouping**: Segmented Quiz modes in `app/(tabs)/quiz.tsx` into **Core Practice** and **Interactive Drills** with subtle badges, haptic feedback, and responsive session lengths.
+   - **Design Token Purity**: Completely eliminated raw hex codes (`#000`, `#FFFFFF`) from UI components; added `keyboardType="number-pad"` for number inputs.
+   - **Pedagogical Tools Suite**: Built Korean Number Systems & Counters Playground (`app/tools/numbers.tsx`), Verb & Adjective Conjugator (`app/tools/conjugator.tsx`), Sound Rules Guide (`app/grammar/sound-rules.tsx`), Cultural Micro-Stories (`app/reading/`), and Korean Dictation Quiz (`받아쓰기`).
 2. **CI/CD Pipeline Hardening & NPM ERESOLVE Resolution (2026-10-25)**:
    - Diagnosed GitHub Actions workflow failure on `npm ci` due to peer dependency mismatch between `@react-native/jest-preset@^0.87.1` and `jest-expo@57.0.5`.
    - Aligned `@react-native/jest-preset` to `^0.86.3` in `package.json` and generated clean `package-lock.json`.

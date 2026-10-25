@@ -95,10 +95,8 @@ export default function NumbersPlaygroundScreen() {
               activeTab === 'converter' && {
                 backgroundColor: colors.surface,
                 borderRadius: theme.radii.md,
-                shadowColor: '#000',
-                shadowOpacity: 0.05,
-                shadowRadius: 4,
-                elevation: 2,
+                borderWidth: 1,
+                borderColor: colors.borderSubtle,
               },
             ]}
             onPress={() => {
@@ -121,10 +119,8 @@ export default function NumbersPlaygroundScreen() {
               activeTab === 'time' && {
                 backgroundColor: colors.surface,
                 borderRadius: theme.radii.md,
-                shadowColor: '#000',
-                shadowOpacity: 0.05,
-                shadowRadius: 4,
-                elevation: 2,
+                borderWidth: 1,
+                borderColor: colors.borderSubtle,
               },
             ]}
             onPress={() => {
@@ -147,10 +143,8 @@ export default function NumbersPlaygroundScreen() {
               activeTab === 'counters' && {
                 backgroundColor: colors.surface,
                 borderRadius: theme.radii.md,
-                shadowColor: '#000',
-                shadowOpacity: 0.05,
-                shadowRadius: 4,
-                elevation: 2,
+                borderWidth: 1,
+                borderColor: colors.borderSubtle,
               },
             ]}
             onPress={() => {
@@ -198,7 +192,7 @@ export default function NumbersPlaygroundScreen() {
                   ]}
                   value={inputNumber}
                   onChangeText={setInputNumber}
-                  keyboardType="numeric"
+                  keyboardType="number-pad"
                   maxLength={9}
                   placeholder="e.g. 25"
                   placeholderTextColor={colors.foregroundSubtle}

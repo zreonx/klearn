@@ -988,10 +988,10 @@ export default function MeScreen() {
               <Ionicons
                 name={copied ? 'checkmark-circle' : 'copy-outline'}
                 size={16}
-                color="#FFFFFF"
+                color={colors.primaryForeground}
                 style={{ marginRight: 6 }}
               />
-              <Typography variant="label" weight="700" style={{ color: '#FFFFFF' }}>
+              <Typography variant="label" weight="700" color="primaryForeground">
                 {copied ? 'Copied to Clipboard!' : 'Copy Full Backup JSON'}
               </Typography>
             </TouchableOpacity>
@@ -1090,11 +1090,11 @@ export default function MeScreen() {
           ]}
           onPress={() => Linking.openURL('https://buymeacoffee.com/zrodayrit')}
         >
-          <Ionicons name="heart" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
-          <Typography variant="label" weight="700" style={{ color: '#FFFFFF' }}>
+          <Ionicons name="heart" size={18} color={colors.primaryForeground} style={{ marginRight: 8 }} />
+          <Typography variant="label" weight="700" color="primaryForeground">
             Support on Buy Me a Coffee
           </Typography>
-          <Ionicons name="open-outline" size={16} color="#FFFFFF" style={{ marginLeft: 6 }} />
+          <Ionicons name="open-outline" size={16} color={colors.primaryForeground} style={{ marginLeft: 6 }} />
         </TouchableOpacity>
       </Card>
 

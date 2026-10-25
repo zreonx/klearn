@@ -159,7 +159,7 @@ export default function SearchScreen() {
         ]}
         keyboardShouldPersistTaps="handled"
       >
-        {query.trim().length === 0 ? (
+        {query.trim().length === 0 && category === 'all' ? (
           <View style={styles.emptyState}>
             <Ionicons name="search-outline" size={48} color={colors.foregroundSubtle} style={{ marginBottom: theme.spacing.md }} />
             <Typography variant="heading" weight="700" align="center">
@@ -203,7 +203,9 @@ export default function SearchScreen() {
         ) : (
           <>
             <Typography variant="label" color="foregroundMuted" style={{ marginBottom: theme.spacing.md }}>
-              Found {results.length} result{results.length > 1 ? 's' : ''}
+              {query.trim().length === 0
+                ? `Browse ${category.charAt(0).toUpperCase() + category.slice(1)} (${results.length} items)`
+                : `Found ${results.length} result${results.length > 1 ? 's' : ''}`}
             </Typography>
 
             {results.map((item) => (

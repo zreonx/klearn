@@ -17,6 +17,62 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { QuizQuestionType } from '@/domain/quiz/types';
 import { services } from '@/application/services';
+import { hapticService } from '@/infrastructure/haptics/hapticService';
+
+interface QuizModeItem {
+  id: QuizQuestionType | 'all';
+  title: string;
+  desc: string;
+  tag?: string;
+}
+
+const CORE_MODES: QuizModeItem[] = [
+  {
+    id: 'all',
+    title: 'Balanced Practice',
+    desc: 'Adaptive mix of Korean recall, English recognition, and audio comprehension',
+    tag: 'Recommended',
+  },
+  {
+    id: 'korean_to_english',
+    title: 'Korean → English Recall',
+    desc: 'Recognize Korean words and match their English meaning',
+  },
+  {
+    id: 'english_to_korean',
+    title: 'English → Korean Production',
+    desc: 'Recall and produce the right Korean Hangul representation',
+  },
+  {
+    id: 'listening_recognition',
+    title: 'Auditory & Listening Mastery',
+    desc: 'Listen to native Korean audio and sharpen spoken recognition',
+  },
+];
+
+const SPECIALIZED_DRILLS: QuizModeItem[] = [
+  {
+    id: 'dictation',
+    title: 'Korean Dictation (받아쓰기)',
+    desc: 'Listen to spoken Korean and assemble the syllables you hear',
+    tag: 'New',
+  },
+  {
+    id: 'sentence_assembly',
+    title: 'Sentence Builder (SOV)',
+    desc: 'Tap scrambled word & particle tiles in proper Subject-Object-Verb order',
+  },
+  {
+    id: 'acoustic_discrimination',
+    title: 'Minimal Pairs (소리 구분 퀴즈)',
+    desc: 'Discriminate plain vs. aspirated vs. tense sounds (불 vs 풀 vs 뿔)',
+  },
+  {
+    id: 'particle_fill',
+    title: 'Grammar & Particles (조사)',
+    desc: 'Master Korean particles (은/는, 이/가, 을/를) in real context',
+  },
+];
 
 export default function QuizTabScreen() {
   const router = useRouter();
@@ -34,50 +90,8 @@ export default function QuizTabScreen() {
     }, [])
   );
 
-  const modes: Array<{ id: QuizQuestionType | 'all'; title: string; desc: string }> = [
-    {
-      id: 'all',
-      title: 'Balanced Practice',
-      desc: 'Mix of Korean to English, English to Korean, and Listening',
-    },
-    {
-      id: 'dictation',
-      title: 'Korean Dictation (받아쓰기)',
-      desc: 'Listen to native speech and spell the syllables you hear',
-    },
-    {
-      id: 'sentence_assembly',
-      title: 'Interactive Sentence Builder (SOV)',
-      desc: 'Tap scrambled word & particle tiles to assemble Korean sentences',
-    },
-    {
-      id: 'acoustic_discrimination',
-      title: 'Acoustic Minimal Pairs (소리 구분 퀴즈)',
-      desc: 'Discriminate plain vs. aspirated vs. tense sounds (불 vs 풀 vs 뿔)',
-    },
-    {
-      id: 'listening_recognition',
-      title: 'Auditory & Listening Mastery',
-      desc: 'Listen to native pronunciation and sharpen spoken recognition',
-    },
-    {
-      id: 'particle_fill',
-      title: 'Grammar & Particles (조사)',
-      desc: 'Master Korean particles (은/는, 이/가, 을/를) in real context',
-    },
-    {
-      id: 'korean_to_english',
-      title: 'Korean → English Recall',
-      desc: 'Recognize Korean words and select their English meaning',
-    },
-    {
-      id: 'english_to_korean',
-      title: 'English → Korean Production',
-      desc: 'Recall and produce the right Korean Hangul representation',
-    },
-  ];
-
   const handleStart = () => {
+    hapticService.lightTick();
     router.push({
       pathname: '/quiz/session',
       params: {
@@ -85,6 +99,46 @@ export default function QuizTabScreen() {
         count: String(selectedCount),
       },
     });
+  };
+
+  const renderModeCard = (mode: QuizModeItem) => {
+    const isSelected = selectedType === mode.id;
+    return (
+      <Card
+        key={mode.id}
+        subtle={!isSelected}
+        elevated={isSelected}
+        style={[
+          { marginBottom: theme.spacing.md },
+          isSelected && { borderColor: colors.primary, borderWidth: 1.5 },
+        ]}
+        onPress={() => {
+          hapticService.lightTick();
+          setSelectedType(mode.id);
+        }}
+      >
+        <View style={styles.modeRow}>
+          <View style={[styles.modeInfo, { marginRight: theme.spacing.md }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Typography variant="title" color={isSelected ? 'primary' : 'foreground'} weight="700">
+                {mode.title}
+              </Typography>
+              {mode.tag ? (
+                <Badge label={mode.tag} variant={mode.tag === 'New' ? 'vocab' : 'default'} />
+              ) : null}
+            </View>
+            <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs, lineHeight: 18 }}>
+              {mode.desc}
+            </Typography>
+          </View>
+          {isSelected ? (
+            <Ionicons name="checkmark-circle" size={22} color={colors.primary} />
+          ) : (
+            <Ionicons name="ellipse-outline" size={22} color={colors.foregroundSubtle} />
+          )}
+        </View>
+      </Card>
+    );
   };
 
   return (
@@ -108,21 +162,22 @@ export default function QuizTabScreen() {
         </Typography>
       </View>
 
-      <Card elevated style={{ marginBottom: theme.spacing.xl }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: theme.spacing.sm }}>
-          <Badge label="Adaptive Quiz Engine" variant="vocab" />
-          <Badge label="TOPIK Referenced" variant="hangul" />
+      {/* Hero Session Launcher Card */}
+      <Card elevated style={{ marginBottom: theme.spacing.xl, padding: theme.spacing.lg }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: theme.spacing.xs }}>
+          <Badge label="Active Retrieval" variant="vocab" />
+          <Badge label="Adaptive" variant="hangul" />
         </View>
         <Typography variant="heading" style={{ marginBottom: theme.spacing.xs }}>
-          Active Retrieval Practice
+          Targeted Practice
         </Typography>
-        <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.md }}>
-          Questions target your current proficiency stage across the 6 skill areas (Vocabulary, Grammar, Listening, Speaking, Reading, Writing).
+        <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.md, lineHeight: 20 }}>
+          Questions adapt to your progress across vocabulary, grammar, listening, and sentence structure.
         </Typography>
 
         {/* Session Length Chips */}
         <View style={{ marginBottom: theme.spacing.lg }}>
-          <Typography variant="caption" color="foregroundSubtle" style={{ marginBottom: 6 }}>
+          <Typography variant="caption" color="foregroundSubtle" weight="600" style={{ marginBottom: 6 }}>
             Session Length:
           </Typography>
           <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -139,7 +194,10 @@ export default function QuizTabScreen() {
                       borderRadius: theme.radii.md,
                     },
                   ]}
-                  onPress={() => setSelectedCount(cnt)}
+                  onPress={() => {
+                    hapticService.lightTick();
+                    setSelectedCount(cnt);
+                  }}
                 >
                   <Typography
                     variant="caption"
@@ -162,7 +220,10 @@ export default function QuizTabScreen() {
         <Card
           subtle
           style={{ marginBottom: theme.spacing.xl, padding: theme.spacing.md }}
-          onPress={() => router.push({ pathname: '/quiz/session', params: { starred: 'true' } } as any)}
+          onPress={() => {
+            hapticService.lightTick();
+            router.push({ pathname: '/quiz/session', params: { starred: 'true' } } as any);
+          }}
         >
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 8 }}>
@@ -180,47 +241,36 @@ export default function QuizTabScreen() {
               title="Practice"
               size="sm"
               variant="outline"
-              onPress={() => router.push({ pathname: '/quiz/session', params: { starred: 'true' } } as any)}
+              onPress={() => {
+                hapticService.lightTick();
+                router.push({ pathname: '/quiz/session', params: { starred: 'true' } } as any);
+              }}
             />
           </View>
         </Card>
       )}
 
-      <Typography variant="title" style={{ marginBottom: theme.spacing.md }}>
-        Quiz Modes
-      </Typography>
+      {/* Group 1: Core Practice */}
+      <View style={{ marginBottom: theme.spacing.lg }}>
+        <Typography variant="title" weight="700">
+          Core Practice Modes
+        </Typography>
+        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2, marginBottom: theme.spacing.md }}>
+          Standard multiple-choice and auditory comprehension
+        </Typography>
+        {CORE_MODES.map(renderModeCard)}
+      </View>
 
-      {modes.map((mode) => {
-        const isSelected = selectedType === mode.id;
-        return (
-          <Card
-            key={mode.id}
-            subtle={!isSelected}
-            elevated={isSelected}
-            style={[
-              { marginBottom: theme.spacing.md },
-              isSelected && { borderColor: colors.primary, borderWidth: 1.5 },
-            ]}
-            onPress={() => setSelectedType(mode.id)}
-          >
-            <View style={styles.modeRow}>
-              <View style={[styles.modeInfo, { marginRight: theme.spacing.md }]}>
-                <Typography variant="title" color={isSelected ? 'primary' : 'foreground'}>
-                  {mode.title}
-                </Typography>
-                <Typography variant="caption" color="foregroundMuted" style={{ marginTop: theme.spacing.xs }}>
-                  {mode.desc}
-                </Typography>
-              </View>
-              {isSelected ? (
-                <Ionicons name="checkmark-circle" size={22} color={colors.primary} />
-              ) : (
-                <Ionicons name="ellipse-outline" size={22} color={colors.foregroundSubtle} />
-              )}
-            </View>
-          </Card>
-        );
-      })}
+      {/* Group 2: Interactive Drills */}
+      <View style={{ marginBottom: theme.spacing.lg }}>
+        <Typography variant="title" weight="700">
+          Interactive Drills & Writing
+        </Typography>
+        <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2, marginBottom: theme.spacing.md }}>
+          Hands-on tile assembly, dictation spelling, and sound discrimination
+        </Typography>
+        {SPECIALIZED_DRILLS.map(renderModeCard)}
+      </View>
     </ScrollView>
   );
 }

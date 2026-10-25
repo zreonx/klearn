@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -19,12 +19,16 @@ import {
 } from '@/components/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDashboard } from '@/features/today/useDashboard';
+import { hapticService } from '@/infrastructure/haptics/hapticService';
+
+type DailyBiteType = 'word' | 'phrase' | 'sentence';
 
 export default function TodayScreen() {
   const router = useRouter();
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const { data, loading, refresh, speak } = useDashboard();
+  const [biteTab, setBiteTab] = useState<DailyBiteType>('word');
 
   // Auto-refresh stats and recommendations whenever user switches to or views the Today tab
   useFocusEffect(
@@ -32,6 +36,13 @@ export default function TodayScreen() {
       refresh();
     }, [refresh])
   );
+
+  const getActiveBiteText = () => {
+    if (!data) return '';
+    if (biteTab === 'word') return data.dailyWord?.korean || '';
+    if (biteTab === 'phrase') return data.dailyPhrase?.korean || '';
+    return data.dailySentence?.korean || '';
+  };
 
   return (
     <ScrollView
@@ -100,19 +111,19 @@ export default function TodayScreen() {
         </View>
       </View>
 
-      {/* Recommended Action Card (Section 65) */}
+      {/* Hero Recommendation Card (Single Unambiguous Primary Action) */}
       {data?.recommendation && (
         <Card elevated style={[styles.heroCard, { marginBottom: theme.spacing.lg }]}>
           <View style={{ marginBottom: theme.spacing.sm }}>
             <Badge
-              label={data.recommendation.badge ?? 'Recommended'}
+              label={data.recommendation.badge ?? 'Recommended Next'}
               variant={data.recommendation.type === 'review' ? 'warning' : 'vocab'}
             />
           </View>
           <Typography variant="heading" style={{ marginBottom: theme.spacing.xs }}>
             {data.recommendation.title}
           </Typography>
-          <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg }}>
+          <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.lg, lineHeight: 20 }}>
             {data.recommendation.description}
           </Typography>
           <Button
@@ -123,141 +134,19 @@ export default function TodayScreen() {
         </Card>
       )}
 
-      {/* 5-Stage Long-Term Milestone Card */}
-      {data?.learnerProfile && (
-        <Card elevated style={[styles.card, { marginBottom: theme.spacing.lg }]}>
-          <View style={styles.rowBetween}>
-            <View style={{ flex: 1, marginRight: theme.spacing.sm }}>
-              <Badge label="Active Milestone" variant="success" style={{ alignSelf: 'flex-start', marginBottom: 6 }} />
-              <Typography variant="title" weight="700">
-                {data.learnerProfile.stageName}
-              </Typography>
-              <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 2 }}>
-                {data.learnerProfile.stageOutcome}
-              </Typography>
-            </View>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 58,
-                height: 58,
-                borderRadius: 29,
-                backgroundColor: colors.surfaceSubtle,
-                borderWidth: 1,
-                borderColor: colors.borderSubtle,
-              }}
-            >
-              <Typography variant="title" weight="700" color="primary">
-                {data.learnerProfile.overallFluencyScore}%
-              </Typography>
-              <Typography variant="caption" color="foregroundSubtle" style={{ fontSize: 9 }}>
-                Fluency
-              </Typography>
-            </View>
-          </View>
-
-          {data.learnerProfile.recommendedFocus && (
-            <View
-              style={{
-                backgroundColor: colors.surfaceSubtle,
-                padding: theme.spacing.md,
-                borderRadius: theme.radii.md,
-                marginTop: theme.spacing.md,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                borderWidth: 1,
-                borderColor: colors.borderSubtle,
-              }}
-            >
-              <View style={{ flex: 1, marginRight: theme.spacing.md }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                  <Ionicons name="sparkles" size={14} color={colors.accent} />
-                  <Typography variant="label" color="accent" weight="700">
-                    Recommended Focus
-                  </Typography>
-                </View>
-                <Typography variant="caption" color="foregroundMuted" style={{ lineHeight: 18 }}>
-                  {data.learnerProfile.recommendedFocus.reason}
-                </Typography>
-              </View>
-              <TouchableOpacity
-                onPress={() => router.push('/review')}
-                style={{
-                  backgroundColor: colors.primary,
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  borderRadius: theme.radii.md,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 4,
-                }}
-              >
-                <Typography variant="caption" color="background" weight="700">
-                  Practice Now
-                </Typography>
-                <Ionicons name="arrow-forward" size={13} color={colors.primaryForeground} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </Card>
-      )}
-
-      {/* 6-Skill Fluency Radar / Breakdown Card */}
-      {data?.learnerProfile && (
-        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
-          <View style={[styles.rowBetween, { marginBottom: theme.spacing.md }]}>
-            <View>
-              <Typography variant="title" weight="700">
-                6-Skill Competency
-              </Typography>
-              <Typography variant="caption" color="foregroundMuted">
-                Real retention, application & vocabulary memory
-              </Typography>
-            </View>
-            <TouchableOpacity onPress={() => router.push('/learn')}>
-              <Typography variant="caption" color="primary" weight="600">
-                View Path →
-              </Typography>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{ gap: 10 }}>
-            {Object.values(data.learnerProfile.skills).map((skillStat) => (
-              <View key={skillStat.skill}>
-                <View style={[styles.rowBetween, { marginBottom: 3 }]}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Typography variant="body" weight="600">
-                      {skillStat.label}
-                    </Typography>
-                    <Typography variant="caption" color="foregroundMuted">
-                      ({skillStat.koreanLabel})
-                    </Typography>
-                    {skillStat.isWeakArea ? (
-                      <Badge label="Needs Review" variant="warning" style={{ transform: [{ scale: 0.85 }] }} />
-                    ) : null}
-                  </View>
-                  <Typography variant="label" color="foregroundMuted">
-                    {skillStat.score}%
-                  </Typography>
-                </View>
-                <ProgressBar
-                  progress={skillStat.score / 100}
-                  color={skillStat.isWeakArea ? colors.accent : colors.primary}
-                />
-              </View>
-            ))}
-          </View>
-        </Card>
-      )}
-
-      {/* Daily Goal Card (Section 13 & 21) */}
+      {/* Daily Goal Card (Clean, Encouraging, Compact) */}
       {data && (
         <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
           <View style={styles.rowBetween}>
-            <Typography variant="title">Daily Goal</Typography>
-            <Typography variant="label" color={data.isGoalReached ? 'success' : 'primary'}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Ionicons
+                name={data.isGoalReached ? 'checkmark-circle' : 'flag-outline'}
+                size={16}
+                color={data.isGoalReached ? colors.success : colors.primary}
+              />
+              <Typography variant="title">Daily Goal</Typography>
+            </View>
+            <Typography variant="label" color={data.isGoalReached ? 'success' : 'primary'} weight="700">
               {data.goalScore} / {data.goalTarget} items
             </Typography>
           </View>
@@ -268,24 +157,28 @@ export default function TodayScreen() {
             style={{ marginVertical: theme.spacing.md }}
           />
 
-          <View style={[styles.goalStatsRow, { marginTop: theme.spacing.sm }]}>
+          <View style={[styles.goalStatsRow, { marginTop: theme.spacing.xs }]}>
             <View style={styles.goalStat}>
               <Typography variant="caption" color="foregroundMuted">
                 New Learned
               </Typography>
-              <Typography variant="title">{data.newItemsCount}</Typography>
+              <Typography variant="title" weight="700">{data.newItemsCount}</Typography>
             </View>
             <View style={styles.goalStat}>
               <Typography variant="caption" color="foregroundMuted">
                 Reviews Done
               </Typography>
-              <Typography variant="title">{data.reviewsCompletedToday}</Typography>
+              <Typography variant="title" weight="700">{data.reviewsCompletedToday}</Typography>
             </View>
             <View style={styles.goalStat}>
               <Typography variant="caption" color="foregroundMuted">
                 Pending Due
               </Typography>
-              <Typography variant="title" color={data.dueReviewsCount > 0 ? 'warning' : 'foreground'}>
+              <Typography
+                variant="title"
+                weight="700"
+                color={data.dueReviewsCount > 0 ? 'warning' : 'foreground'}
+              >
                 {data.dueReviewsCount}
               </Typography>
             </View>
@@ -293,151 +186,249 @@ export default function TodayScreen() {
         </Card>
       )}
 
-      {/* Daily Word Card */}
-      {data?.dailyWord && (
-        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
-          <View style={styles.rowBetween}>
-            <Badge label="Daily Word" variant="hangul" />
+      {/* Unified Daily Korean Bite Card (Word, Phrase, Sentence in 1 Sleek Card) */}
+      {data && (data.dailyWord || data.dailyPhrase || data.dailySentence) && (
+        <Card elevated style={[styles.card, { marginBottom: theme.spacing.lg, padding: theme.spacing.lg }]}>
+          {/* Card Header & Audio */}
+          <View style={[styles.rowBetween, { marginBottom: theme.spacing.md }]}>
+            <View>
+              <Typography variant="title" weight="700">
+                Daily Korean Bite
+              </Typography>
+              <Typography variant="caption" color="foregroundMuted">
+                오늘의 한마디 • Fresh every day
+              </Typography>
+            </View>
             <TouchableOpacity
-              onPress={() => speak(data.dailyWord.korean)}
-              accessibilityLabel="Listen pronunciation"
-              style={{ padding: theme.spacing.xs }}
+              onPress={() => speak(getActiveBiteText())}
+              accessibilityLabel="Listen to pronunciation"
+              style={[
+                styles.audioBtn,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderRadius: theme.radii.full,
+                },
+              ]}
             >
-              <Ionicons name="volume-medium" size={22} color={colors.primary} />
+              <Ionicons name="volume-high" size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
 
-          <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Typography variant="display" weight="700" style={styles.koreanWord}>
-                {data.dailyWord.korean}
+          {/* Interactive 3-Way Segment Switcher */}
+          <View
+            style={[
+              styles.segmentContainer,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderRadius: theme.radii.lg,
+              },
+            ]}
+          >
+            <TouchableOpacity
+              style={[
+                styles.segmentTab,
+                biteTab === 'word' && {
+                  backgroundColor: colors.surface,
+                  borderRadius: theme.radii.md,
+                  borderWidth: 1,
+                  borderColor: colors.borderSubtle,
+                },
+              ]}
+              onPress={() => {
+                hapticService.lightTick();
+                setBiteTab('word');
+              }}
+            >
+              <Typography
+                variant="caption"
+                weight="700"
+                color={biteTab === 'word' ? 'primary' : 'foregroundMuted'}
+              >
+                단어 Word
               </Typography>
-              {(data.dailyWord as any).hanja ? (
-                <Badge label={(data.dailyWord as any).hanja} variant="default" style={{ marginBottom: 4 }} />
-              ) : null}
-            </View>
-            {data.dailyWord.romanization ? (
-              <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
-                [{data.dailyWord.romanization}]
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.segmentTab,
+                biteTab === 'phrase' && {
+                  backgroundColor: colors.surface,
+                  borderRadius: theme.radii.md,
+                  borderWidth: 1,
+                  borderColor: colors.borderSubtle,
+                },
+              ]}
+              onPress={() => {
+                hapticService.lightTick();
+                setBiteTab('phrase');
+              }}
+            >
+              <Typography
+                variant="caption"
+                weight="700"
+                color={biteTab === 'phrase' ? 'primary' : 'foregroundMuted'}
+              >
+                표현 Phrase
               </Typography>
-            ) : null}
-            <Typography variant="title" color="foreground">
-              {data.dailyWord.translation}
-            </Typography>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.segmentTab,
+                biteTab === 'sentence' && {
+                  backgroundColor: colors.surface,
+                  borderRadius: theme.radii.md,
+                  borderWidth: 1,
+                  borderColor: colors.borderSubtle,
+                },
+              ]}
+              onPress={() => {
+                hapticService.lightTick();
+                setBiteTab('sentence');
+              }}
+            >
+              <Typography
+                variant="caption"
+                weight="700"
+                color={biteTab === 'sentence' ? 'primary' : 'foregroundMuted'}
+              >
+                문장 Sentence
+              </Typography>
+            </TouchableOpacity>
           </View>
 
-          {data.dailyWord.explanation ? (
-            <>
-              <Divider style={{ marginVertical: theme.spacing.md }} />
-              <Typography variant="caption" color="foregroundMuted">
-                {data.dailyWord.explanation}
-              </Typography>
-            </>
-          ) : null}
+          {/* Active Bite View: Word */}
+          {biteTab === 'word' && data.dailyWord && (
+            <View style={{ alignItems: 'center', marginVertical: theme.spacing.md }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <Typography variant="display" weight="700" style={styles.koreanWord}>
+                  {data.dailyWord.korean}
+                </Typography>
+                {(data.dailyWord as any).hanja ? (
+                  <Badge label={(data.dailyWord as any).hanja} variant="default" />
+                ) : null}
+              </View>
 
-          {data.dailyWord.examples && data.dailyWord.examples.length > 0 ? (
-            <View style={{ backgroundColor: colors.surfaceSubtle, padding: theme.spacing.md, borderRadius: theme.radii.md, marginTop: theme.spacing.md }}>
-              <Typography variant="label" color="primary" style={{ marginBottom: 2 }}>
-                Example in Context:
-              </Typography>
-              <Typography variant="body" weight="600">
-                {data.dailyWord.examples[0].korean}
-              </Typography>
-              {data.dailyWord.examples[0].romanization ? (
-                <Typography variant="caption" color="foregroundMuted">
-                  [{data.dailyWord.examples[0].romanization}]
+              {data.dailyWord.romanization ? (
+                <Typography variant="body" color="foregroundMuted" style={{ marginBottom: 4 }}>
+                  [{data.dailyWord.romanization}]
                 </Typography>
               ) : null}
-              <Typography variant="caption" color="foreground">
-                {data.dailyWord.examples[0].translation}
+
+              <Typography variant="heading" color="foreground" weight="700">
+                {data.dailyWord.translation}
               </Typography>
+
+              {data.dailyWord.explanation ? (
+                <>
+                  <Divider style={{ marginVertical: theme.spacing.md, width: '100%' }} />
+                  <Typography variant="caption" color="foregroundMuted" align="center" style={{ lineHeight: 18 }}>
+                    {data.dailyWord.explanation}
+                  </Typography>
+                </>
+              ) : null}
+
+              {data.dailyWord.examples && data.dailyWord.examples.length > 0 ? (
+                <View
+                  style={[
+                    styles.exampleBox,
+                    {
+                      backgroundColor: colors.surfaceSubtle,
+                      borderColor: colors.borderSubtle,
+                      borderRadius: theme.radii.md,
+                      marginTop: theme.spacing.md,
+                    },
+                  ]}
+                >
+                  <Typography variant="label" color="primary" weight="700" style={{ marginBottom: 2 }}>
+                    Example in Context:
+                  </Typography>
+                  <Typography variant="body" weight="600">
+                    {data.dailyWord.examples[0].korean}
+                  </Typography>
+                  {data.dailyWord.examples[0].romanization ? (
+                    <Typography variant="caption" color="foregroundMuted" style={{ marginTop: 1 }}>
+                      [{data.dailyWord.examples[0].romanization}]
+                    </Typography>
+                  ) : null}
+                  <Typography variant="caption" color="foreground" style={{ marginTop: 2 }}>
+                    {data.dailyWord.examples[0].translation}
+                  </Typography>
+                </View>
+              ) : null}
             </View>
-          ) : null}
+          )}
+
+          {/* Active Bite View: Phrase */}
+          {biteTab === 'phrase' && data.dailyPhrase && (
+            <View style={{ alignItems: 'center', marginVertical: theme.spacing.md }}>
+              <Typography variant="heading" weight="700" align="center" style={{ fontSize: 24, marginBottom: 4 }}>
+                {data.dailyPhrase.korean}
+              </Typography>
+
+              {data.dailyPhrase.romanization ? (
+                <Typography variant="body" color="foregroundMuted" style={{ marginBottom: 4 }}>
+                  [{data.dailyPhrase.romanization}]
+                </Typography>
+              ) : null}
+
+              <Typography variant="title" color="foreground" weight="700" align="center">
+                {data.dailyPhrase.translation}
+              </Typography>
+
+              {data.dailyPhrase.explanation ? (
+                <>
+                  <Divider style={{ marginVertical: theme.spacing.md, width: '100%' }} />
+                  <Typography variant="caption" color="foregroundMuted" align="center" style={{ lineHeight: 18 }}>
+                    {data.dailyPhrase.explanation}
+                  </Typography>
+                </>
+              ) : null}
+            </View>
+          )}
+
+          {/* Active Bite View: Sentence */}
+          {biteTab === 'sentence' && data.dailySentence && (
+            <View style={{ alignItems: 'center', marginVertical: theme.spacing.md }}>
+              <Typography
+                variant="heading"
+                weight="700"
+                align="center"
+                style={{ fontSize: 20, lineHeight: 28, marginBottom: 6 }}
+              >
+                {data.dailySentence.korean}
+              </Typography>
+
+              {data.dailySentence.romanization ? (
+                <Typography variant="body" color="foregroundMuted" style={{ marginBottom: 4 }}>
+                  [{data.dailySentence.romanization}]
+                </Typography>
+              ) : null}
+
+              <Typography variant="title" color="foreground" weight="700" align="center">
+                {data.dailySentence.translation}
+              </Typography>
+
+              {data.dailySentence.explanation ? (
+                <>
+                  <Divider style={{ marginVertical: theme.spacing.md, width: '100%' }} />
+                  <Typography variant="caption" color="foregroundMuted" align="center" style={{ lineHeight: 18 }}>
+                    {data.dailySentence.explanation}
+                  </Typography>
+                </>
+              ) : null}
+            </View>
+          )}
         </Card>
       )}
 
-      {/* Daily Phrase Card */}
-      {data?.dailyPhrase && (
-        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
-          <View style={styles.rowBetween}>
-            <Badge label="Daily Phrase" variant="vocab" />
-            <TouchableOpacity
-              onPress={() => speak(data.dailyPhrase.korean)}
-              accessibilityLabel="Listen pronunciation"
-              style={{ padding: theme.spacing.xs }}
-            >
-              <Ionicons name="volume-medium" size={22} color={colors.primary} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
-            <Typography variant="heading" weight="700" align="center" style={{ fontSize: 26, marginBottom: 4 }}>
-              {data.dailyPhrase.korean}
-            </Typography>
-            {data.dailyPhrase.romanization ? (
-              <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
-                [{data.dailyPhrase.romanization}]
-              </Typography>
-            ) : null}
-            <Typography variant="title" color="foreground" align="center">
-              {data.dailyPhrase.translation}
-            </Typography>
-          </View>
-
-          {data.dailyPhrase.explanation ? (
-            <>
-              <Divider style={{ marginVertical: theme.spacing.md }} />
-              <Typography variant="caption" color="foregroundMuted">
-                {data.dailyPhrase.explanation}
-              </Typography>
-            </>
-          ) : null}
-        </Card>
-      )}
-
-      {/* Daily Practical Sentence Card */}
-      {data?.dailySentence && (
-        <Card style={[styles.card, { marginBottom: theme.spacing.lg }]}>
-          <View style={styles.rowBetween}>
-            <Badge label="Daily Sentence" variant="hangul" />
-            <TouchableOpacity
-              onPress={() => speak(data.dailySentence.korean)}
-              accessibilityLabel="Listen pronunciation"
-              style={{ padding: theme.spacing.xs }}
-            >
-              <Ionicons name="volume-medium" size={22} color={colors.primary} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.wordCenter, { marginVertical: theme.spacing.md }]}>
-            <Typography variant="heading" weight="700" align="center" style={{ fontSize: 22, lineHeight: 30, marginBottom: 4 }}>
-              {data.dailySentence.korean}
-            </Typography>
-            {data.dailySentence.romanization ? (
-              <Typography variant="body" color="foregroundMuted" style={{ marginBottom: theme.spacing.xs }}>
-                [{data.dailySentence.romanization}]
-              </Typography>
-            ) : null}
-            <Typography variant="title" color="foreground" align="center">
-              {data.dailySentence.translation}
-            </Typography>
-          </View>
-
-          {data.dailySentence.explanation ? (
-            <>
-              <Divider style={{ marginVertical: theme.spacing.md }} />
-              <Typography variant="caption" color="foregroundMuted">
-                {data.dailySentence.explanation}
-              </Typography>
-            </>
-          ) : null}
-        </Card>
-      )}
-
-      {/* AI Conversation & Speaking Roleplay Card */}
+      {/* AI Conversation & Speaking Roleplay Teaser */}
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => router.push('/conversation' as any)}
+        onPress={() => {
+          hapticService.lightTick();
+          router.push('/conversation' as any);
+        }}
       >
         <Card elevated style={[styles.card, { marginBottom: theme.spacing.lg, padding: theme.spacing.lg }]}>
           <View style={[styles.rowBetween, { marginBottom: theme.spacing.xs }]}>
@@ -460,7 +451,7 @@ export default function TodayScreen() {
         </Card>
       </TouchableOpacity>
 
-      {/* Review Queue Summary Card */}
+      {/* Review Queue Summary Card (Conditional) */}
       {data && data.dueReviewsCount > 0 && (
         <Card subtle style={[styles.card, { marginBottom: theme.spacing.lg }]}>
           <View style={styles.rowBetween}>
@@ -513,11 +504,29 @@ const styles = StyleSheet.create({
   goalStat: {
     alignItems: 'center',
   },
-  wordCenter: {
+  audioBtn: {
+    width: 36,
+    height: 36,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  segmentContainer: {
+    flexDirection: 'row',
+    padding: 4,
+    marginBottom: 8,
+  },
+  segmentTab: {
+    flex: 1,
+    paddingVertical: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   koreanWord: {
-    fontSize: 40,
-    marginBottom: 4,
+    fontSize: 36,
+  },
+  exampleBox: {
+    width: '100%',
+    padding: 12,
+    borderWidth: 1,
   },
 });
