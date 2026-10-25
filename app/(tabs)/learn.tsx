@@ -24,6 +24,14 @@ import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 const TOOLKIT_ITEMS = [
   {
+    id: 'ai-tutor',
+    title: 'AI Korean Tutor',
+    korean: 'AI 튜터 챗',
+    desc: 'Ask any grammar & vocab Q&A',
+    icon: 'chatbubble-ellipses-outline',
+    route: '/tutor',
+  },
+  {
     id: 'speaking',
     title: 'Speaking Coach',
     korean: '말하기 & 발음',
@@ -183,7 +191,7 @@ export default function LearnScreen() {
             Mastery Toolkit
           </Typography>
           <Typography variant="caption" color="foregroundMuted">
-            7 Reference Tools
+            8 Reference Tools
           </Typography>
         </View>
 

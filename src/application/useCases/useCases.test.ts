@@ -23,11 +23,13 @@ describe('Application Use Cases', () => {
       reviewRepo: new ReviewStorageRepository(adapter),
       progressRepo: new ProgressStorageRepository(adapter),
       settingsRepo: new SettingsStorageRepository(adapter),
+      aiChatRepo: { getMessages: jest.fn().mockResolvedValue([]), saveMessages: jest.fn(), clearMessages: jest.fn() } as any,
       srs: defaultSRS,
       catalog: contentCatalog,
       speech: { speak: jest.fn(), stop: jest.fn() } as any,
       voiceRecognition: { isListening: jest.fn(), startListening: jest.fn(), stopListening: jest.fn(), cancelListening: jest.fn() } as any,
       aiTutor: { generateReply: jest.fn().mockResolvedValue(null) } as any,
+      aiChat: { askTutor: jest.fn().mockResolvedValue({ content: 'Mock answer', provider: 'offline' }) } as any,
     };
   });
 

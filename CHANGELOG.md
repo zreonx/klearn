@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- **Dedicated AI Korean Tutor Chat Assistant (`AI 한국어 튜터 챗`)**:
+  - Built an open-ended, free-form Korean Q&A tutor chat (`app/tutor/index.tsx`) separate from structured situational roleplay, allowing learners to ask anything anytime regarding grammar, vocabulary, irregular verbs, translations, and cultural nuances.
+  - Implemented hybrid AI intelligence (`src/infrastructure/ai/aiChatService.ts`): powered by fast Groq LPU (Llama 3.3 70B), Google Gemini, DeepSeek, or OpenRouter with a robust built-in **Offline Korean Knowledge Base** (`src/domain/aiChat/offlineTutor.ts`) answering common particle, conjugation, and usage questions without internet or API keys.
+  - Integrated speech recognition microphone button so learners can ask questions via voice or text with Korean TTS audio playback on response snippets.
+  - Added quick starter question prompts (은/는 vs 이/가, ㅂ-irregulars, 에 vs 에서, Sino vs Native numbers, cafe ordering, texting slang).
+  - Persisted chat history locally with `AIChatStorageRepository` (`src/infrastructure/storage/repositories/aiChatRepository.ts`) and added to the **Mastery Toolkit** on the Learn tab (`app/(tabs)/learn.tsx`).
 - **Korean Voice Response & Speaking Shadowing Coach (`음성 대화 & 발음 평가`)**:
   - Added Speech-to-Text voice recognition (`src/infrastructure/speech/voiceRecognitionService.ts`) supporting native Web Speech API in browsers and `expo-av` + Groq Whisper (`whisper-large-v3-turbo`) transcription on mobile.
   - Added 2-way Korean voice dialogue in AI Conversation & Speaking Roleplay (`app/conversation/[scenarioId].tsx`), allowing learners to speak their responses through the microphone, see real-time Korean speech transcription, receive register coaching, and hear native voice audio replies.
