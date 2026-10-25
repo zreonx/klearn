@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,6 +17,7 @@ import {
   Typography,
   Card,
   Badge,
+  MarkdownView,
   useTheme,
 } from '@/components/ui';
 import { useAIChat } from '@/features/aiChat/useAIChat';
@@ -28,6 +29,15 @@ export default function AITutorChatScreen() {
   const insets = useSafeAreaInsets();
   const { colors, theme } = useTheme();
   const scrollViewRef = useRef<ScrollView>(null);
+  const [rawModeMap, setRawModeMap] = useState<Record<string, boolean>>({});
+
+  const toggleRawMode = (msgId: string) => {
+    hapticService.lightTick();
+    setRawModeMap((prev) => ({
+      ...prev,
+      [msgId]: !prev[msgId],
+    }));
+  };
 
   const {
     messages,
@@ -203,7 +213,7 @@ export default function AITutorChatScreen() {
                 </View>
               )}
 
-              <View style={{ maxWidth: '85%' }}>
+              <View style={{ maxWidth: isUser ? '85%' : '94%', flexShrink: 1 }}>
                 <Card
                   elevated={isUser}
                   subtle={!isUser}
@@ -225,13 +235,24 @@ export default function AITutorChatScreen() {
                     { padding: theme.spacing.md },
                   ]}
                 >
-                  <Typography
-                    variant="body"
-                    color={isUser ? 'primaryForeground' : 'foreground'}
-                    style={{ lineHeight: 22 }}
-                  >
-                    {msg.content}
-                  </Typography>
+                  {rawModeMap[msg.id] ? (
+                    <Typography
+                      variant="body"
+                      color={isUser ? 'primaryForeground' : 'foreground'}
+                      style={{
+                        lineHeight: 22,
+                        fontFamily: Platform.select({ ios: 'Menlo', default: 'monospace' }),
+                      }}
+                    >
+                      {msg.content}
+                    </Typography>
+                  ) : (
+                    <MarkdownView
+                      content={msg.content}
+                      isUser={isUser}
+                      baseColor={isUser ? 'primaryForeground' : 'foreground'}
+                    />
+                  )}
 
                   {/* Actions Row for Assistant Bubbles */}
                   {!isUser && (
@@ -250,24 +271,45 @@ export default function AITutorChatScreen() {
                         <TouchableOpacity
                           onPress={() => speakSnippet(msg.koreanSnippet!)}
                           style={[
-                            styles.snippetBtn,
+                            styles.actionBtn,
                             {
                               backgroundColor: colors.surfaceSubtle,
                               borderRadius: theme.radii.sm,
                             },
                           ]}
                         >
-                          <Ionicons name="volume-high" size={16} color={colors.primary} />
+                          <Ionicons name="volume-high" size={15} color={colors.primary} />
                           <Typography variant="caption" weight="600" color="primary" style={{ marginLeft: 4 }}>
-                            Listen Korean
+                            Listen
                           </Typography>
                         </TouchableOpacity>
                       ) : null}
 
                       <TouchableOpacity
+                        onPress={() => toggleRawMode(msg.id)}
+                        style={[
+                          styles.actionBtn,
+                          {
+                            backgroundColor: colors.surfaceSubtle,
+                            borderRadius: theme.radii.sm,
+                          },
+                        ]}
+                        accessibilityLabel="Toggle markdown raw/preview"
+                      >
+                        <Ionicons
+                          name={rawModeMap[msg.id] ? 'eye-outline' : 'code-outline'}
+                          size={14}
+                          color={colors.foregroundMuted}
+                        />
+                        <Typography variant="caption" color="foregroundMuted" style={{ marginLeft: 4 }}>
+                          {rawModeMap[msg.id] ? 'Preview' : 'Raw'}
+                        </Typography>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
                         onPress={() => handleCopy(msg.content)}
                         style={[
-                          styles.copyBtn,
+                          styles.actionBtn,
                           {
                             backgroundColor: colors.surfaceSubtle,
                             borderRadius: theme.radii.sm,
@@ -486,13 +528,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  snippetBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  copyBtn: {
+  actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 8,

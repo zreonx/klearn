@@ -11,7 +11,7 @@
 - **Tech Stack**: Expo SDK 57, React Native 0.86.3, Expo Router, TypeScript 6.0, Zustand, AsyncStorage, Jest
 - **Verification Health**:
   - TypeScript (`npx tsc --noEmit`): **PASS (0 errors)**
-  - Unit & Integration Tests (`npm test -- --runInBand`): **PASS (21 suites, 110 tests)**
+  - Unit & Integration Tests (`npm test -- --runInBand`): **PASS (22 suites, 125 tests)**
   - Metro Dev Server: **ACTIVE (`http://localhost:8081`)**, bundle verified clean on Web and Native
   - CI/CD Workflows: `.github/workflows/ci.yml` & `.github/workflows/release.yml` active
   - Live AI Integration: Tested & verified Groq API key with fast Korean inference (~300ms)

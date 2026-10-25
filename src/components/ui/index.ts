@@ -7,4 +7,5 @@ export * from './ProgressBar';
 export * from './Divider';
 export * from './ScreenLayout';
 export * from './StageJourneyModal';
+export * from './MarkdownView';
 export { ThemeProvider, useTheme } from '@/app/providers/ThemeProvider';
