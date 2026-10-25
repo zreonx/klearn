@@ -24,6 +24,14 @@ import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 const TOOLKIT_ITEMS = [
   {
+    id: 'speaking',
+    title: 'Speaking Coach',
+    korean: '말하기 & 발음',
+    desc: 'Voice shadowing & accuracy score',
+    icon: 'mic-outline',
+    route: '/tools/speaking',
+  },
+  {
     id: 'numbers',
     title: 'Numbers & Time',
     korean: '숫자 & 시계',
@@ -175,7 +183,7 @@ export default function LearnScreen() {
             Mastery Toolkit
           </Typography>
           <Typography variant="caption" color="foregroundMuted">
-            6 Reference Tools
+            7 Reference Tools
           </Typography>
         </View>
 

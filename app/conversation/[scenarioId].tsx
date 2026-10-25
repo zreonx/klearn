@@ -19,6 +19,7 @@ import {
   useTheme,
 } from '@/components/ui';
 import { useConversation } from '@/features/conversation/useConversation';
+import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 export default function ConversationScreen() {
   const { scenarioId } = useLocalSearchParams<{ scenarioId: string }>();
@@ -41,6 +42,11 @@ export default function ConversationScreen() {
     isCompleted,
     isGenerating,
     aiProvider,
+    isListening,
+    interimTranscript,
+    voiceError,
+    startVoiceInput,
+    stopVoiceInput,
     playAudio,
     sendReply,
     restart,
@@ -421,19 +427,79 @@ export default function ConversationScreen() {
           </View>
         )}
 
+        {/* Listening Status Banner */}
+        {isListening && (
+          <View
+            style={[
+              styles.listeningBox,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderColor: colors.accent,
+                borderRadius: theme.radii.md,
+                padding: theme.spacing.sm,
+                marginBottom: theme.spacing.xs,
+              },
+            ]}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Ionicons name="mic" size={16} color={colors.accent} />
+              <Typography variant="caption" weight="700" color="accent">
+                Listening... Speak in Korean now
+              </Typography>
+            </View>
+            <Typography variant="body" weight="600" color="foreground" style={{ marginTop: 2 }}>
+              {interimTranscript || 'e.g. 네, 아이스 아메리카노 한 잔 주세요'}
+            </Typography>
+          </View>
+        )}
+
+        {voiceError ? (
+          <Typography variant="caption" color="destructive" style={{ marginBottom: 4, textAlign: 'center' }}>
+            {voiceError}
+          </Typography>
+        ) : null}
+
         {/* Free-form Input */}
         {!isCompleted && (
           <View style={styles.inputRow}>
+            {/* Voice Input Microphone Button */}
+            <TouchableOpacity
+              onPress={async () => {
+                hapticService.lightTick();
+                if (isListening) {
+                  await stopVoiceInput();
+                } else {
+                  await startVoiceInput();
+                }
+              }}
+              style={[
+                styles.voiceBtn,
+                {
+                  backgroundColor: isListening ? colors.accent : colors.surfaceSubtle,
+                  borderRadius: theme.radii.full,
+                  borderWidth: 1,
+                  borderColor: isListening ? colors.accent : colors.borderSubtle,
+                },
+              ]}
+              accessibilityLabel={isListening ? 'Stop listening' : 'Speak Korean'}
+            >
+              <Ionicons
+                name={isListening ? 'stop' : 'mic'}
+                size={20}
+                color={isListening ? colors.primaryForeground : colors.primary}
+              />
+            </TouchableOpacity>
+
             <TextInput
               value={inputText}
               onChangeText={setInputText}
-              placeholder="Type in Korean (e.g. 네, 주세요)..."
+              placeholder={isListening ? 'Listening to voice...' : 'Type or tap mic to speak Korean...'}
               placeholderTextColor={colors.foregroundSubtle}
               style={[
                 styles.textInput,
                 {
                   backgroundColor: colors.surfaceSubtle,
-                  borderColor: colors.borderSubtle,
+                  borderColor: isListening ? colors.accent : colors.borderSubtle,
                   color: colors.foreground,
                   borderRadius: theme.radii.full,
                   paddingHorizontal: theme.spacing.md,
@@ -553,6 +619,15 @@ const styles = StyleSheet.create({
     height: 42,
     borderWidth: 1,
     fontSize: 14,
+  },
+  voiceBtn: {
+    width: 42,
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  listeningBox: {
+    borderWidth: 1,
   },
   sendBtn: {
     width: 42,

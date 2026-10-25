@@ -9,6 +9,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- **Korean Voice Response & Speaking Shadowing Coach (`음성 대화 & 발음 평가`)**:
+  - Added Speech-to-Text voice recognition (`src/infrastructure/speech/voiceRecognitionService.ts`) supporting native Web Speech API in browsers and `expo-av` + Groq Whisper (`whisper-large-v3-turbo`) transcription on mobile.
+  - Added 2-way Korean voice dialogue in AI Conversation & Speaking Roleplay (`app/conversation/[scenarioId].tsx`), allowing learners to speak their responses through the microphone, see real-time Korean speech transcription, receive register coaching, and hear native voice audio replies.
+  - Built pure Unicode Jamo-level phonetic accuracy evaluator (`src/domain/speech/pronunciationEvaluator.ts`) calculating pronunciation similarity (0-100%) and syllable-by-syllable match breakdown.
+  - Created dedicated Speaking & Shadowing Coach screen (`app/tools/speaking.tsx`) featuring essential situational Korean phrases across greetings, cafe ordering, directions, dining, and idioms, with normal and slow (0.65x) native audio, real-time voice evaluation, and syllable diff badges.
+  - Added Speaking Coach to the Mastery Toolkit on the Learn tab (`app/(tabs)/learn.tsx`).
+  - Configured Android `RECORD_AUDIO` and iOS `NSMicrophoneUsageDescription` in `app.json`.
 - **Calm UI Hierarchy & Beginner Anti-Overwhelm Redesign**:
   - Consolidated the Today tab (`app/(tabs)/index.tsx`) by unifying three sprawling vertical cards (Daily Word, Daily Phrase, and Daily Practical Sentence) into a single interactive **"Daily Korean Bite" (`오늘의 한마디`)** card with an interactive 3-segment switcher (`Word 단어`, `Phrase 표현`, `Sentence 문장`) and pronunciation audio, eliminating scrolling fatigue.
   - Streamlined Today tab action hierarchy to focus on one unambiguous primary action (*Continue Learning* / *Review*), keeping deep 6-Skill proficiency bars and long-term milestones exclusively in the **Me** tab where comprehensive analytics reside.

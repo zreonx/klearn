@@ -18,6 +18,7 @@ import {
 import { defaultSRS } from '@/domain/srs/sm2';
 import { contentCatalog } from '@/content/catalog';
 import { speechService } from '@/infrastructure/speech/speechService';
+import { voiceRecognitionService } from '@/infrastructure/speech/voiceRecognitionService';
 import { aiTutorService } from '@/infrastructure/ai/aiTutorService';
 
 export interface AppServices {
@@ -28,6 +29,7 @@ export interface AppServices {
   srs: typeof defaultSRS;
   catalog: typeof contentCatalog;
   speech: typeof speechService;
+  voiceRecognition: typeof voiceRecognitionService;
   aiTutor: typeof aiTutorService;
 }
 
@@ -40,6 +42,7 @@ export function createServices(): AppServices {
     srs: defaultSRS,
     catalog: contentCatalog,
     speech: speechService,
+    voiceRecognition: voiceRecognitionService,
     aiTutor: aiTutorService,
   };
 }

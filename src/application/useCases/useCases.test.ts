@@ -26,6 +26,7 @@ describe('Application Use Cases', () => {
       srs: defaultSRS,
       catalog: contentCatalog,
       speech: { speak: jest.fn(), stop: jest.fn() } as any,
+      voiceRecognition: { isListening: jest.fn(), startListening: jest.fn(), stopListening: jest.fn(), cancelListening: jest.fn() } as any,
       aiTutor: { generateReply: jest.fn().mockResolvedValue(null) } as any,
     };
   });

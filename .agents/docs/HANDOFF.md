@@ -11,7 +11,7 @@
 - **Tech Stack**: Expo SDK 57, React Native 0.86.3, Expo Router, TypeScript 6.0, Zustand, AsyncStorage, Jest
 - **Verification Health**:
   - TypeScript (`npx tsc --noEmit`): **PASS (0 errors)**
-  - Unit & Integration Tests (`npm test -- --runInBand`): **PASS (17 suites, 87 tests)**
+  - Unit & Integration Tests (`npm test -- --runInBand`): **PASS (19 suites, 101 tests)**
   - CI/CD Workflows: `.github/workflows/ci.yml` & `.github/workflows/release.yml` active
   - Live AI Integration: Tested & verified Groq API key with fast Korean inference (~300ms)
 
@@ -19,7 +19,12 @@
 
 ## 2. Recently Completed Milestones
 
-1. **Calm UI Hierarchy, Anti-Overwhelm Redesign & Pedagogical Suite (2026-10-25)**:
+1. **Korean Voice Response & Speaking Shadowing Coach (`음성 대화 & 발음 평가`) (2026-10-25)**:
+   - **2-Way Voice Conversation**: Added real-time speech-to-text microphone input in AI Conversation & Roleplay (`app/conversation/[scenarioId].tsx`) using native Web Speech API and `expo-av` + Groq Whisper (`whisper-large-v3-turbo`), complete with politeness coaching and spoken audio responses.
+   - **Pronunciation Accuracy Evaluator**: Built pure Unicode Jamo-level phonetic accuracy evaluator (`src/domain/speech/pronunciationEvaluator.ts`) calculating syllable-by-syllable similarity percentages and corrective guidance.
+   - **Speaking & Shadowing Coach**: Created dedicated Speaking screen (`app/tools/speaking.tsx`) featuring 10 situational Korean phrases across greetings, cafe ordering, directions, dining, and idioms, with normal and slow (0.65x) native audio, real-time voice evaluation, and syllable diff badges. Added to Mastery Toolkit on Learn tab.
+   - **Microphone Permissions**: Configured Android `RECORD_AUDIO`, iOS `NSMicrophoneUsageDescription`, and `expo-av` plugin in `app.json`.
+2. **Calm UI Hierarchy, Anti-Overwhelm Redesign & Pedagogical Suite (2026-10-25)**:
    - **Today Tab Unified "Daily Korean Bite" (`오늘의 한마디`)**: Consolidated three separate giant vertical cards (Word, Phrase, Sentence) into 1 unified interactive card with a 3-segment switcher (`Word 단어`, `Phrase 표현`, `Sentence 문장`), reducing visual clutter and scrolling fatigue by 60%.
    - **Screen Action Hierarchy**: Kept the primary action unambiguous on the Today screen, moving deep 6-Skill proficiency bars and long-term milestones exclusively to the **Me** tab where comprehensive analytics reside.
    - **Search Category Browsing Fix**: Resolved empty-query filter bug in `app/search.tsx` so selecting category chips immediately displays browsable items.
@@ -97,7 +102,7 @@
 - [x] **Cultural Micro-Stories & Reading Bites**: 4 Seoul life stories with sentence audio and comprehension checks.
 - [x] **Korean Dictation / Bada-sseugi (`받아쓰기`)**: Audio-first syllable tile spelling challenge in quizzes.
 - [x] **Progressive Disclosure Mastery Toolkit & Category Filters**: Clean Learn carousel preventing beginner overwhelm.
-- [ ] **Voice Pitch Shadowing Recorder**: Side-by-side pitch/audio comparison recorder for speaking practice.
+- [x] **Voice Response & Speaking Shadowing Coach**: Real-time microphone input, Jamo phonetic accuracy score, and voice response in conversation.
 
 ---
 
@@ -105,14 +110,17 @@
 
 ### Last Session Summary (2026-10-25)
 - **What Changed**:
-  - Implemented Korean Number Systems & Counters Playground (`app/tools/numbers.tsx`, `src/domain/numbers/`).
-  - Implemented Korean Verb & Adjective Conjugator (`app/tools/conjugator.tsx`, `src/domain/conjugation/`).
-  - Implemented Korean Sound-Change Rules Guide (`app/grammar/sound-rules.tsx`, `src/content/grammar/soundChangeRules.ts`).
-  - Implemented Cultural Micro-Stories Hub & Reader (`app/reading/index.tsx`, `app/reading/[storyId].tsx`, `src/content/reading/`).
-  - Implemented Korean Dictation / 받아쓰기 Quiz format & session length selectors (`app/quiz/session.tsx`, `app/(tabs)/quiz.tsx`, `src/domain/quiz/`).
-  - Added category filter chips to global search (`app/search.tsx`).
-  - Refactored Learn tab (`app/(tabs)/learn.tsx`) to use a horizontal **Mastery Toolkit** carousel for progressive disclosure, keeping the core path calm and welcoming.
-  - Hardened GitHub Actions CI/CD with dependency resolution and prebuild ordering.
+  - Implemented Korean Voice Response in AI Conversation & Roleplay (`app/conversation/[scenarioId].tsx`, `src/features/conversation/useConversation.ts`).
+  - Implemented Speech Recognition Service (`src/infrastructure/speech/voiceRecognitionService.ts`) with Web Speech API and `expo-av` + Groq Whisper.
+  - Implemented Jamo phonetic accuracy evaluator (`src/domain/speech/pronunciationEvaluator.ts`).
+  - Implemented Speaking & Shadowing Coach screen (`app/tools/speaking.tsx`) and added to Mastery Toolkit (`app/(tabs)/learn.tsx`).
+  - Configured microphone permissions and `expo-av` in `app.json` and `package.json`.
+  - Maintained 100% test coverage (19 suites, 101 tests passing).
+- **Files Touched**:
+  - `src/domain/speech/`, `src/infrastructure/speech/`, `src/features/conversation/`, `app/conversation/`, `app/tools/speaking.tsx`, `app/(tabs)/learn.tsx`, `app.json`, `package.json`
+- **Verification**:
+  - `npx tsc --noEmit`: PASS (0 errors)
+  - `npm test -- --runInBand`: PASS (19 suites, 101 tests passing)
 - **Files Touched**:
   - `src/domain/numbers/`, `src/domain/conjugation/`, `src/content/grammar/`, `src/content/reading/`, `src/domain/quiz/`
   - `app/tools/`, `app/grammar/sound-rules.tsx`, `app/reading/`, `app/quiz/session.tsx`, `app/(tabs)/quiz.tsx`, `app/(tabs)/learn.tsx`, `app/search.tsx`

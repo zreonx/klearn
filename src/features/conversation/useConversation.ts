@@ -24,6 +24,9 @@ export function useConversation(scenarioId: string) {
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [aiSettings, setAiSettings] = useState<AITutorSettings | undefined>(undefined);
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [interimTranscript, setInterimTranscript] = useState<string>('');
+  const [voiceError, setVoiceError] = useState<string | null>(null);
 
   const mountedRef = useRef(true);
 
@@ -190,6 +193,56 @@ export function useConversation(scenarioId: string) {
     [messages, turnIndex, scenario, aiSettings, isGenerating, isCompleted]
   );
 
+  const startVoiceInput = useCallback(async () => {
+    setVoiceError(null);
+    setInterimTranscript('');
+    try {
+      const started = await services.voiceRecognition.startListening({
+        onInterim: (text) => {
+          if (mountedRef.current) {
+            setInterimTranscript(text);
+          }
+        },
+        apiKey: aiSettings?.apiKey,
+      });
+      if (started) {
+        setIsListening(true);
+      } else {
+        setVoiceError('Microphone access unavailable. Check permissions.');
+      }
+    } catch {
+      setVoiceError('Failed to start voice recognition.');
+    }
+  }, [aiSettings]);
+
+  const stopVoiceInput = useCallback(
+    async (autoSend = false) => {
+      setIsListening(false);
+      try {
+        const text = await services.voiceRecognition.stopListening(aiSettings?.apiKey);
+        const finalText = text || interimTranscript;
+        setInterimTranscript('');
+        if (finalText.trim()) {
+          setInputText(finalText.trim());
+          if (autoSend) {
+            sendReply(finalText.trim());
+          }
+        }
+        return finalText.trim();
+      } catch {
+        setInterimTranscript('');
+        return '';
+      }
+    },
+    [aiSettings, interimTranscript, sendReply]
+  );
+
+  const cancelVoiceInput = useCallback(async () => {
+    setIsListening(false);
+    setInterimTranscript('');
+    await services.voiceRecognition.cancelListening();
+  }, []);
+
   return {
     scenario,
     messages,
@@ -204,6 +257,12 @@ export function useConversation(scenarioId: string) {
     isCompleted,
     isGenerating,
     aiProvider: aiSettings?.provider || 'offline',
+    isListening,
+    interimTranscript,
+    voiceError,
+    startVoiceInput,
+    stopVoiceInput,
+    cancelVoiceInput,
     playAudio,
     sendReply,
     restart: initConversation,
