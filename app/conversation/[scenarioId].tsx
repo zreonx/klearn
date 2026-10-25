@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -27,6 +28,29 @@ export default function ConversationScreen() {
   const { colors, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  // Monitor keyboard display to keep input bar snug and messages scrolled into view
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, () => {
+      setIsKeyboardVisible(true);
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 50);
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const {
     scenario,
@@ -55,7 +79,8 @@ export default function ConversationScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       {/* Top Header */}
       <View
@@ -173,6 +198,8 @@ export default function ConversationScreen() {
             paddingBottom: theme.spacing.lg,
           },
         ]}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
       >
         {messages.map((msg) => {
           const isPartner = msg.role === 'assistant';
@@ -389,7 +416,9 @@ export default function ConversationScreen() {
             borderTopColor: colors.borderSubtle,
             paddingHorizontal: theme.spacing.md,
             paddingTop: theme.spacing.sm,
-            paddingBottom: Math.max(insets.bottom, theme.spacing.md),
+            paddingBottom: isKeyboardVisible
+              ? theme.spacing.sm
+              : Math.max(insets.bottom, theme.spacing.md),
           },
         ]}
       >
@@ -493,6 +522,11 @@ export default function ConversationScreen() {
             <TextInput
               value={inputText}
               onChangeText={setInputText}
+              onFocus={() => {
+                setTimeout(() => {
+                  scrollViewRef.current?.scrollToEnd({ animated: true });
+                }, 100);
+              }}
               placeholder={isListening ? 'Listening to voice...' : 'Type or tap mic to speak Korean...'}
               placeholderTextColor={colors.foregroundSubtle}
               style={[

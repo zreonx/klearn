@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
   Alert,
 } from 'react-native';
@@ -30,6 +31,29 @@ export default function AITutorChatScreen() {
   const { colors, theme } = useTheme();
   const scrollViewRef = useRef<ScrollView>(null);
   const [rawModeMap, setRawModeMap] = useState<Record<string, boolean>>({});
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  // Monitor keyboard display to keep input bar snug and messages scrolled into view
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, () => {
+      setIsKeyboardVisible(true);
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 50);
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const toggleRawMode = (msgId: string) => {
     hapticService.lightTick();
@@ -86,7 +110,8 @@ export default function AITutorChatScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       {/* Top Header */}
       <View
@@ -187,6 +212,8 @@ export default function AITutorChatScreen() {
             paddingBottom: theme.spacing.xl,
           },
         ]}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
       >
         {messages.map((msg) => {
           const isUser = msg.role === 'user';
@@ -375,7 +402,9 @@ export default function AITutorChatScreen() {
             borderTopColor: colors.borderSubtle,
             paddingHorizontal: theme.spacing.md,
             paddingTop: theme.spacing.sm,
-            paddingBottom: Math.max(insets.bottom, theme.spacing.md),
+            paddingBottom: isKeyboardVisible
+              ? theme.spacing.sm
+              : Math.max(insets.bottom, theme.spacing.md),
           },
         ]}
       >
@@ -437,6 +466,11 @@ export default function AITutorChatScreen() {
           <TextInput
             value={inputText}
             onChangeText={setInputText}
+            onFocus={() => {
+              setTimeout(() => {
+                scrollViewRef.current?.scrollToEnd({ animated: true });
+              }, 100);
+            }}
             placeholder={isListening ? 'Listening to voice...' : 'Ask about Korean grammar, vocab, translate...'}
             placeholderTextColor={colors.foregroundSubtle}
             multiline

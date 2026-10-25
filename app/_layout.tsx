@@ -113,6 +113,55 @@ function RootNavigation() {
             animation: 'fade',
           }}
         />
+        <Stack.Screen
+          name="tutor/index"
+          options={{
+            title: 'AI Korean Tutor',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="tools/speaking"
+          options={{
+            title: 'Speaking Coach',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="tools/numbers"
+          options={{
+            title: 'Korean Numbers',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="tools/conjugator"
+          options={{
+            title: 'Conjugator',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="grammar/sound-rules"
+          options={{
+            title: 'Sound Rules',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="reading/index"
+          options={{
+            title: 'Reading Hub',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="reading/[storyId]"
+          options={{
+            title: 'Reading Story',
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   );
