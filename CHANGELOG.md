@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-26
+
 ### Added
 - **Dedicated AI Korean Tutor Chat Assistant (`AI 한국어 튜터 챗`)**:
   - Built an open-ended, free-form Korean Q&A tutor chat (`app/tutor/index.tsx`) separate from structured situational roleplay, allowing learners to ask anything anytime regarding grammar, vocabulary, irregular verbs, translations, and cultural nuances.
@@ -135,4 +137,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Clean Native Splash & Adaptive Icons**: Centered, borderless `klearn-icon.png` splash screen and adaptive icons across light and dark modes.
 - **CI/CD Automation**: GitHub Actions workflows for continuous verification (`ci.yml`) and automated tag-driven Android APK release publishing (`release.yml`).
 
+[1.1.0]: https://github.com/zreonx/klearn/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/zreonx/klearn/releases/tag/v1.0.0
