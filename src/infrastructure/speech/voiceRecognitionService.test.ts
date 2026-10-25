@@ -1,5 +1,5 @@
 jest.mock('react-native', () => ({
-  Platform: { OS: 'web' },
+  Platform: { OS: 'android' },
 }));
 
 // Mock expo-av

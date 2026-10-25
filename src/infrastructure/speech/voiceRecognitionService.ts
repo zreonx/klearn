@@ -1,4 +1,3 @@
-import { Audio } from 'expo-av';
 import { Platform } from 'react-native';
 import { logger } from '@/lib/logger';
 
@@ -14,9 +13,26 @@ export interface VoiceRecognitionResult {
   confidence?: number;
 }
 
+/**
+ * Safely access native expo-av without breaking Web bundles or crashing when
+ * ExponentAV native module is unavailable.
+ */
+function getNativeAudio(): any {
+  if (Platform.OS === 'web') return null;
+  try {
+    const expoAv = require('expo-av');
+    return expoAv ? expoAv.Audio : null;
+  } catch (err) {
+    logger.warn('expo-av is not available in current environment:', err);
+    return null;
+  }
+}
+
 export class VoiceRecognitionService {
-  private recording: Audio.Recording | null = null;
+  private recording: any = null;
   private webRecognition: any = null;
+  private webMediaRecorder: any = null;
+  private webAudioChunks: any[] = [];
   private isCurrentlyListening = false;
   private currentTranscript = '';
   private onInterimCallback: ((text: string) => void) | null = null;
@@ -32,7 +48,7 @@ export class VoiceRecognitionService {
       const hasMedia = typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
       return hasWebSpeech || hasMedia;
     }
-    return true; // Native iOS / Android supports expo-av
+    return !!getNativeAudio();
   }
 
   isListening(): boolean {
@@ -42,7 +58,8 @@ export class VoiceRecognitionService {
   /**
    * Starts capturing voice input.
    * On Web with SpeechRecognition, uses browser native STT.
-   * On Mobile or fallback Web, starts recording audio with expo-av.
+   * On Web without SpeechRecognition, uses browser MediaRecorder.
+   * On Mobile, starts recording audio with native expo-av.
    */
   async startListening(options: VoiceRecognitionOptions = {}): Promise<boolean> {
     if (this.isCurrentlyListening) {
@@ -52,7 +69,7 @@ export class VoiceRecognitionService {
     this.currentTranscript = '';
     this.onInterimCallback = options.onInterim || null;
 
-    // 1. Try Web Speech Recognition if available (instant, zero network latency)
+    // 1. Web Speech Recognition (Google Chrome, Microsoft Edge, Safari)
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       const SpeechRecognition =
         (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -94,12 +111,44 @@ export class VoiceRecognitionService {
           this.isCurrentlyListening = true;
           return true;
         } catch (err) {
-          logger.warn('Web Speech recognition start failed, falling back to audio recording:', err);
+          logger.warn('Web Speech recognition start failed, trying Web MediaRecorder:', err);
         }
       }
+
+      // Web MediaRecorder fallback
+      if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const MediaRecorderConstructor = (window as any).MediaRecorder;
+          if (MediaRecorderConstructor) {
+            this.webAudioChunks = [];
+            const recorder = new MediaRecorderConstructor(stream);
+            recorder.ondataavailable = (e: any) => {
+              if (e.data && e.data.size > 0) {
+                this.webAudioChunks.push(e.data);
+              }
+            };
+            recorder.start();
+            this.webMediaRecorder = recorder;
+            this.isCurrentlyListening = true;
+            return true;
+          }
+        } catch (err) {
+          logger.warn('Web MediaRecorder start failed:', err);
+          return false;
+        }
+      }
+
+      return false;
     }
 
-    // 2. Audio Recording via expo-av
+    // 2. Native audio recording via expo-av
+    const Audio = getNativeAudio();
+    if (!Audio) {
+      logger.warn('Native audio recording module is not available');
+      return false;
+    }
+
     try {
       const { status } = await Audio.requestPermissionsAsync();
       if (status !== 'granted') {
@@ -120,7 +169,7 @@ export class VoiceRecognitionService {
       this.isCurrentlyListening = true;
       return true;
     } catch (err) {
-      logger.error('Failed to start audio recording:', err);
+      logger.error('Failed to start native audio recording:', err);
       this.isCurrentlyListening = false;
       return false;
     }
@@ -147,7 +196,31 @@ export class VoiceRecognitionService {
       return this.currentTranscript.trim();
     }
 
-    // 2. If expo-av recording was active, stop and transcribe
+    // 2. If Web MediaRecorder was active
+    if (this.webMediaRecorder) {
+      try {
+        const recorder = this.webMediaRecorder;
+        this.webMediaRecorder = null;
+        const blob = await new Promise<Blob>((resolve) => {
+          recorder.onstop = () => {
+            const audioBlob = new Blob(this.webAudioChunks, { type: 'audio/webm' });
+            resolve(audioBlob);
+          };
+          recorder.stop();
+        });
+
+        const effectiveKey = apiKey || process.env.EXPO_PUBLIC_GROQ_API_KEY || '';
+        if (effectiveKey) {
+          return await this.transcribeBlobWithGroqWhisper(blob, effectiveKey);
+        }
+        return '';
+      } catch (err) {
+        logger.error('Failed to stop web media recorder:', err);
+        return '';
+      }
+    }
+
+    // 3. If native expo-av recording was active
     if (this.recording) {
       try {
         await this.recording.stopAndUnloadAsync();
@@ -164,14 +237,13 @@ export class VoiceRecognitionService {
           '';
 
         if (effectiveKey) {
-          const transcribed = await this.transcribeWithGroqWhisper(uri, effectiveKey);
-          return transcribed;
+          return await this.transcribeUriWithGroqWhisper(uri, effectiveKey);
         } else {
           logger.warn('No Groq API key available for Whisper audio transcription.');
           return '';
         }
       } catch (err) {
-        logger.error('Failed to stop and transcribe audio:', err);
+        logger.error('Failed to stop and transcribe native audio:', err);
         this.recording = null;
         return '';
       }
@@ -196,6 +268,15 @@ export class VoiceRecognitionService {
       this.webRecognition = null;
     }
 
+    if (this.webMediaRecorder) {
+      try {
+        this.webMediaRecorder.stop();
+      } catch {
+        // Ignore
+      }
+      this.webMediaRecorder = null;
+    }
+
     if (this.recording) {
       try {
         await this.recording.stopAndUnloadAsync();
@@ -206,25 +287,10 @@ export class VoiceRecognitionService {
     }
   }
 
-  /**
-   * Sends audio to Groq Whisper API for fast Korean transcription.
-   */
-  private async transcribeWithGroqWhisper(uri: string, apiKey: string): Promise<string> {
+  private async transcribeBlobWithGroqWhisper(blob: Blob, apiKey: string): Promise<string> {
     try {
       const formData = new FormData();
-
-      if (Platform.OS === 'web') {
-        const audioResponse = await fetch(uri);
-        const blob = await audioResponse.blob();
-        formData.append('file', blob, 'recording.m4a');
-      } else {
-        formData.append('file', {
-          uri,
-          type: 'audio/m4a',
-          name: 'recording.m4a',
-        } as any);
-      }
-
+      formData.append('file', blob, 'recording.webm');
       formData.append('model', 'whisper-large-v3-turbo');
       formData.append('language', 'ko');
       formData.append('response_format', 'json');
@@ -245,7 +311,40 @@ export class VoiceRecognitionService {
       const data = await response.json();
       return (data.text || '').trim();
     } catch (err) {
-      logger.error('Failed to transcribe with Groq Whisper:', err);
+      logger.error('Failed to transcribe blob with Groq Whisper:', err);
+      return '';
+    }
+  }
+
+  private async transcribeUriWithGroqWhisper(uri: string, apiKey: string): Promise<string> {
+    try {
+      const formData = new FormData();
+      formData.append('file', {
+        uri,
+        type: 'audio/m4a',
+        name: 'recording.m4a',
+      } as any);
+      formData.append('model', 'whisper-large-v3-turbo');
+      formData.append('language', 'ko');
+      formData.append('response_format', 'json');
+
+      const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey.trim()}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        logger.warn('Groq Whisper API returned non-OK status:', response.status);
+        return '';
+      }
+
+      const data = await response.json();
+      return (data.text || '').trim();
+    } catch (err) {
+      logger.error('Failed to transcribe uri with Groq Whisper:', err);
       return '';
     }
   }
