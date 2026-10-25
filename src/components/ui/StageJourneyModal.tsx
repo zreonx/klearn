@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Typography, Badge, Button, useTheme } from '@/components/ui';
+import { Typography } from './Typography';
+import { Badge } from './Badge';
+import { Button } from './Button';
+import { useTheme } from '@/app/providers/ThemeProvider';
 import { Stage } from '@/domain/curriculum/types';
 
 export interface StageJourneyModalProps {
