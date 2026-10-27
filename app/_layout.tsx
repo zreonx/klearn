@@ -19,16 +19,14 @@ function RootNavigation() {
     if (Platform.OS === 'android') {
       try {
         const NavigationBar = require('expo-navigation-bar');
-        // Set both position and exact background color so whether the OS runs in
-        // edge-to-edge transparent mode or traditional window inset mode, it matches colors.surfaceSubtle
-        NavigationBar.setPositionAsync('absolute').catch(() => {});
-        NavigationBar.setBackgroundColorAsync(colors.surfaceSubtle).catch(() => {});
-        NavigationBar.setButtonStyleAsync(isDark ? 'light' : 'dark').catch(() => {});
+        if (typeof NavigationBar.setStyle === 'function') {
+          NavigationBar.setStyle(isDark ? 'light' : 'dark');
+        }
       } catch {
         // Safe fallback if native module is absent in test environment
       }
     }
-  }, [colors.surfaceSubtle, isDark]);
+  }, [isDark]);
 
   return (
     <>

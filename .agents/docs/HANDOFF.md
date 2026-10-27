@@ -6,7 +6,7 @@
 
 ## 1. Current Project Snapshot
 
-- **Current Version**: `v1.1.0` (Tagged and released on GitHub)
+- **Current Version**: `v1.1.1` (Android release startup crash hotfix)
 - **Repository**: [`https://github.com/zreonx/klearn`](https://github.com/zreonx/klearn)
 - **Tech Stack**: Expo SDK 57, React Native 0.86.3, Expo Router, TypeScript 6.0, Zustand, AsyncStorage, Jest
 - **Verification Health**:

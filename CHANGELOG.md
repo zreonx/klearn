@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-27
+
+### Fixed
+- **Startup Crash on Android Release Build**:
+  - Fixed runtime crash in `app/_layout.tsx` caused by deprecated imperative `NavigationBar.setPositionAsync` and `NavigationBar.setBackgroundColorAsync` in `expo-navigation-bar@^57.0.0`; migrated to declarative `NavigationBar.setStyle` contrast synchronization.
+  - Installed missing `expo-font` peer dependency required by `@expo/vector-icons` preventing native font lookup failures on app launch.
+  - Installed `expo-system-ui` to guarantee native system theme and root activity background initialization without flash.
+  - Removed obsolete deprecated `splash` and `android.navigationBar` properties from `app.json` schema.
+  - Switched standard React Native architecture mode to ensure stable `expo-av` and native audio module bridge execution without TurboModule JNI exceptions.
+  - Standardized square 1024x1024 launcher and splash icon assets (`assets/klearn-android-foreground.png`).
+
 ## [1.1.0] - 2026-10-26
 
 ### Added
