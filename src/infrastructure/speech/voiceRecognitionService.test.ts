@@ -17,7 +17,7 @@ jest.mock('expo-av', () => ({
       HIGH_QUALITY: {},
     },
   },
-}));
+}), { virtual: true });
 
 import { VoiceRecognitionService } from './voiceRecognitionService';
 

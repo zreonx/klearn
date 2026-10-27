@@ -2,7 +2,7 @@
   "expo": {
     "name": "Klearn",
     "slug": "klearn",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "orientation": "portrait",
     "icon": "./assets/klearn-android-foreground.png",
     "scheme": "klearn",
@@ -10,18 +10,14 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.klearn",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Klearn uses your microphone for Korean speaking and pronunciation practice."
       }
     },
     "android": {
       "package": "com.klearn",
-      "versionCode": 3,
-      "permissions": [
-        "POST_NOTIFICATIONS",
-        "RECORD_AUDIO"
-      ],
+      "versionCode": 4,
       "adaptiveIcon": {
         "backgroundColor": "#F8F7F2",
         "foregroundImage": "./assets/klearn-android-foreground.png",
@@ -52,19 +48,6 @@
             "image": "./assets/klearn-android-foreground.png",
             "backgroundColor": "#151C1A"
           }
-        }
-      ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/klearn-android-foreground.png",
-          "color": "#176B55"
-        }
-      ],
-      [
-        "expo-av",
-        {
-          "microphonePermission": "Allow Klearn to access your microphone for Korean speaking and pronunciation practice."
         }
       ]
     ],

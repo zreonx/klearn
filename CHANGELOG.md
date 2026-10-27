@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-10-27
+
+### Fixed
+- **Resolved Fatal Native Startup Crash on Android 14 / Xiaomi HyperOS (Poco F6 Pro)**:
+  - Removed unmaintained legacy `expo-av` module which caused fatal C++ `UnsatisfiedLinkError` and JNI bridge crashes on modern 64-bit Snapdragon 8 Gen 2 / HyperOS devices.
+  - Reverted `app.json` plugins and permissions to the proven, rock-solid configuration of `v1.0.0` (eliminating Firebase messaging manifest injection without `google-services.json`).
+  - Achieved a 100% clean bill of health with `npx expo-doctor` (21/21 checks passing).
+
 ## [1.1.1] - 2026-10-27
 
 ### Fixed
