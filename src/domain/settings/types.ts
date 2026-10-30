@@ -63,7 +63,7 @@ export function createDefaultUserSettings(): UserSettings {
     hasCompletedOnboarding: false,
     aiTutor: {
       provider: 'groq',
-      apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY || '',
+      apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY || APP_CONFIG.ai.defaultGroqKey,
     },
   };
 }

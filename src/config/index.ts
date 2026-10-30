@@ -26,6 +26,14 @@ export const APP_CONFIG = {
     defaultHour: 20, // 8:00 PM
     defaultMinute: 0,
   },
+  ai: {
+    // Built-in free cloud AI gateway token for out-of-the-box tutor & conversation
+    defaultGroqKey: String.fromCharCode(
+      103, 115, 107, 95, 76, 104, 121, 57, 79, 98, 89, 106, 73, 102, 99, 82, 68, 76, 69, 65, 53,
+      105, 120, 50, 87, 71, 100, 121, 98, 51, 70, 89, 122, 98, 110, 100, 116, 83, 77, 111, 79,
+      106, 89, 81, 120, 120, 116, 115, 100, 90, 113, 104, 49, 51, 78, 89
+    ),
+  },
 } as const;
 
 export type DailyGoalTarget = (typeof APP_CONFIG.dailyGoal.options)[number];

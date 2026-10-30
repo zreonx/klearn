@@ -1,6 +1,7 @@
 import { ChatMessage } from '@/domain/aiChat/types';
 import { getOfflineTutorAnswer } from '@/domain/aiChat/offlineTutor';
 import { AITutorSettings } from '@/domain/settings/types';
+import { APP_CONFIG } from '@/config';
 import { logger } from '@/lib/logger';
 
 const SYSTEM_PROMPT = `
@@ -37,6 +38,7 @@ export class AIChatService {
     const effectiveKey =
       settings?.apiKey?.trim() ||
       process.env.EXPO_PUBLIC_GROQ_API_KEY ||
+      APP_CONFIG.ai.defaultGroqKey ||
       '';
 
     const provider = settings?.provider || (effectiveKey ? 'groq' : 'offline');
@@ -116,7 +118,13 @@ export class AIChatService {
       { role: 'user', content: question },
     ];
 
-    const models = ['llama-3.3-70b-versatile', 'qwen/qwen3.8-27b', 'llama-3.1-8b-instant'];
+    const models = [
+      'qwen/qwen3.8-27b',
+      'openai/gpt-oss-120b',
+      'openai/gpt-oss-20b',
+      'llama-3.3-70b-versatile',
+      'llama-3.1-8b-instant',
+    ];
 
     for (const model of models) {
       try {

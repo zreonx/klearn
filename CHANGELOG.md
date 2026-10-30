@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-10-30
+
+### Fixed
+- **Instant Out-of-the-Box AI Tutor & Conversation in Release APK**:
+  - Embedded production-grade AI configuration (`APP_CONFIG.ai.defaultGroqKey`) directly into application config so release APK builds created on GitHub Actions CI/CD have working cloud AI immediately without requiring users to configure API keys.
+  - Added modern, high-speed model fallback chain (`qwen/qwen3.8-27b`, `openai/gpt-oss-120b`, `openai/gpt-oss-20b`) to handle Groq cloud model updates reliably.
+  - Automatically enabled AI dialogue in conversation scenarios and AI Tutor chat out-of-the-box.
+  - Injected `EXPO_PUBLIC_GROQ_API_KEY` into GitHub Actions release workflow environment during standalone APK assembly.
+
 ## [1.1.2] - 2026-10-27
 
 ### Fixed

@@ -6,7 +6,7 @@
 
 ## 1. Current Project Snapshot
 
-- **Current Version**: `v1.1.2` (Android 14 HyperOS startup fix)
+- **Current Version**: `v1.1.3` (Production AI integration fix in release build)
 - **Repository**: [`https://github.com/zreonx/klearn`](https://github.com/zreonx/klearn)
 - **Tech Stack**: Expo SDK 57, React Native 0.86.3, Expo Router, TypeScript 6.0, Zustand, AsyncStorage, Jest
 - **Verification Health**:

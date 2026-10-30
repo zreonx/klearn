@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChatMessage } from '@/domain/aiChat/types';
 import { services } from '@/application/services';
 import { AITutorSettings } from '@/domain/settings/types';
+import { APP_CONFIG } from '@/config';
 import { hapticService } from '@/infrastructure/haptics/hapticService';
 
 const WELCOME_MESSAGE: ChatMessage = {
@@ -49,8 +50,8 @@ export function useAIChat() {
 
           if (userSettings.aiTutor?.provider && userSettings.aiTutor.provider !== 'offline') {
             setActiveProviderName(`${userSettings.aiTutor.provider.toUpperCase()} AI`);
-          } else if (process.env.EXPO_PUBLIC_GROQ_API_KEY) {
-            setActiveProviderName('Groq AI (Llama 3.3)');
+          } else if (process.env.EXPO_PUBLIC_GROQ_API_KEY || APP_CONFIG.ai.defaultGroqKey) {
+            setActiveProviderName('Groq AI (Fast LPU)');
           } else {
             setActiveProviderName('Offline Knowledge Base');
           }

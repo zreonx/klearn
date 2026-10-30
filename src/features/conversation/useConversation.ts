@@ -9,6 +9,7 @@ import { evaluateFormality } from '@/domain/conversation/evaluator';
 import { services } from '@/application/services';
 import { AITutorSettings } from '@/domain/settings/types';
 import { calculateUpdatedStreak } from '@/domain/streak/streakCalculator';
+import { APP_CONFIG } from '@/config';
 
 export function useConversation(scenarioId: string) {
   const scenario: ConversationScenario =
@@ -116,7 +117,13 @@ export function useConversation(scenarioId: string) {
       const nextTurnIdx = turnIndex + 1;
 
       // 1. Check if AI Tutor is active
-      if (aiSettings && aiSettings.provider !== 'offline' && aiSettings.apiKey) {
+      const effectiveKey =
+        aiSettings?.apiKey?.trim() ||
+        process.env.EXPO_PUBLIC_GROQ_API_KEY ||
+        APP_CONFIG.ai.defaultGroqKey ||
+        '';
+
+      if (aiSettings?.provider !== 'offline' && effectiveKey) {
         const history = nextMessages.map((m) => ({
           role: m.role,
           content: m.korean,
@@ -125,7 +132,7 @@ export function useConversation(scenarioId: string) {
         const aiResponse = await services.aiTutor.generateReply(
           history,
           `${scenario.title} (${scenario.koreanTitle}): ${scenario.description}`,
-          aiSettings
+          aiSettings || { provider: 'groq', apiKey: effectiveKey }
         );
 
         if (aiResponse) {

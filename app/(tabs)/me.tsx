@@ -73,7 +73,15 @@ export default function MeScreen() {
       'AI Tutor Settings Saved',
       selectedAIProvider === 'offline'
         ? 'Using built-in offline Korean dialogue & politeness coach.'
-        : `Connected to ${selectedAIProvider === 'gemini' ? 'Google Gemini' : 'DeepSeek'} AI Tutor!`
+        : `Connected to ${
+            selectedAIProvider === 'groq'
+              ? 'Groq Cloud'
+              : selectedAIProvider === 'openrouter'
+              ? 'OpenRouter'
+              : selectedAIProvider === 'gemini'
+              ? 'Google Gemini'
+              : 'DeepSeek'
+          } AI Tutor!`
     );
     setTimeout(() => setIsAiSaved(false), 3000);
   };

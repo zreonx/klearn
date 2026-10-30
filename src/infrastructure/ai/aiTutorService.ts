@@ -1,5 +1,6 @@
 import { AITutorSettings } from '@/domain/settings/types';
 import { SuggestedReply } from '@/domain/conversation/types';
+import { APP_CONFIG } from '@/config';
 
 export interface AITutorResponse {
   korean: string;
@@ -47,19 +48,27 @@ export class AITutorService {
     scenarioContext: string,
     settings?: AITutorSettings
   ): Promise<AITutorResponse | null> {
-    if (!settings || settings.provider === 'offline' || !settings.apiKey?.trim()) {
+    const effectiveKey =
+      settings?.apiKey?.trim() ||
+      process.env.EXPO_PUBLIC_GROQ_API_KEY ||
+      APP_CONFIG.ai.defaultGroqKey ||
+      '';
+
+    const provider = settings?.provider || (effectiveKey ? 'groq' : 'offline');
+
+    if (provider === 'offline' || !effectiveKey) {
       return null;
     }
 
     try {
-      if (settings.provider === 'groq') {
-        return await this.callGroq(history, scenarioContext, settings.apiKey.trim());
-      } else if (settings.provider === 'openrouter') {
-        return await this.callOpenRouter(history, scenarioContext, settings.apiKey.trim());
-      } else if (settings.provider === 'gemini') {
-        return await this.callGemini(history, scenarioContext, settings.apiKey.trim());
-      } else if (settings.provider === 'deepseek') {
-        return await this.callDeepSeek(history, scenarioContext, settings.apiKey.trim());
+      if (provider === 'groq') {
+        return await this.callGroq(history, scenarioContext, effectiveKey);
+      } else if (provider === 'openrouter') {
+        return await this.callOpenRouter(history, scenarioContext, effectiveKey);
+      } else if (provider === 'gemini') {
+        return await this.callGemini(history, scenarioContext, effectiveKey);
+      } else if (provider === 'deepseek') {
+        return await this.callDeepSeek(history, scenarioContext, effectiveKey);
       }
     } catch (err) {
       // Gracefully fall back to offline engine on any error (network offline, bad key, rate limit)
@@ -119,6 +128,7 @@ export class AITutorService {
     const modelsToTry = [
       'qwen/qwen3.8-27b',
       'openai/gpt-oss-120b',
+      'openai/gpt-oss-20b',
       'llama-3.3-70b-versatile',
       'llama-3.1-8b-instant',
     ];
